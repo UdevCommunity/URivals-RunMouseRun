@@ -231,6 +231,7 @@ public class DrawEngine extends JFrame
 		mapPanel.setMap(map);
 		mapName.setText(map.name);
 		update();
+		mapPanel.adjustPanelSize();
 		adjustFrameHeight(map);
 		update();
 	}
@@ -301,10 +302,9 @@ public class DrawEngine extends JFrame
 		{
 			this.map = map;
 
-			setPreferredSize(new Dimension(LevelGenerator.MAP_WIDTH*TILE_SIZE,
-					LevelGenerator.MAP_HEIGHT*TILE_SIZE));
+			adjustPanelSize();
 
-			/*init buffered run_mouse_run.Map */
+			/*init buffered Map */
 			bufferedMap = new BufferedImage(LevelGenerator.MAP_WIDTH*TILE_SIZE,
 					LevelGenerator.MAP_HEIGHT*TILE_SIZE,
 					BufferedImage.TYPE_BYTE_INDEXED);
@@ -318,6 +318,12 @@ public class DrawEngine extends JFrame
 			// draw chars
 			bufferCharacters();
 		}
+
+		public void adjustPanelSize()
+        {
+            setPreferredSize(new Dimension(map.width*TILE_SIZE,
+                    map.height*TILE_SIZE));
+        }
 
 		public void setMap(Map map)
 		{
