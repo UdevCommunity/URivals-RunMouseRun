@@ -20,7 +20,7 @@ public class DrawEngine extends JFrame
 	private MapPanel mapPanel;
 	private JLabel mapName, timeLabel;
 	private JComboBox<String> mapsCmBox;
-
+	private JButton startGameButton;
 
 	PathFinder pathFinder;
 
@@ -69,7 +69,9 @@ public class DrawEngine extends JFrame
 		mapName = new JLabel("Level Map");
 		mapName.setFont(new Font("Calibri", Font.PLAIN, 18));
 
-		JButton startGameButton = new JButton("Start Game");
+		// Start game button
+		JPanel startButtonPanel = new JPanel();
+		startGameButton = new JButton("Start Game");
 
 		startGameButton.addActionListener(new ActionListener() {
 			@Override
@@ -78,19 +80,21 @@ public class DrawEngine extends JFrame
 			}
 		});
 
+		startButtonPanel.add(startGameButton);
+
+		// Time Label
 		timeLabel = new JLabel("Time : 00:00");
 		timeLabel.setFont(new Font("Calibri", Font.PLAIN, 18));
 
 		topPanel.add(mapName, BorderLayout.WEST);
-		topPanel.add(startGameButton, BorderLayout.CENTER);
+		topPanel.add(startButtonPanel, BorderLayout.CENTER);
 		topPanel.add(timeLabel, BorderLayout.EAST);
 
 
 		contentPane.add(topPanel, BorderLayout.NORTH);
 
-		/* ===========================Init run_mouse_run.Map Panel ============================*/
+		/* ===========================Init Map Panel ============================*/
 		mapPanel = new MapPanel(map);
-
 
 		mapContainerPanel = new JScrollPane(mapPanel);
 
@@ -132,20 +136,20 @@ public class DrawEngine extends JFrame
 
 		/*==========================Init Button Panel==================================*/
 		JPanel btnPanel = new JPanel();
-		contentPane.add(btnPanel, BorderLayout.SOUTH);
+		btnPanel.setLayout(new BorderLayout(5,5));
 
 		// Draw Shortest Button
 		JButton btnDrawShortest = new JButton("Draw shortest");
 		btnDrawShortest.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0)
 			{
-				//pathFinder = new run_mouse_run.PathFinder();
 				mapPanel.drawPath(pathFinder.getShortestPath(maps.get(0), initialPos, finalPos));
 			}
 		});
-		btnPanel.add(btnDrawShortest);
 
-		// Switch run_mouse_run.Map Checkbox+Button
+		// Center buttons ( Checkbox )
+		JPanel centerPanel = new JPanel();
+
 		mapsCmBox = new JComboBox<>();
 
 		mapsCmBox.addItem(map.name);
@@ -165,9 +169,9 @@ public class DrawEngine extends JFrame
 				}
 			}
 		});
-		btnPanel.add(mapsCmBox);
+		centerPanel.add(mapsCmBox);
 
-		// new run_mouse_run.Map button
+		// new Map button
 		JButton newMapButton = new JButton("New Map");
 		newMapButton.addActionListener(new ActionListener() {
 			@Override
@@ -177,9 +181,20 @@ public class DrawEngine extends JFrame
 				newFrame.setVisible(true);
 			}
 		});
-		btnPanel.add(newMapButton);
-	}
 
+		// Add to frame
+		btnPanel.add(btnDrawShortest, BorderLayout.WEST);
+		btnPanel.add(centerPanel, BorderLayout.CENTER);
+		btnPanel.add(newMapButton, BorderLayout.EAST);
+
+		contentPane.add(btnPanel, BorderLayout.SOUTH);
+
+	} // End of constructor
+
+	/**
+	 * Constructor to instanciate a frame with several maps
+	 * @param maps an arrayList of maps to show
+	 */
 	public DrawEngine(ArrayList<Map> maps)
 	{
 		this(maps.get(0));
@@ -187,43 +202,70 @@ public class DrawEngine extends JFrame
 			addMap(maps.get(i));
 	}
 
+	/**
+	 * Add map to maps list and ComboBox
+	 * @param map well ... a MAP
+	 */
 	public void addMap(Map map)
 	{
 		maps.add(map);
 		mapsCmBox.addItem(map.name);
 	}
 
+	/**
+	 * Remove map from list and comboBox
+	 * @param map (Map) map to remove
+	 */
 	public void removeMap(Map map)
 	{
 		maps.remove(map);
+		mapsCmBox.removeItem(map.name);
 	}
 
+	/**
+	 * Set map to show in mapPanel
+	 * @param map map to show
+	 */
 	private void switchToMap(Map map)
 	{
 		mapPanel.setMap(map);
 		mapName.setText(map.name);
 		update();
+		adjustFrameHeight(map);
+		update();
 	}
 
-	private void initWindow()
+	/**
+	 * Adjust frame height to given map size and window size
+	 * @param map to adjust to
+	 */
+	private void adjustFrameHeight(Map map)
 	{
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setTitle("Run Mouse Run!");
-
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-		int winHeight = TILE_SIZE * LevelGenerator.MAP_HEIGHT + TILE_SIZE + 50;
+		int winHeight = TILE_SIZE * map.height + TILE_SIZE + 50;
 
 		System.out.println("PANEL HEIGHT : " + winHeight);
 		if(winHeight >= screenSize.getHeight() - 50)
 			winHeight = (int) screenSize.getHeight() - 50;
 
 		setSize(new Dimension(
-				TILE_SIZE * LevelGenerator.MAP_WIDTH + TILE_SIZE + 10,
+				TILE_SIZE * map.width + TILE_SIZE + 10,
 				winHeight
 		));
 
 		System.out.println("FRAME HEIGHT : " + winHeight);
+	}
+	/**
+	 * Inits DrawEngine frame adapting to height
+	 */
+	private void initWindow()
+	{
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setTitle("Run Mouse Run!");
+
+		adjustFrameHeight(maps.get(0));
+
 
 		setResizable(false);
 		contentPane = new JPanel();
@@ -449,8 +491,8 @@ public class DrawEngine extends JFrame
 		private void bufferMap()
 		{
         	/* Draw run_mouse_run.Map */
-			for (int i = 0; i < LevelGenerator.MAP_HEIGHT; i++) {
-				for (int j = 0; j < LevelGenerator.MAP_WIDTH; j++)
+			for (int i = 0; i < map.height; i++) {
+				for (int j = 0; j < map.width; j++)
 				{
 					// Choose tile
 
