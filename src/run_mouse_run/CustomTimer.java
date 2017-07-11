@@ -41,8 +41,6 @@ public class CustomTimer
                     gameManager.stopGame("Everybody Lose", "");
                 }
 
-                System.out.print("ss");
-
                 gameManager.getPhysicsEngine().update();
                 gameManager.getDrawEngine().update();
             }
