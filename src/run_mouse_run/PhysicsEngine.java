@@ -13,7 +13,7 @@ public class PhysicsEngine
     private ArrayList<Cat> cats;
     private ArrayList<Mouse> mouses;
 
-    private final int UPDATE_FREQUENCE = CustomTimer.GAME_SPEED/4; // In milliseconds
+    private final int UPDATE_FREQUENCE = CustomTimer.GAME_SPEED/4;
     private Timer timer;
     private TimerTask task;
 
@@ -96,7 +96,7 @@ public class PhysicsEngine
                     gameManager.stopGame("Mouse Win", mouse.getName());
                     break;
                 case CAT:
-                    for (Cat winningCat: gameManager.getCats())
+                    for (Cat winningCat: cats)
                     {
                         if(Position.comparePosition(mouse.getPosition(), winningCat.getPosition()))
                         {
