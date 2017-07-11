@@ -22,7 +22,8 @@ public class DrawEngine extends JFrame
 	private JComboBox<String> mapsCmBox;
 	private JButton startGameButton;
 
-	PathFinder pathFinder;
+	private PathFinder pathFinder;
+	private GameManager gameManager;
 
 	private ArrayList<Map> maps;
 
@@ -40,8 +41,9 @@ public class DrawEngine extends JFrame
 	 * init cmCheckBox
 	 * @param map initialised map from LevelGenerator
 	 */
-	public DrawEngine(Map map)
+	public DrawEngine(GameManager gameManager, Map map)
 	{
+		this.gameManager = gameManager;
 		maps = new ArrayList<>();
 		if(map == null)
 		{
@@ -176,7 +178,7 @@ public class DrawEngine extends JFrame
 		newMapButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				DrawEngine newFrame = new DrawEngine(maps);
+				DrawEngine newFrame = new DrawEngine(gameManager, maps);
 
 				newFrame.setVisible(true);
 			}
@@ -195,9 +197,9 @@ public class DrawEngine extends JFrame
 	 * Constructor to instanciate a frame with several maps
 	 * @param maps an arrayList of maps to show
 	 */
-	public DrawEngine(ArrayList<Map> maps)
+	public DrawEngine(GameManager gameManager, ArrayList<Map> maps)
 	{
-		this(maps.get(0));
+		this(gameManager, maps.get(0));
 		for(int i = 1; i < maps.size(); i++)
 			addMap(maps.get(i));
 	}
