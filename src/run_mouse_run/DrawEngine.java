@@ -20,7 +20,7 @@ public class DrawEngine extends JFrame
 	private MapPanel mapPanel;
 	private JLabel mapName, timeLabel;
 	private JComboBox<String> mapsCmBox;
-	private JButton startGameButton;
+	private JButton startGameButton, btnDrawShortest;
 
 	private PathFinder pathFinder;
 	private GameManager gameManager;
@@ -75,16 +75,22 @@ public class DrawEngine extends JFrame
 				{
 					gameManager.startGame();
 					startGameButton.setText("Pause Game");
+					btnDrawShortest.setEnabled(false);
+					update();
 				}
 				else if(startGameButton.getText().equals("Pause Game"))
 				{
 					gameManager.pauseGame();
 					startGameButton.setText("Resume Game");
+					btnDrawShortest.setEnabled(true);
+					update();
 				}
 				else
 				{
 					gameManager.resumeGame();
 					startGameButton.setText("Pause Game");
+					btnDrawShortest.setEnabled(false);
+					update();
 				}
 
 			}
@@ -149,7 +155,7 @@ public class DrawEngine extends JFrame
 		btnPanel.setLayout(new BorderLayout(5,5));
 
 		// Draw Shortest Button
-		JButton btnDrawShortest = new JButton("Draw shortest");
+		btnDrawShortest = new JButton("Draw shortest");
 		btnDrawShortest.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0)
 			{
@@ -292,7 +298,6 @@ public class DrawEngine extends JFrame
 	public void update() /// TODO : draw cat computed path
 	{
 		mapPanel.update();
-		mapPanel.repaint();
 	}
 
 	class MapPanel extends JPanel
@@ -516,9 +521,11 @@ public class DrawEngine extends JFrame
 
 		private void bufferObjects()
 		{
-    		/*For testing */
-			drawPoint(initialPos.getPosX(), initialPos.getPosY(), Color.RED);
-			drawPoint(finalPos.getPosX(), finalPos.getPosY(), Color.GREEN);
+    		if( ! startGameButton.getText().equals("Pause Game")) // if game not running
+			{
+				drawPoint(initialPos.getPosX(), initialPos.getPosY(), Color.RED);
+				drawPoint(finalPos.getPosX(), finalPos.getPosY(), Color.GREEN);
+			}
 		}
 
 		private void bufferMap()
