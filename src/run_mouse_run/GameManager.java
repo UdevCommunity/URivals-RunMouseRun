@@ -34,13 +34,6 @@ public class GameManager /// TODO : access via static VS references
         cats.add(new Cat(this, "Tom", LevelGenerator.CATS_INITIAL_POS));
         cats.add(new Cat(this, "Tom2", LevelGenerator.CATS_INITIAL_POS));
 
-        // Check instantiated characters number
-        //if(cats.size() != CATS_NUMBER || mouses.size() != MOUSES_NUMBER)
-        // throw new Exception("Not enough characters instantiated");
-
-        // Display game
-        frame.setVisible(true); // add characters maps here ?
-
         // Start Timer
         timer.startTimer();
     }
@@ -52,6 +45,7 @@ public class GameManager /// TODO : access via static VS references
             public void run()
             {
                 GameManager gameManager = new GameManager();
+                gameManager.frame.setVisible(true);
             }
         });
     }
@@ -70,6 +64,16 @@ public class GameManager /// TODO : access via static VS references
                 frame.displayEndGameScreen("Losers .. losers everywhere ..");
                 break;
         }
+    }
+
+    public void pauseGame()
+    {
+        timer.stopTimer();
+    }
+
+    public void resumeGame()
+    {
+        timer.resumeTimer();
     }
 
     public ArrayList<Cat> getCats()
@@ -95,5 +99,10 @@ public class GameManager /// TODO : access via static VS references
     public DrawEngine getDrawEngine()
     {
         return frame;
+    }
+
+    public CustomTimer getTimer()
+    {
+        return timer;
     }
 }
