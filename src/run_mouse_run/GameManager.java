@@ -43,6 +43,7 @@ public class GameManager /// TODO : access via static VS references
 
         // Display game
         frame.setVisible(true); // add characters maps here ?
+        frame.update();
 
         // Start Timer
         timer.startTimer();
