@@ -65,6 +65,8 @@ public class GameManager /// TODO : access via static VS references
 
     public void stopGame(String result, String characterName) throws Exception
     {
+        timer.stopTimer();
+
         switch (result)
         {
             case "Mouse Win":
