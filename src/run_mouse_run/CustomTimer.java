@@ -18,14 +18,18 @@ public class CustomTimer
     private TimerTask task;
 
 
-
-
     public CustomTimer(GameManager gameManager)
     {
         this.gameManager = gameManager;
         startTime = Time.valueOf(LocalTime.now());
 
-        task = new TimerTask()
+        task = createUpdateTask();
+        timer = new Timer();
+    }
+
+    public TimerTask createUpdateTask()
+    {
+        return new TimerTask()
         {
             @Override
             public void run()
@@ -37,11 +41,12 @@ public class CustomTimer
                     gameManager.stopGame("Everybody Lose", "");
                 }
 
+                System.out.print("ss");
+
                 gameManager.getPhysicsEngine().update();
                 gameManager.getDrawEngine().update();
             }
         };
-        timer = new Timer();
     }
 
     public void startTimer()
@@ -55,7 +60,9 @@ public class CustomTimer
 
     public void resumeTimer()
     {
-
+        task = createUpdateTask();
+        timer = new Timer();
+        timer.scheduleAtFixedRate(task, 0, GAME_SPEED/4);
     }
 
 }
