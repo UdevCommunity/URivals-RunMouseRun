@@ -109,13 +109,13 @@ public class DrawEngine extends JFrame
 				{
 					initialPos.setPosX(j);
 					initialPos.setPosY(i);
-					mapPanel.clear();
+					mapPanel.update();
 				}
 				else if(event.getButton() == MouseEvent.BUTTON3)
 				{
 					finalPos.setPosX(j);
 					finalPos.setPosY(i);
-					mapPanel.clear();
+					mapPanel.update();
 				}
 				else if(event.getButton() == MouseEvent.BUTTON2)
 				{
@@ -267,7 +267,6 @@ public class DrawEngine extends JFrame
 
 		adjustFrameHeight(maps.get(0));
 
-
 		setResizable(false);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -277,7 +276,7 @@ public class DrawEngine extends JFrame
 
 	public void update() /// TODO : draw cat computed path
 	{
-		mapPanel.clear();
+		mapPanel.update();
 		mapPanel.repaint();
 	}
 
@@ -323,7 +322,7 @@ public class DrawEngine extends JFrame
 			drawMap();
 
 			// draw all
-			clear();
+			update();
 		}
 
 		public void adjustPanelSize()
@@ -378,7 +377,7 @@ public class DrawEngine extends JFrame
 
 		}
 
-		public BufferedImage resizeImage (BufferedImage image, int areaWidth, int areaHeight) {
+		public BufferedImage resizeImage (BufferedImage image, int areaWidth, int areaHeight) { /// TODO : shorter function
 			float scaleX = (float) areaWidth / image.getWidth();
 			float scaleY = (float) areaHeight / image.getHeight();
 			float scale = Math.min(scaleX, scaleY);
@@ -429,7 +428,7 @@ public class DrawEngine extends JFrame
 
 		}
 
-		public void clear()
+		public void update()
 		{
 			bufferMap();
 			bufferObjects();
