@@ -289,6 +289,12 @@ public class DrawEngine extends JFrame
          * 2 : NOT_DISCOVERED, 3: EMPTY, 4 : WALL , 5 : CHEESE, 6 : POWERUP_VISION,
          * 7 : POWERUP_SPEED, 8: INVISIBLE_ZONE, 9 : Mine
         */
+		private final int CAT = 0, MOUSE = 1,
+				NOT_DISCOVERED = 2, EMPTY = 3,
+				WALL = 4, CHEESE = 5,
+				POWERUP_VISION = 6,POWERUP_SPEED = 7,
+				INVISIBLE_ZONE = 8, MINE = 9;
+
 		private ArrayList<BufferedImage> sprites;
 
 		public MapPanel(Map map)
@@ -459,7 +465,7 @@ public class DrawEngine extends JFrame
 			// for each mouse
 			for(Mouse m : gameManager.getMouses())
 			{
-				graphic.drawImage(sprites.get(1),
+				graphic.drawImage(sprites.get(MOUSE),
 						m.getPosition().getPosX() * TILE_SIZE,
 						m.getPosition().getPosY() * TILE_SIZE,
 						null);
@@ -467,7 +473,7 @@ public class DrawEngine extends JFrame
 			// for each cat
 			for(Cat c : gameManager.getCats())
 			{
-				graphic.drawImage(sprites.get(0),
+				graphic.drawImage(sprites.get(CAT),
 						c.getPosition().getPosX() * TILE_SIZE,
 						c.getPosition().getPosY() * TILE_SIZE,
 						null);
@@ -504,34 +510,34 @@ public class DrawEngine extends JFrame
 					switch (map.getTile(j, i)) {
 
 						case NOT_DISCOVERED:
-							graphic.drawImage(sprites.get(2),j*TILE_SIZE, i*TILE_SIZE, null);
+							graphic.drawImage(sprites.get(NOT_DISCOVERED),j*TILE_SIZE, i*TILE_SIZE, null);
 							break;
 						case EMPTY:
-							graphic.drawImage(sprites.get(3),j*TILE_SIZE, i*TILE_SIZE, null);
+							graphic.drawImage(sprites.get(EMPTY),j*TILE_SIZE, i*TILE_SIZE, null);
 							break;
 						case WALL:
-							graphic.drawImage(sprites.get(4),j*TILE_SIZE, i*TILE_SIZE, null);
+							graphic.drawImage(sprites.get(WALL),j*TILE_SIZE, i*TILE_SIZE, null);
 							break;
                             /*From here, draw empty first then object on it : */
 						case CHEESE:
-							graphic.drawImage(sprites.get(3),j*TILE_SIZE, i*TILE_SIZE, null);
-							graphic.drawImage(sprites.get(5),j*TILE_SIZE, i*TILE_SIZE, null);
+							graphic.drawImage(sprites.get(EMPTY),j*TILE_SIZE, i*TILE_SIZE, null);
+							graphic.drawImage(sprites.get(CHEESE),j*TILE_SIZE, i*TILE_SIZE, null);
 							break;
 						case POWERUP_VISION:
-							graphic.drawImage(sprites.get(3),j*TILE_SIZE, i*TILE_SIZE, null);
-							graphic.drawImage(sprites.get(6),j*TILE_SIZE, i*TILE_SIZE, null);
+							graphic.drawImage(sprites.get(EMPTY),j*TILE_SIZE, i*TILE_SIZE, null);
+							graphic.drawImage(sprites.get(POWERUP_VISION),j*TILE_SIZE, i*TILE_SIZE, null);
 							break;
 						case POWERUP_SPEED:
-							graphic.drawImage(sprites.get(3),j*TILE_SIZE, i*TILE_SIZE, null);
-							graphic.drawImage(sprites.get(7),j*TILE_SIZE, i*TILE_SIZE, null);
+							graphic.drawImage(sprites.get(EMPTY),j*TILE_SIZE, i*TILE_SIZE, null);
+							graphic.drawImage(sprites.get(POWERUP_SPEED),j*TILE_SIZE, i*TILE_SIZE, null);
 							break;
 						case INVISIBLE_ZONE:
-							graphic.drawImage(sprites.get(3),j*TILE_SIZE, i*TILE_SIZE, null);
-							graphic.drawImage(sprites.get(8),j*TILE_SIZE, i*TILE_SIZE, null);
+							graphic.drawImage(sprites.get(EMPTY),j*TILE_SIZE, i*TILE_SIZE, null);
+							graphic.drawImage(sprites.get(INVISIBLE_ZONE),j*TILE_SIZE, i*TILE_SIZE, null);
 							break;
 						case MINE:
-							graphic.drawImage(sprites.get(3),j*TILE_SIZE, i*TILE_SIZE, null);
-							graphic.drawImage(sprites.get(9),j*TILE_SIZE, i*TILE_SIZE, null);
+							graphic.drawImage(sprites.get(EMPTY),j*TILE_SIZE, i*TILE_SIZE, null);
+							graphic.drawImage(sprites.get(MINE),j*TILE_SIZE, i*TILE_SIZE, null);
 							break;
 					}
 				}
