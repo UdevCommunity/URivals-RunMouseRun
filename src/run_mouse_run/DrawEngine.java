@@ -71,7 +71,22 @@ public class DrawEngine extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				gameManager.startGame();
+				if(startGameButton.getText().equals("Start Game"))
+				{
+					gameManager.startGame();
+					startGameButton.setText("Pause Game");
+				}
+				else if(startGameButton.getText().equals("Pause Game"))
+				{
+					gameManager.pauseGame();
+					startGameButton.setText("Resume Game");
+				}
+				else
+				{
+					gameManager.resumeGame();
+					startGameButton.setText("Pause Game");
+				}
+
 			}
 		});
 

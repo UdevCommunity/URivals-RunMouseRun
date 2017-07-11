@@ -18,6 +18,8 @@ public class CustomTimer
     private TimerTask task;
 
 
+
+
     public CustomTimer(GameManager gameManager)
     {
         this.gameManager = gameManager;
@@ -50,5 +52,11 @@ public class CustomTimer
     {
         timer.cancel();
     }
+
+    public void resumeTimer()
+    {
+
+    }
+
 }
 
