@@ -19,25 +19,30 @@ public class GameManager /// TODO : access via static VS references
 
     private GameManager()
     {
+        cats = new ArrayList<>();
+        mouses = new ArrayList<>();
+
         level = new LevelGenerator();
         physicsEngine = new PhysicsEngine(this);
-        frame = new DrawEngine(level.getMap());
+        frame = new DrawEngine(this, level.getMap());
         timer = new CustomTimer(this);
     }
 
     private void startGame() throws Exception
     {
         // Instantiate mouses (do not use a loop, here we may instantiate mouses from different classes)
-
+        mouses.add(new Mouse(this, "Jerry", LevelGenerator.MOUSES_INITIAL_POS));
 
         // Instantiate cats (do not use a loop, here we may instantiate cats from different classes)
+        cats.add(new Cat(this, "Tom", LevelGenerator.CATS_INITIAL_POS));
+        cats.add(new Cat(this, "Tom2", LevelGenerator.CATS_INITIAL_POS));
 
         // Check instantiated characters number
         //if(cats.size() != CATS_NUMBER || mouses.size() != MOUSES_NUMBER)
         // throw new Exception("Not enough characters instantiated");
 
         // Display game
-        frame.setVisible(true);
+        frame.setVisible(true); // add characters maps here ?
 
         // Start Timer
         timer.startTimer();
