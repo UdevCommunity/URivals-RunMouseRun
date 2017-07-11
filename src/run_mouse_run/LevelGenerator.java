@@ -143,7 +143,7 @@ public class LevelGenerator
     */
     private Map generateRandomMap(int mapWidth, int mapHeight)
     {
-        Map randomMap = new Map("Level Map", MAP_WIDTH, MAP_HEIGHT);
+        Map randomMap = new Map("Level Map", MAP_WIDTH, MAP_HEIGHT, Tile.EMPTY);
 
         for(int i = 0; i < MAP_HEIGHT; i++)
         {

@@ -47,20 +47,11 @@ public class DrawEngine extends JFrame
 		maps = new ArrayList<>();
 		if(map == null)
 		{
-			map = new Map("Blank map", LevelGenerator.MAP_WIDTH, LevelGenerator.MAP_HEIGHT);
-
-			for(int i = 0; i < LevelGenerator.MAP_HEIGHT; i++)
-			{
-				for(int j = 0; j < LevelGenerator.MAP_WIDTH; j++)
-				{
-					map.setTile(j, i, Tile.NOT_DISCOVERED);
-				}
-			}
+			map = new Map("Blank map", LevelGenerator.MAP_WIDTH, LevelGenerator.MAP_HEIGHT, Tile.NOT_DISCOVERED);
 		}
 		maps.add(map); // don't use addMap() because cmBox is null
 
 		pathFinder = new PathFinder();
-
 
 		initWindow();
 
@@ -154,7 +145,7 @@ public class DrawEngine extends JFrame
 
 		mapsCmBox = new JComboBox<>();
 
-		mapsCmBox.addItem(map.name);
+		mapsCmBox.addItem(map.getName());
 
 		mapsCmBox.addItemListener(new ItemListener() {
 			@Override
@@ -164,7 +155,7 @@ public class DrawEngine extends JFrame
 				// find map
 				for(Map m : maps)
 				{
-					if(m.name.equals(mapName))
+					if(m.getName().equals(mapName))
 					{
 						switchToMap(m);
 					}
@@ -211,7 +202,7 @@ public class DrawEngine extends JFrame
 	public void addMap(Map map)
 	{
 		maps.add(map);
-		mapsCmBox.addItem(map.name);
+		mapsCmBox.addItem(map.getName());
 	}
 
 	/**
@@ -221,7 +212,7 @@ public class DrawEngine extends JFrame
 	public void removeMap(Map map)
 	{
 		maps.remove(map);
-		mapsCmBox.removeItem(map.name);
+		mapsCmBox.removeItem(map.getName());
 	}
 
 	/**
@@ -231,7 +222,7 @@ public class DrawEngine extends JFrame
 	private void switchToMap(Map map)
 	{
 		mapPanel.setMap(map);
-		mapName.setText(map.name);
+		mapName.setText(map.getName());
 		update();
 		mapPanel.adjustPanelSize();
 		adjustFrameHeight(map);
@@ -246,14 +237,14 @@ public class DrawEngine extends JFrame
 	{
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-		int winHeight = TILE_SIZE * map.height + TILE_SIZE + 50;
+		int winHeight = TILE_SIZE * map.getHeight() + TILE_SIZE + 50;
 
 		System.out.println("PANEL HEIGHT : " + winHeight);
 		if(winHeight >= screenSize.getHeight() - 50)
 			winHeight = (int) screenSize.getHeight() - 50;
 
 		setSize(new Dimension(
-				TILE_SIZE * map.width + TILE_SIZE + 10,
+				TILE_SIZE * map.getWidth() + TILE_SIZE + 10,
 				winHeight
 		));
 
@@ -324,8 +315,8 @@ public class DrawEngine extends JFrame
 
 		public void adjustPanelSize()
         {
-            setPreferredSize(new Dimension(map.width*TILE_SIZE,
-                    map.height*TILE_SIZE));
+            setPreferredSize(new Dimension(map.getWidth()*TILE_SIZE,
+                    map.getHeight()*TILE_SIZE));
         }
 
 		public void setMap(Map map)
@@ -505,8 +496,8 @@ public class DrawEngine extends JFrame
 		private void bufferMap()
 		{
         	/* Draw run_mouse_run.Map */
-			for (int i = 0; i < map.height; i++) {
-				for (int j = 0; j < map.width; j++)
+			for (int i = 0; i < map.getHeight(); i++) {
+				for (int j = 0; j < map.getWidth(); j++)
 				{
 					// Choose tile
 

@@ -7,24 +7,20 @@ public class Map
 {
     private Tile[][] map;
 
-    public String name;
-    public int height;
-    public int width;
+    private String name;
+    private int height;
+    private int width;
 
-    public Map(String name, int width, int height)
+    public Map(String name, int width, int height, Tile defaultTile)
     {
         this.name = name;
-        map = new Tile[height][width];
-        for (int i = 0; i < height; i++)
-        {
-            for (int j = 0; j < width; j++)
-            {
-                map[i][j] = Tile.EMPTY;
-            }
-        }
-
         this.height = height;
         this.width = width;
+        this.map = new Tile[height][width];
+
+        for (int i = 0; i < width; i++)
+            for (int j = 0; j < height; j++)
+                map[j][i] = defaultTile;
     }
 
     public Tile getTile(int x, int y)
@@ -37,19 +33,23 @@ public class Map
         map[y][x] = tile;
     }
 
-    /**
-     *
-     * @return
-     */
-    public Position[] getCheesePos()
-    {
-        return null;
-    }
-
     public void switchTile(int x, int y)
     {
         map[y][x] = map[y][x].next();
     }
 
+    public int getHeight()
+    {
+        return height;
+    }
 
+    public int getWidth()
+    {
+        return width;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
 }
