@@ -6,9 +6,6 @@ import java.util.ArrayList;
 
 public class GameManager /// TODO : access via static VS references
 {
-    public static final int CATS_NUMBER = 2;
-    public static final int MOUSES_NUMBER = 1;
-
     private ArrayList<Cat> cats;
     private ArrayList<Mouse> mouses;
 
@@ -22,13 +19,13 @@ public class GameManager /// TODO : access via static VS references
         cats = new ArrayList<>();
         mouses = new ArrayList<>();
 
-        level = new LevelGenerator();
+        level = new LevelGenerator(this);
         physicsEngine = new PhysicsEngine(this);
         frame = new DrawEngine(this, level.getMap());
         timer = new CustomTimer(this);
     }
 
-    private void startGame() throws Exception
+    public void startGame()
     {
         // Instantiate mouses (do not use a loop, here we may instantiate mouses from different classes)
         mouses.add(new Mouse(this, "Jerry", LevelGenerator.MOUSES_INITIAL_POS));
@@ -55,35 +52,24 @@ public class GameManager /// TODO : access via static VS references
         {
             public void run()
             {
-                try
-                {
-                    GameManager gameManager = new GameManager();
-                    gameManager.startGame();
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
+                GameManager gameManager = new GameManager();
             }
         });
     }
 
-
-    public void stopGame(String result, String characterName) throws Exception
+    public void stopGame(String result, String characterName)
     {
         timer.stopTimer();
 
         switch (result)
         {
-            case "Mouse Win":
-                break;
-            case "Everybody Lose": System.out.print("Looooser");
-                break;
             case "Cat Win":
+            case "Mouse Win":
+                frame.displayEndGameScreen(characterName + " Win !!");
                 break;
-
-            default:
-                throw new Exception("Wrong end game argument");
+            case "Everybody Lose":
+                frame.displayEndGameScreen("Losers .. losers everywhere ..");
+                break;
         }
     }
 
@@ -107,4 +93,8 @@ public class GameManager /// TODO : access via static VS references
         return level;
     }
 
+    public DrawEngine getDrawEngine()
+    {
+        return frame;
+    }
 }

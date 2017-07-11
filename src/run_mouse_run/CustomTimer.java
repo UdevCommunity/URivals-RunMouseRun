@@ -32,28 +32,23 @@ public class CustomTimer
 
                 if (currentTime.getTime() > TIME_LIMIT)
                 {
-                    try {
-                        gameManager.stopGame("Everybody Lose", "");
-                    } catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
+                    gameManager.stopGame("Everybody Lose", "");
                 }
-            }
 
+                gameManager.getPhysicsEngine().update();
+                gameManager.getDrawEngine().update();
+            }
         };
         timer = new Timer();
-
     }
 
     public void startTimer()
     {
-        timer.scheduleAtFixedRate(task, 0, GAME_SPEED);
-        gameManager.getPhysicsEngine().runPhysicsEngine();
+        timer.scheduleAtFixedRate(task, 0, GAME_SPEED/4);
     }
     public void stopTimer()
     {
-
+        timer.cancel();
     }
 }
 

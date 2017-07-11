@@ -57,8 +57,8 @@ public class PathFinder {
         {
             /*affect values to attributes*/
             this.map = map;
-            mapHeight = map.getHeight();
-            mapWidth = map.getWidth();
+            this.mapHeight = map.getHeight();
+            this.mapWidth = map.getWidth();
             this.initialPos = initialPos;
             this.finalPos = finalPos;
 

@@ -66,10 +66,12 @@ public class DrawEngine extends JFrame
 		JPanel startButtonPanel = new JPanel();
 		startGameButton = new JButton("Start Game");
 
-		startGameButton.addActionListener(new ActionListener() {
+		startGameButton.addActionListener(new ActionListener()
+		{
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				/// TODO : Start game button actions
+			public void actionPerformed(ActionEvent e)
+			{
+				gameManager.startGame();
 			}
 		});
 
@@ -193,6 +195,11 @@ public class DrawEngine extends JFrame
 		this(gameManager, maps.get(0));
 		for(int i = 1; i < maps.size(); i++)
 			addMap(maps.get(i));
+	}
+
+	public void displayEndGameScreen(String result)
+	{
+
 	}
 
 	/**
@@ -371,6 +378,7 @@ public class DrawEngine extends JFrame
 			float scale = Math.min(scaleX, scaleY);
 			int w = Math.round(image.getWidth() * scale);
 			int h = Math.round(image.getHeight() * scale);
+
 
 			int type = image.getTransparency() == Transparency.OPAQUE ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
 
