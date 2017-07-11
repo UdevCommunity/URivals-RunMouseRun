@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class LevelGenerator
 {
+    private GameManager gameManager;
     private final int MAP_WIDTH_MIN = 30;
     private final int MAP_WIDTH_MAX = 50;
 
@@ -31,8 +32,9 @@ public class LevelGenerator
 
     private PathFinder pathFinder;
 
-    public LevelGenerator()
+    public LevelGenerator(GameManager gameManager)
     {
+        this.gameManager = gameManager;
         pathFinder = new PathFinder();
 
         // nextInt is normally exclusive of the top value,
@@ -80,7 +82,7 @@ public class LevelGenerator
                 );  // And mouses and cats are far enough
 
         /*Spawn cheese*/
-        for (int i = 0; i < GameManager.CATS_NUMBER; i++)
+        for (int i = 0; i < gameManager.getCats().size(); i++)
         {
             Position cheesePos;
             do{

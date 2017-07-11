@@ -1,58 +1,29 @@
 package run_mouse_run;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class PhysicsEngine
 {
-
     private GameManager gameManager;
     private Map levelMap;
-
     private ArrayList<Cat> cats;
     private ArrayList<Mouse> mouses;
-
-    private final int UPDATE_FREQUENCE = CustomTimer.GAME_SPEED/4;
-    private Timer timer;
-    private TimerTask task;
 
     public PhysicsEngine(GameManager gameManager)
     {
         this.gameManager = gameManager;
         this.levelMap = gameManager.getLevelGenerator().getMap();
-
         this.cats = gameManager.getCats();
         this.mouses = gameManager.getMouses();
-
-        task = new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    checkIsCatsOnSpecialTile();
-                    checkIsMouseOnSpecialTile();
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-
-            }
-        };
-        timer = new Timer();
-
     }
 
-    public void runPhysicsEngine()
+    public void update()
     {
-        timer.scheduleAtFixedRate(task, 0, UPDATE_FREQUENCE);
+        checkIsCatsOnSpecialTile();
+        checkIsMouseOnSpecialTile();
     }
 
-
-    private void checkIsCatsOnSpecialTile() throws Exception
+    private void checkIsCatsOnSpecialTile()
     {
         for (Cat cat: cats)
         {
@@ -84,7 +55,7 @@ public class PhysicsEngine
         }
     }
 
-    private void checkIsMouseOnSpecialTile() throws Exception
+    private void checkIsMouseOnSpecialTile()
     {
         for (Mouse mouse: mouses)
         {
