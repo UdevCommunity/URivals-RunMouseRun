@@ -10,6 +10,9 @@ public class PhysicsEngine
     private GameManager gameManager;
     private Map levelMap;
 
+    private ArrayList<Cat> cats;
+    private ArrayList<Mouse> mouses;
+
     private final int UPDATE_FREQUENCE = CustomTimer.GAME_SPEED/4; // In milliseconds
     private Timer timer;
     private TimerTask task;
@@ -18,6 +21,9 @@ public class PhysicsEngine
     {
         this.gameManager = gameManager;
         this.levelMap = gameManager.getLevelGenerator().getMap();
+
+        this.cats = gameManager.getCats();
+        this.mouses = gameManager.getMouses();
 
         task = new TimerTask()
         {
@@ -48,8 +54,6 @@ public class PhysicsEngine
 
     private void checkIsCatsOnSpecialTile() throws Exception
     {
-        ArrayList<Cat> cats = gameManager.getCats();
-
         for (Cat cat: cats)
         {
             Tile tileCatIsStandingOn = levelMap.getTile(cat.getPosition().getPosX(), cat.getPosition().getPosY());
@@ -82,8 +86,6 @@ public class PhysicsEngine
 
     private void checkIsMouseOnSpecialTile() throws Exception
     {
-        ArrayList<Mouse> mouses = gameManager.getMouses();
-
         for (Mouse mouse: mouses)
         {
             Tile tileMouseIsStandingOn = levelMap.getTile(mouse.getPosition().getPosX(), mouse.getPosition().getPosY());
