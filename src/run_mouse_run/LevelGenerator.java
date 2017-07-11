@@ -53,7 +53,12 @@ public class LevelGenerator
         return map;
     }
 
-    public void spawnPowerup()
+    public void spawnVisionPowerup()
+    {
+
+    }
+
+    public void spawnSpeedPowerup()
     {
 
     }

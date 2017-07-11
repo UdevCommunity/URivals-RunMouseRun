@@ -9,8 +9,8 @@ public class GameManager /// TODO : access via static VS references
     public static final int CATS_NUMBER = 2;
     public static final int MOUSES_NUMBER = 1;
 
-    private ArrayList<CharacterController> cats;
-    private ArrayList<CharacterController> mouses;
+    private ArrayList<Cat> cats;
+    private ArrayList<Mouse> mouses;
 
     private final LevelGenerator level;
     private final PhysicsEngine physicsEngine;
@@ -20,9 +20,9 @@ public class GameManager /// TODO : access via static VS references
     private GameManager()
     {
         level = new LevelGenerator();
-        physicsEngine = new PhysicsEngine();
+        physicsEngine = new PhysicsEngine(this);
         frame = new DrawEngine(level.getMap());
-        timer = new CustomTimer();
+        timer = new CustomTimer(this);
     }
 
     private void startGame() throws Exception
@@ -63,13 +63,13 @@ public class GameManager /// TODO : access via static VS references
     }
 
 
-    public static void stopGame(String result, String characterName)
+    public void stopGame(String result, String characterName) throws Exception
     {
+        timer.stopTimer();
+
         switch (result)
         {
             case "Mouse Win":
-                break;
-            case "Mouse Lose":
                 break;
             case "Everybody Lose": System.out.print("Looooser");
                 break;
@@ -77,7 +77,28 @@ public class GameManager /// TODO : access via static VS references
                 break;
 
             default:
+                throw new Exception("Wrong end game argument");
         }
+    }
+
+    public ArrayList<Cat> getCats()
+    {
+        return cats;
+    }
+
+    public ArrayList<Mouse> getMouses()
+    {
+        return mouses;
+    }
+
+    public PhysicsEngine getPhysicsEngine()
+    {
+        return physicsEngine;
+    }
+
+    public LevelGenerator getLevelGenerator()
+    {
+        return level;
     }
 
 }
