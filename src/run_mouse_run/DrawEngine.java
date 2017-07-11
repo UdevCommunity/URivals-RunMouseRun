@@ -314,11 +314,12 @@ public class DrawEngine extends JFrame
 
 			// Load Sprites
 			loadSprites();
+
 			// draw map
 			drawMap();
 
-			// draw chars
-			bufferCharacters();
+			// draw all
+			clear();
 		}
 
 		public void adjustPanelSize()
@@ -464,17 +465,22 @@ public class DrawEngine extends JFrame
 
 		public void bufferCharacters()
 		{
-			// mouse
-			graphic.drawImage(sprites.get(1),
-					LevelGenerator.MOUSES_INITIAL_POS.getPosX()*TILE_SIZE,
-					LevelGenerator.MOUSES_INITIAL_POS.getPosY()*TILE_SIZE,
-					null);
-
-			// cats
-			graphic.drawImage(sprites.get(0),
-					LevelGenerator.CATS_INITIAL_POS.getPosX()*TILE_SIZE,
-					LevelGenerator.CATS_INITIAL_POS.getPosY()*TILE_SIZE,
-					null);
+			// for each mouse
+			for(Mouse m : gameManager.getMouses())
+			{
+				graphic.drawImage(sprites.get(1),
+						m.getPosition().getPosX() * TILE_SIZE,
+						m.getPosition().getPosY() * TILE_SIZE,
+						null);
+			}
+			// for each cat
+			for(Cat c : gameManager.getCats())
+			{
+				graphic.drawImage(sprites.get(0),
+						c.getPosition().getPosX() * TILE_SIZE,
+						c.getPosition().getPosY() * TILE_SIZE,
+						null);
+			}
 		}
 
 		private void bufferPath(ArrayList<Position> path)
