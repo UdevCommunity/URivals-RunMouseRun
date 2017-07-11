@@ -8,17 +8,19 @@ import java.util.TimerTask;
 
 public class CustomTimer
 {
+    private GameManager gameManager;
     private Time startTime;
     private Time currentTime = new Time(0); // In milliseconds
-    private final int GAME_SPEED = 1000; // In milliseconds
+    public static final int GAME_SPEED = 1000; // In milliseconds
     public static final int POWERUP_DURABILITY = 10000; // In milliseconds
     private final long TIME_LIMIT = 180000; // In milliseconds
     private Timer timer;
     private TimerTask task;
 
 
-    public CustomTimer()
+    public CustomTimer(GameManager gameManager)
     {
+        this.gameManager = gameManager;
         startTime = Time.valueOf(LocalTime.now());
 
         task = new TimerTask()
@@ -30,7 +32,12 @@ public class CustomTimer
 
                 if (currentTime.getTime() > TIME_LIMIT)
                 {
-                    GameManager.stopGame("Everybody Lose", "");
+                    try {
+                        gameManager.stopGame("Everybody Lose", "");
+                    } catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -42,6 +49,7 @@ public class CustomTimer
     public void startTimer()
     {
         timer.scheduleAtFixedRate(task, 0, GAME_SPEED);
+        gameManager.getPhysicsEngine().runPhysicsEngine();
     }
     public void stopTimer()
     {

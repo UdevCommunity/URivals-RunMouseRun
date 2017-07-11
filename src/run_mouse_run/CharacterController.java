@@ -4,22 +4,46 @@ import java.util.ArrayList;
 
 public abstract class CharacterController
 {
+    private GameManager gameManager;
     private String name;
     private Position position;
     private ArrayList<Position> destinationPath;
     private int moveSpeed = 1;
+    private final int CONSEQUENT_MOVE_DELAY = CustomTimer.GAME_SPEED/2; // In milliseconds, the delay between two moves
     private final int VIEW_DISTANCE = 5;
     private int powerupTourLeft = 0;
     private Tile[][] map;
     private Tile[][] viewedMap;
     private boolean isVisible = true;
 
-    public CharacterController(String name, Position INITIAL_POSITION)
+    public CharacterController(GameManager gameManager, String name, Position INITIAL_POSITION)
     {
+        this.gameManager = gameManager;
         this.name = name;
         this.position = INITIAL_POSITION;
         map = new Tile[LevelGenerator.MAP_WIDTH][LevelGenerator.MAP_HEIGHT];
     }
+
+    final public String getName()
+    {
+        return name;
+    }
+
+    final public void die()
+    {
+        // Reset to initial pos
+    }
+
+    final public void applyVisionPowerUp()
+    {
+
+    }
+
+    final public void applyMoveSpeedPowerup()
+    {
+
+    }
+
 
     final private void reducePowerupTour()
     {
