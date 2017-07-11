@@ -119,6 +119,7 @@ public class DrawEngine extends JFrame
 			/*
 			 * On LeftClick : Set InitialPosition ( testing pathfinding )
 			 * On RightClick : Set finalPosition ( testing pathfinding )
+			 * On MiddleClick : switch tile ( edit map )
 			 */
 			@Override
 			public void mouseClicked(MouseEvent event)
@@ -126,23 +127,24 @@ public class DrawEngine extends JFrame
 				int i = event.getY()/TILE_SIZE;
 				int j = event.getX()/TILE_SIZE;
 
-				if(event.getButton() == MouseEvent.BUTTON1)
-				{
-					initialPos.setPosX(j);
-					initialPos.setPosY(i);
-					mapPanel.update();
-				}
-				else if(event.getButton() == MouseEvent.BUTTON3)
-				{
-					finalPos.setPosX(j);
-					finalPos.setPosY(i);
-					mapPanel.update();
-				}
-				else if(event.getButton() == MouseEvent.BUTTON2)
-				{
-					maps.get(0).switchTile(j, i);
-					update();
-				}
+                if( ! startGameButton.getText().equals("Pause Game")) // if game not running
+                {
+                    if (event.getButton() == MouseEvent.BUTTON1)
+                    {
+                        initialPos.setPosX(j);
+                        initialPos.setPosY(i);
+                        mapPanel.update();
+                    } else if (event.getButton() == MouseEvent.BUTTON3)
+                    {
+                        finalPos.setPosX(j);
+                        finalPos.setPosY(i);
+                        mapPanel.update();
+                    } else if (event.getButton() == MouseEvent.BUTTON2)
+                    {
+                        maps.get(0).switchTile(j, i);
+                        update();
+                    }
+                }
 			}
 		});
 
