@@ -109,6 +109,8 @@ public abstract class CharacterController
         return position;
     }
 
+    final public ArrayList<Position> getDestinationPath(){return destinationPath;}
+
     final private void cleanMap(Tile[][] map, int mapWidth, int mapHeight)
     {
         for (int i = 0; i < mapWidth; i++)
