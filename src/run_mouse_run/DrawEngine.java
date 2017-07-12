@@ -86,6 +86,7 @@ public class DrawEngine extends JFrame
 					gameManager.startGame();
 					startGameButton.setText("Pause Game");
 					btnDrawShortest.setEnabled(false);
+					// remove Control Panel
 					contentPane.remove(controlPanel);
 					contentPane.invalidate();
 					adjustFrameSize(maps.get(mapsCmBox.getSelectedIndex()));
@@ -187,6 +188,8 @@ public class DrawEngine extends JFrame
 
 		mapsCmBox = new JComboBox<>();
 
+		mapsCmBox.setPreferredSize(new Dimension(120, 20));
+		mapsCmBox.setFont(defaultFont);
 		mapsCmBox.addItem(map.getName());
 
 		mapsCmBox.addItemListener(new ItemListener() {
