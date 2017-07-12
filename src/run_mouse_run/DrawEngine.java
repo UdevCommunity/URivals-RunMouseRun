@@ -55,12 +55,22 @@ public class DrawEngine extends JFrame
 
 		initWindow();
 
-		/*=============================Text Panel ===============================*/
+		Font defaultFont = new Font("Calibri", Font.PLAIN, 18);
+
+		JPanel gamePanel = new JPanel();	// Panel containing the Map, and inGame informations
+		gamePanel.setLayout(new BorderLayout(5,5));
+
+		JPanel controlPanel = new JPanel(); // Panel containing options ( map with/height ..etc)
+		controlPanel.setLayout(new BorderLayout(5,5));
+
+		/*=========================================================================================*/
+		/*====================================== Top Panel ========================================*/
+		/*=========================================================================================*/
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BorderLayout(0,0));
 
 		mapName = new JLabel("Level Map");
-		mapName.setFont(new Font("Calibri", Font.PLAIN, 18));
+		mapName.setFont(defaultFont);
 
 		// Start game button
 		JPanel startButtonPanel = new JPanel();
@@ -76,6 +86,9 @@ public class DrawEngine extends JFrame
 					gameManager.startGame();
 					startGameButton.setText("Pause Game");
 					btnDrawShortest.setEnabled(false);
+					contentPane.remove(controlPanel);
+					contentPane.invalidate();
+					adjustFrameSize(maps.get(mapsCmBox.getSelectedIndex()));
 					update();
 				}
 				else if(startGameButton.getText().equals("Pause Game"))
@@ -100,16 +113,18 @@ public class DrawEngine extends JFrame
 
 		// Time Label
 		timeLabel = new JLabel("Time : 00:00");
-		timeLabel.setFont(new Font("Calibri", Font.PLAIN, 18));
+		timeLabel.setFont(defaultFont);
 
 		topPanel.add(mapName, BorderLayout.WEST);
 		topPanel.add(startButtonPanel, BorderLayout.CENTER);
 		topPanel.add(timeLabel, BorderLayout.EAST);
 
 
-		contentPane.add(topPanel, BorderLayout.NORTH);
+		gamePanel.add(topPanel, BorderLayout.NORTH);
 
-		/* ===========================Init Map Panel ============================*/
+		/*=========================================================================================*/
+		/*====================================== Map Panel ========================================*/
+		/*=========================================================================================*/
 		mapPanel = new MapPanel(map);
 
 		mapContainerPanel = new JScrollPane(mapPanel);
@@ -150,9 +165,11 @@ public class DrawEngine extends JFrame
 
 		mapContainerPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		mapContainerPanel.getVerticalScrollBar().setUnitIncrement(10);
-		contentPane.add(mapContainerPanel, BorderLayout.CENTER);
+		gamePanel.add(mapContainerPanel, BorderLayout.CENTER);
 
-		/*==========================Init Button Panel==================================*/
+		/*=========================================================================================*/
+		/*====================================== Bottom Panel =====================================*/
+		/*=========================================================================================*/
 		JPanel btnPanel = new JPanel();
 		btnPanel.setLayout(new BorderLayout(5,5));
 
@@ -190,7 +207,7 @@ public class DrawEngine extends JFrame
 		centerPanel.add(mapsCmBox);
 
 		// new Map button
-		JButton newMapButton = new JButton("New Map");
+		JButton newMapButton = new JButton("New Window");
 		newMapButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -205,101 +222,174 @@ public class DrawEngine extends JFrame
 		btnPanel.add(centerPanel, BorderLayout.CENTER);
 		btnPanel.add(newMapButton, BorderLayout.EAST);
 
-		contentPane.add(btnPanel, BorderLayout.SOUTH);
+		gamePanel.add(btnPanel, BorderLayout.SOUTH);
 
+		/*=========================================================================================*/
+		/*====================================== East Panel ========================================*/
+		/*=========================================================================================*/
+		JPanel eastPanel = new JPanel();
+
+		JLabel lblMapWidth = new JLabel("Map Width");
+		lblMapWidth.setFont(defaultFont);
+		JLabel lblMapHeight = new JLabel("Map Height");
+		lblMapHeight.setFont(defaultFont);
+
+		JTextField txtMapWidth = new JTextField(""+LevelGenerator.MAP_WIDTH);
+		JTextField txtMapHeight = new JTextField(""+LevelGenerator.MAP_HEIGHT);
+
+		JButton btnNewLevel = new JButton("New Level");
+
+		btnNewLevel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				/// TODO : implement new Level button
+				// create a new map with TextFields dimensions
+			}
+		});
+
+		// Brace Yourself .... GridBagLayout is coming
+		eastPanel.setLayout(new GridBagLayout());
+
+		//Objet to constraint componants
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		// padding
+		gbc.insets = new Insets(5,0,0,5);
+
+		// FirstLabel (0,0) , occupies 2 cells
+		gbc.gridx = 0; 	gbc.gridy = 0;
+		gbc.gridheight = 1; gbc.gridwidth = 2;
+		eastPanel.add(lblMapWidth, gbc);
+
+		// SecondLabel (0, 2) occupies 2 cells
+		gbc.gridx = 2; gbc.gridwidth = GridBagConstraints.REMAINDER; // indique fin de ligne
+		eastPanel.add(lblMapHeight, gbc);
+
+		// First TextField (1,0), 2 cells
+		gbc.gridx = 0; gbc.gridy = 1;
+		gbc.gridwidth = 2;
+		txtMapWidth.setPreferredSize(new Dimension(60, 20));
+		eastPanel.add(txtMapWidth, gbc);
+
+		// second TextField (1,2), 2 cells
+		gbc.gridx = 2; gbc.gridwidth = GridBagConstraints.REMAINDER; // indique fin de ligne
+		txtMapHeight.setPreferredSize(new Dimension(60, 20));
+		eastPanel.add(txtMapHeight, gbc);
+
+		// Button (2, 1) , 2 cells ( centered )
+		gbc.gridx = 1; gbc.gridy = 2;
+		gbc.gridwidth = 2;
+		eastPanel.add(btnNewLevel, gbc);
+
+
+		controlPanel.add(eastPanel, BorderLayout.CENTER);
+
+		/*Panels initialised, add to frame */
+		contentPane.add(gamePanel, BorderLayout.WEST);
+		contentPane.add(controlPanel, BorderLayout.EAST);
+
+		pack();
 	} // End of constructor
 
 	/**
-	 * Constructor to instanciate a frame with several maps
+	 * Constructor to instantiate a frame with several maps
 	 * @param maps an arrayList of maps to show
 	 */
 	public DrawEngine(GameManager gameManager, ArrayList<Map> maps)
 	{
 		this(gameManager, maps.get(0));
-		for(int i = 1; i < maps.size(); i++)
+		for (int i = 1; i < maps.size(); i++)
 			addMap(maps.get(i));
 	}
 
-	public void displayEndGameScreen(String result)
+	/**
+	 * Adjust frame height to given map size and window size
+	 *
+	 * @param map to adjust to
+	 */
+	private void adjustFrameSize(Map map)
 	{
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+		int winHeight = TILE_SIZE * map.getHeight() + TILE_SIZE + 50;
+
+		if (winHeight >= screenSize.getHeight() - 50)
+			winHeight = (int) screenSize.getHeight() - 50;
+
+		setPreferredSize(new Dimension(
+				TILE_SIZE * map.getWidth() + TILE_SIZE + 180,
+				winHeight
+		));
+
+		pack();
+	}
+
+	/**
+	 * Inits DrawEngine frame adapting to height
+	 */
+	private void initWindow() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setTitle("Run Mouse Run!");
+
+		adjustFrameSize(maps.get(0));
+
+		setResizable(false);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(new BorderLayout(5, 0));
+		setContentPane(contentPane);
+	}
+
+	public void displayEndGameScreen(String result) {
 
 	}
 
 	/**
 	 * Add map to maps list and ComboBox
+	 *
 	 * @param map well ... a MAP
 	 */
-	public void addMap(Map map)
-	{
+	public void addMap(Map map) {
 		maps.add(map);
 		mapsCmBox.addItem(map.getName());
 	}
 
 	/**
 	 * Remove map from list and comboBox
+	 *
 	 * @param map (Map) map to remove
 	 */
-	public void removeMap(Map map)
-	{
+	public void removeMap(Map map) {
 		maps.remove(map);
 		mapsCmBox.removeItem(map.getName());
 	}
 
 	/**
 	 * Set map to show in mapPanel
+	 *
 	 * @param map map to show
 	 */
-	private void switchToMap(Map map)
-	{
+	private void switchToMap(Map map) {
 		mapPanel.setMap(map);
 		mapName.setText(map.getName());
 		update();
 		mapPanel.adjustPanelSize();
-		adjustFrameHeight(map);
+		adjustFrameSize(map);
 		update();
 	}
 
 	/**
-	 * Adjust frame height to given map size and window size
-	 * @param map to adjust to
+	 * Refresh map ( draw level, characters and objects )
+	 * Draw Cat and mouse DestinationPath /// TODO
 	 */
-	private void adjustFrameHeight(Map map)
-	{
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-		int winHeight = TILE_SIZE * map.getHeight() + TILE_SIZE + 50;
-
-		System.out.println("PANEL HEIGHT : " + winHeight);
-		if(winHeight >= screenSize.getHeight() - 50)
-			winHeight = (int) screenSize.getHeight() - 50;
-
-		setSize(new Dimension(
-				TILE_SIZE * map.getWidth() + TILE_SIZE + 10,
-				winHeight
-		));
-
-		System.out.println("FRAME HEIGHT : " + winHeight);
-	}
-	/**
-	 * Inits DrawEngine frame adapting to height
-	 */
-	private void initWindow()
-	{
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setTitle("Run Mouse Run!");
-
-		adjustFrameHeight(maps.get(0));
-
-		setResizable(false);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
-	}
-
 	public void update() /// TODO : draw cat computed path
 	{
 		mapPanel.update();
+		for(Cat cat : gameManager.getCats())
+			mapPanel.drawPath(cat.getDestinationPath());
+		for(Mouse mouse: gameManager.getMouses())
+			mapPanel.drawPath(mouse.getDestinationPath());
+
 	}
 
 	class MapPanel extends JPanel
@@ -511,7 +601,7 @@ public class DrawEngine extends JFrame
 
 		private void bufferPath(ArrayList<Position> path)
 		{
-			if(path.isEmpty()) return;
+			if(path == null || path.isEmpty()) return;
 
 			graphic.setColor(Color.BLUE);
 			for(Position t : path)
@@ -577,4 +667,4 @@ public class DrawEngine extends JFrame
 		}
 	} // End of MapPanel
 
-}	// End Of run_mouse_run.DrawEngine
+}	// End Of DrawEngine
