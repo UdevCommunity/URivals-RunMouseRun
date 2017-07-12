@@ -215,7 +215,7 @@ public class DrawEngine extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				DrawEngine newFrame = new DrawEngine(gameManager, maps);
-
+				newFrame.startGameButton.setText(startGameButton.getText());
 				newFrame.setVisible(true);
 			}
 		});
