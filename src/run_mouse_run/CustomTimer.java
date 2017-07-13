@@ -53,6 +53,7 @@ public class CustomTimer
     }
     public void stopTimer()
     {
+        startTime = Time.valueOf(LocalTime.now());
         timer.cancel();
     }
 
