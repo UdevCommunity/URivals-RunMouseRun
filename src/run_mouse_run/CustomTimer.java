@@ -63,5 +63,9 @@ public class CustomTimer
         timer.scheduleAtFixedRate(task, 0, GAME_SPEED/4);
     }
 
+    public Time getCurrentTime()
+    {
+        return currentTime;
+    }
 }
 
