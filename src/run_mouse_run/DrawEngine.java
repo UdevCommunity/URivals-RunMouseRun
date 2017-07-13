@@ -325,10 +325,10 @@ public class DrawEngine {
 			controlPanel.add(eastPanel, BorderLayout.CENTER);
 
 			/*Panels initialised, add to frame */
-			contentPane.add(gamePanel, BorderLayout.WEST);
-			contentPane.add(controlPanel, BorderLayout.EAST);
+			contentPane.add(gamePanel, BorderLayout.EAST);
+			contentPane.add(controlPanel, BorderLayout.WEST);
 
-			/*=========================================================================================*/
+		/*=========================================================================================*/
 		/*====================================== Map Panel ========================================*/
 		/*=========================================================================================*/
 			mapPanel = new MapPanel(map);
@@ -369,6 +369,7 @@ public class DrawEngine {
 
 			mapContainerPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			mapContainerPanel.getVerticalScrollBar().setUnitIncrement(10);
+
 			mapContainerPanel.setPreferredSize(new Dimension(Math.min(map.getWidth() * TILE_SIZE,
 					(int)Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 250),
 					map.getHeight() * TILE_SIZE)); // TODO: Hard Coded ...
@@ -377,7 +378,7 @@ public class DrawEngine {
 
 			/*Over, clean spaces and resize*/
 			pack();
-			adjustFrameSize(map);
+			//adjustFrameSize(map);
 		} // End of constructor
 
 		/**
@@ -398,7 +399,7 @@ public class DrawEngine {
 		{
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-			int winHeight = Math.min((int)screenSize.getHeight(), TILE_SIZE * map.getHeight() + TILE_SIZE + 50);
+			int winHeight = Math.min((int)screenSize.getHeight() - 50, TILE_SIZE * map.getHeight() + TILE_SIZE + 50);
 			int winWidth = (controlPanel != null) ?
 					Math.min((int)screenSize.getWidth(), TILE_SIZE * map.getWidth() + controlPanel.getWidth() + 20):
 					Math.min((int)screenSize.getWidth(), TILE_SIZE * map.getWidth() + 10);
@@ -415,7 +416,9 @@ public class DrawEngine {
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			setTitle("Run Mouse Run!");
 
-			adjustFrameSize(maps.get(0));
+			// Set on FullScreen
+			setExtendedState(JFrame.MAXIMIZED_BOTH );
+			//adjustFrameSize(maps.get(0));
 
 			setResizable(false);
 			contentPane = new JPanel();
@@ -486,15 +489,17 @@ public class DrawEngine {
 		 */
 		private void hideControlPanel()
 		{
+			controlPanel.setVisible(false);
 			contentPane.remove(controlPanel);
 			contentPane.invalidate();
 			Map currentMap = maps.get(mapsCmBox.getSelectedIndex());
-			adjustFrameSize(currentMap);
-            mapContainerPanel.setPreferredSize(new Dimension(Math.min(currentMap.getWidth() * TILE_SIZE,
-                    (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()),
-                    currentMap.getHeight() * TILE_SIZE)); // TODO: Hard Coded ...
-		}
+			//adjustFrameSize(currentMap);
+			mapContainerPanel.setPreferredSize(new Dimension(Math.min(currentMap.getWidth() * TILE_SIZE + TILE_SIZE,
+					(int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()),
+					currentMap.getHeight() * TILE_SIZE));
 
+			controlPanel = null;
+		}
 		/**
 		 * Convert time to mm:ss format and show on timeLabel
 		 * @param currentTime (float) current time in miliseconds
