@@ -20,11 +20,11 @@ public class DrawEngine {
 	private ArrayList<DrawEngineFrame> frames;	// All open frames
 
 
-	public DrawEngine(GameManager gameManager, Map map)
+	public DrawEngine(GameManager gameManager)
 	{
 		frames = new ArrayList<>();
 		this.gameManager = gameManager;
-		frames.add(new DrawEngineFrame(map));
+		frames.add(new DrawEngineFrame(gameManager.getLevelGenerator().getMap()));
 	}
 
 	/**
@@ -135,9 +135,9 @@ public class DrawEngine {
 		 *
 		 * @param map initialised map from LevelGenerator
 		 */
-		public DrawEngineFrame(Map map) {
+		public DrawEngineFrame(Map map)
+		{
 			maps = new ArrayList<>();
-
 			if (map == null)
 			{
 				map = new Map("Blank map", LevelGenerator.MAP_WIDTH, LevelGenerator.MAP_HEIGHT, Tile.NOT_DISCOVERED);
@@ -200,48 +200,7 @@ public class DrawEngine {
 
 			gamePanel.add(topPanel, BorderLayout.NORTH);
 
-		/*=========================================================================================*/
-		/*====================================== Map Panel ========================================*/
-		/*=========================================================================================*/
-			mapPanel = new MapPanel(map);
 
-			mapContainerPanel = new JScrollPane(mapPanel);
-
-			mapPanel.addMouseListener(new MouseAdapter() {
-				/*
-                 * On LeftClick : Set InitialPosition ( testing pathfinding )
-                 * On RightClick : Set finalPosition ( testing pathfinding )
-                 * On MiddleClick : switch tile ( edit map )
-                 */
-				@Override
-				public void mouseClicked(MouseEvent event) {
-					int i = event.getY() / TILE_SIZE;
-					int j = event.getX() / TILE_SIZE;
-
-					if (!startGameButton.getText().equals("Pause Game")) // if game not running
-					{
-						if (event.getButton() == MouseEvent.BUTTON1)
-						{
-							initialPos.setPosX(j);
-							initialPos.setPosY(i);
-							mapPanel.update();
-						} else if (event.getButton() == MouseEvent.BUTTON3)
-						{
-							finalPos.setPosX(j);
-							finalPos.setPosY(i);
-							mapPanel.update();
-						} else if (event.getButton() == MouseEvent.BUTTON2)
-						{
-							maps.get(0).switchTile(j, i);
-							update();
-						}
-					}
-				}
-			});
-
-			mapContainerPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-			mapContainerPanel.getVerticalScrollBar().setUnitIncrement(10);
-			gamePanel.add(mapContainerPanel, BorderLayout.CENTER);
 
 		/*=========================================================================================*/
 		/*====================================== Bottom Panel =====================================*/
@@ -368,6 +327,53 @@ public class DrawEngine {
 			contentPane.add(gamePanel, BorderLayout.WEST);
 			contentPane.add(controlPanel, BorderLayout.EAST);
 
+			/*=========================================================================================*/
+		/*====================================== Map Panel ========================================*/
+		/*=========================================================================================*/
+			mapPanel = new MapPanel(map);
+
+			mapContainerPanel = new JScrollPane(mapPanel);
+
+			mapPanel.addMouseListener(new MouseAdapter() {
+				/*
+                 * On LeftClick : Set InitialPosition ( testing pathfinding )
+                 * On RightClick : Set finalPosition ( testing pathfinding )
+                 * On MiddleClick : switch tile ( edit map )
+                 */
+				@Override
+				public void mouseClicked(MouseEvent event) {
+					int i = event.getY() / TILE_SIZE;
+					int j = event.getX() / TILE_SIZE;
+
+					if (!startGameButton.getText().equals("Pause Game")) // if game not running
+					{
+						if (event.getButton() == MouseEvent.BUTTON1)
+						{
+							initialPos.setPosX(j);
+							initialPos.setPosY(i);
+							mapPanel.update();
+						} else if (event.getButton() == MouseEvent.BUTTON3)
+						{
+							finalPos.setPosX(j);
+							finalPos.setPosY(i);
+							mapPanel.update();
+						} else if (event.getButton() == MouseEvent.BUTTON2)
+						{
+							maps.get(0).switchTile(j, i);
+							update();
+						}
+					}
+				}
+			});
+
+			mapContainerPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			mapContainerPanel.getVerticalScrollBar().setUnitIncrement(10);
+			mapContainerPanel.setPreferredSize(new Dimension(Math.min(map.getWidth() * TILE_SIZE,
+					(int)Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 250),
+					map.getHeight() * TILE_SIZE)); // TODO: Hard Coded ...
+
+			gamePanel.add(mapContainerPanel, BorderLayout.CENTER);
+
 			/*Over, clean spaces and resize*/
 			pack();
 			adjustFrameSize(map);
@@ -387,36 +393,16 @@ public class DrawEngine {
 		 * Adjust frame height to given map size and window size
 		 * @param map to adjust to
 		 */
-		private void adjustFrameSize(Map map) {
+		private void adjustFrameSize(Map map)
+		{
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-			int winHeight = TILE_SIZE * map.getHeight() + TILE_SIZE + 50;
+			int winHeight = Math.min((int)screenSize.getHeight(), TILE_SIZE * map.getHeight() + TILE_SIZE + 50);
+			int winWidth = (controlPanel != null) ?
+					Math.min((int)screenSize.getWidth(), TILE_SIZE * map.getWidth() + controlPanel.getWidth() + 20):
+					Math.min((int)screenSize.getWidth(), TILE_SIZE * map.getWidth() + 10);
 
-			if (winHeight >= screenSize.getHeight() - 50)
-				winHeight = (int) screenSize.getHeight() - 50;
-
-			try{
-				if(startGameButton.getText().equals("Start Game"))
-				{
-					setPreferredSize(new Dimension(
-							TILE_SIZE * map.getWidth() + controlPanel.getWidth() + 20,
-							winHeight
-					));
-				}
-				else
-				{
-					setPreferredSize(new Dimension(
-							TILE_SIZE * map.getWidth() + TILE_SIZE + 10,
-							winHeight
-					));
-				}
-			} catch (NullPointerException e)
-			{
-				setPreferredSize(new Dimension(
-						TILE_SIZE * map.getWidth() + TILE_SIZE + 10,
-						winHeight
-				));
-			}
+			this.setPreferredSize(new Dimension(winWidth, winHeight));
 
 			pack();
 		}
@@ -538,17 +524,11 @@ public class DrawEngine {
 			private BufferedImage bufferedMap;
 			private Graphics2D graphic;
 
-			/*
-            * Sprites : 0 : Cat , 1 : Mouse
-            * Ordered as marked in Tile class :
-             * 2 : NOT_DISCOVERED, 3: EMPTY, 4 : WALL , 5 : CHEESE, 6 : POWERUP_VISION,
-             * 7 : POWERUP_SPEED, 8: INVISIBLE_ZONE, 9 : Mine
-            */
-			private final int CAT = 0, MOUSE = 1,
-					NOT_DISCOVERED = 2, EMPTY = 3,
-					WALL = 4, CHEESE = 5,
-					POWERUP_VISION = 6, POWERUP_SPEED = 7,
-					INVISIBLE_ZONE = 8, MINE = 9;
+			private final int CAT_SPRITE = 0, MOUSE_SPRITE = 1,
+					NOT_DISCOVERED_SPRITE = 2, EMPTY_SPRITE = 3,
+					WALL_SPRITE = 4, CHEESE_SPRITE = 5,
+					POWERUP_VISION_SPRITE = 6, POWERUP_SPEED_SPRITE = 7,
+					INVISIBLE_ZONE_SPRITE = 8, MINE_SPRITE = 9;
 
 			private ArrayList<BufferedImage> sprites;
 
@@ -679,7 +659,7 @@ public class DrawEngine {
 				// for each mouse
 				for (Mouse m : gameManager.getMouses())
 				{
-					graphic.drawImage(sprites.get(MOUSE),
+					graphic.drawImage(sprites.get(MOUSE_SPRITE),
 							m.getPosition().getPosX() * TILE_SIZE,
 							m.getPosition().getPosY() * TILE_SIZE,
 							null);
@@ -687,7 +667,7 @@ public class DrawEngine {
 				// for each cat
 				for (Cat c : gameManager.getCats())
 				{
-					graphic.drawImage(sprites.get(CAT),
+					graphic.drawImage(sprites.get(CAT_SPRITE),
 							c.getPosition().getPosX() * TILE_SIZE,
 							c.getPosition().getPosY() * TILE_SIZE,
 							null);
@@ -725,34 +705,34 @@ public class DrawEngine {
 						{
 
 							case NOT_DISCOVERED:
-								graphic.drawImage(sprites.get(NOT_DISCOVERED), j * TILE_SIZE, i * TILE_SIZE, null);
+								graphic.drawImage(sprites.get(NOT_DISCOVERED_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
 								break;
 							case EMPTY:
-								graphic.drawImage(sprites.get(EMPTY), j * TILE_SIZE, i * TILE_SIZE, null);
+								graphic.drawImage(sprites.get(EMPTY_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
 								break;
 							case WALL:
-								graphic.drawImage(sprites.get(WALL), j * TILE_SIZE, i * TILE_SIZE, null);
+								graphic.drawImage(sprites.get(WALL_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
 								break;
                             /*From here, draw empty first then object on it : */
 							case CHEESE:
-								graphic.drawImage(sprites.get(EMPTY), j * TILE_SIZE, i * TILE_SIZE, null);
-								graphic.drawImage(sprites.get(CHEESE), j * TILE_SIZE, i * TILE_SIZE, null);
+								graphic.drawImage(sprites.get(EMPTY_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
+								graphic.drawImage(sprites.get(CHEESE_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
 								break;
 							case POWERUP_VISION:
-								graphic.drawImage(sprites.get(EMPTY), j * TILE_SIZE, i * TILE_SIZE, null);
-								graphic.drawImage(sprites.get(POWERUP_VISION), j * TILE_SIZE, i * TILE_SIZE, null);
+								graphic.drawImage(sprites.get(EMPTY_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
+								graphic.drawImage(sprites.get(POWERUP_VISION_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
 								break;
 							case POWERUP_SPEED:
-								graphic.drawImage(sprites.get(EMPTY), j * TILE_SIZE, i * TILE_SIZE, null);
-								graphic.drawImage(sprites.get(POWERUP_SPEED), j * TILE_SIZE, i * TILE_SIZE, null);
+								graphic.drawImage(sprites.get(EMPTY_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
+								graphic.drawImage(sprites.get(POWERUP_SPEED_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
 								break;
 							case INVISIBLE_ZONE:
-								graphic.drawImage(sprites.get(EMPTY), j * TILE_SIZE, i * TILE_SIZE, null);
-								graphic.drawImage(sprites.get(INVISIBLE_ZONE), j * TILE_SIZE, i * TILE_SIZE, null);
+								graphic.drawImage(sprites.get(EMPTY_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
+								graphic.drawImage(sprites.get(INVISIBLE_ZONE_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
 								break;
 							case MINE:
-								graphic.drawImage(sprites.get(EMPTY), j * TILE_SIZE, i * TILE_SIZE, null);
-								graphic.drawImage(sprites.get(MINE), j * TILE_SIZE, i * TILE_SIZE, null);
+								graphic.drawImage(sprites.get(EMPTY_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
+								graphic.drawImage(sprites.get(MINE_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
 								break;
 						}
 					}

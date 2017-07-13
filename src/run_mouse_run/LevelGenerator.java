@@ -7,10 +7,10 @@ public class LevelGenerator
 {
     private GameManager gameManager;
     private final int MAP_WIDTH_MIN = 30;
-    private final int MAP_WIDTH_MAX = 40;
+    private final int MAP_WIDTH_MAX = 50;
 
     private final int MAP_HEIGHT_MIN = 30;
-    private final int MAP_HEIGHT_MAX = 40;
+    private final int MAP_HEIGHT_MAX = 50;
 
     public static int MAP_WIDTH = 0;
     public static int MAP_HEIGHT = 0;
