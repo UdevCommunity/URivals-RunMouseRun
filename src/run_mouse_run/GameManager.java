@@ -6,6 +6,9 @@ import java.util.ArrayList;
 
 public class GameManager /// TODO : access via static VS references
 {
+    public final int CAT_NUMBER = 2;
+    public final int MOUSE_NUMBER = 1;
+
     private ArrayList<Cat> cats;
     private ArrayList<Mouse> mouses;
 
