@@ -176,6 +176,7 @@ public class DrawEngine {
 					if (startGameButton.getText().equals("Start Game"))
 					{
 						startGame();
+
 					} else if (startGameButton.getText().equals("Pause Game"))
 					{
 						pauseGame();
@@ -487,7 +488,11 @@ public class DrawEngine {
 		{
 			contentPane.remove(controlPanel);
 			contentPane.invalidate();
-			adjustFrameSize(maps.get(mapsCmBox.getSelectedIndex()));
+			Map currentMap = maps.get(mapsCmBox.getSelectedIndex());
+			adjustFrameSize(currentMap);
+            mapContainerPanel.setPreferredSize(new Dimension(Math.min(currentMap.getWidth() * TILE_SIZE,
+                    (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()),
+                    currentMap.getHeight() * TILE_SIZE)); // TODO: Hard Coded ...
 		}
 
 		/**
