@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 
 public class DrawEngine {
 
-	public final int TILE_SIZE = 24; // Tiles will resize to this value
+	public final int TILE_SIZE = 36; // Tiles will resize to this value
 
 	private PathFinder pathFinder;
 	private GameManager gameManager;
