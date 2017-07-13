@@ -6,10 +6,10 @@ import java.util.concurrent.ThreadLocalRandom;
 public class LevelGenerator
 {
     private GameManager gameManager;
-    private final int MAP_WIDTH_MIN = 30;
+    private final int MAP_WIDTH_MIN = 10;
     private final int MAP_WIDTH_MAX = 50;
 
-    private final int MAP_HEIGHT_MIN = 30;
+    private final int MAP_HEIGHT_MIN = 10;
     private final int MAP_HEIGHT_MAX = 50;
 
     public static int MAP_WIDTH = 0;
@@ -22,10 +22,10 @@ public class LevelGenerator
     private Map map;
 
     private final int WALL_PROBABILITY_THRESHOLD = 35;
-    private final int POWERUP_VISION_PROBABILITY_THRESHOLD = WALL_PROBABILITY_THRESHOLD + 3;    // 3%
-    private final int POWERUP_SPEED_PROBABILITY_THRESHOLD = POWERUP_VISION_PROBABILITY_THRESHOLD + 3; // 3%
-    private final int INVISIBLE_ZONE_PROBABILITY_THRESHOLD = POWERUP_SPEED_PROBABILITY_THRESHOLD + 3; // 6%
-    private final int MINE_PROBABILITY_THRESHOLD = INVISIBLE_ZONE_PROBABILITY_THRESHOLD + 3;  // 6%
+    private final int POWERUP_VISION_PROBABILITY_THRESHOLD = WALL_PROBABILITY_THRESHOLD + 1;    // 3%
+    private final int POWERUP_SPEED_PROBABILITY_THRESHOLD = POWERUP_VISION_PROBABILITY_THRESHOLD + 1; // 1%
+    private final int INVISIBLE_ZONE_PROBABILITY_THRESHOLD = POWERUP_SPEED_PROBABILITY_THRESHOLD + 1; // 1%
+    private final int MINE_PROBABILITY_THRESHOLD = INVISIBLE_ZONE_PROBABILITY_THRESHOLD + 1;  // 1%
     private final int EMPTY_PATH_PROBABILITY_THRESHOLD = 100;
 
     // IMPORTANT : MAZE[POS_Y][POS_X]
@@ -82,7 +82,7 @@ public class LevelGenerator
                 );  // And mouses and cats are far enough
 
         /*Spawn cheese*/
-        for (int i = 0; i < gameManager.getCats().size(); i++)
+        for (int i = 0; i < gameManager.CAT_NUMBER+1; i++)
         {
             Position cheesePos;
             do{
