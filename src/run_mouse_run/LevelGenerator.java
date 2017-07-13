@@ -6,23 +6,23 @@ import java.util.concurrent.ThreadLocalRandom;
 public class LevelGenerator
 {
     private GameManager gameManager;
-    private final int MAP_WIDTH_MIN = 10;
-    private final int MAP_WIDTH_MAX = 50;
+    private final int MAP_WIDTH_MIN = 30;
+    private final int MAP_WIDTH_MAX = 40;
 
-    private final int MAP_HEIGHT_MIN = 10;
-    private final int MAP_HEIGHT_MAX = 50;
+    private final int MAP_HEIGHT_MIN = 30;
+    private final int MAP_HEIGHT_MAX = 40;
 
     public static int MAP_WIDTH = 0;
     public static int MAP_HEIGHT = 0;
 
     public static Position MOUSES_INITIAL_POS;
     public static Position CATS_INITIAL_POS;
-    private final static int INITIAL_MINIMUM_DISTANCE = 5; // minimum eloignés de 15 cases
+    private final static int INITIAL_MINIMUM_DISTANCE = 15; // minimum eloignés de 15 cases
 
     private Map map;
 
     private final int WALL_PROBABILITY_THRESHOLD = 35;
-    private final int POWERUP_VISION_PROBABILITY_THRESHOLD = WALL_PROBABILITY_THRESHOLD + 1;    // 3%
+    private final int POWERUP_VISION_PROBABILITY_THRESHOLD = WALL_PROBABILITY_THRESHOLD + 1;    // 1%
     private final int POWERUP_SPEED_PROBABILITY_THRESHOLD = POWERUP_VISION_PROBABILITY_THRESHOLD + 1; // 1%
     private final int INVISIBLE_ZONE_PROBABILITY_THRESHOLD = POWERUP_SPEED_PROBABILITY_THRESHOLD + 1; // 1%
     private final int MINE_PROBABILITY_THRESHOLD = INVISIBLE_ZONE_PROBABILITY_THRESHOLD + 1;  // 1%

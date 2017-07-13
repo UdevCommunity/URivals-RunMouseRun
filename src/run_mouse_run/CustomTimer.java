@@ -9,9 +9,9 @@ import java.util.TimerTask;
 public class CustomTimer
 {
     private GameManager gameManager;
-    private Time startTime;
     private Time currentTime = new Time(0); // In milliseconds
     public static final int GAME_SPEED = 1000; // In milliseconds
+    public static final int UPDATE_FREQUENCE = GAME_SPEED/4; // In milliseconds
     public static final int POWERUP_DURABILITY = 10000; // In milliseconds
     private final long TIME_LIMIT = 180000; // In milliseconds
     private Timer timer;
@@ -33,7 +33,7 @@ public class CustomTimer
             @Override
             public void run()
             {
-                currentTime.setTime(Time.valueOf(LocalTime.now()).getTime() - startTime.getTime());
+                currentTime.setTime(currentTime.getTime() + UPDATE_FREQUENCE);
 
                 if (currentTime.getTime() > TIME_LIMIT)
                 {
@@ -48,12 +48,10 @@ public class CustomTimer
 
     public void startTimer()
     {
-        startTime = Time.valueOf(LocalTime.now());
-        timer.scheduleAtFixedRate(task, 0, GAME_SPEED/4);
+        timer.scheduleAtFixedRate(task, 0, UPDATE_FREQUENCE);
     }
     public void stopTimer()
     {
-        startTime = Time.valueOf(LocalTime.now());
         timer.cancel();
     }
 
