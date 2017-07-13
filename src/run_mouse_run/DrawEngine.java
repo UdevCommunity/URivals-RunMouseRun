@@ -609,7 +609,8 @@ public class DrawEngine {
 						// Read image
 						BufferedImage sprite = ImageIO.read(spriteFile);
 						// resize
-						sprite = resizeImage(sprite, TILE_SIZE, TILE_SIZE);
+						int type = sprite.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sprite.getType();
+						sprite = resizeImage(sprite, type, TILE_SIZE, TILE_SIZE);
 						//add to sprites
 						sprites.add(sprite);
 					} catch (IOException e)
@@ -622,18 +623,13 @@ public class DrawEngine {
 
 			}
 
-			public BufferedImage resizeImage(BufferedImage image, int newWidth, int newHeight) {
-				// Get resized image
-				Image img = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+			private BufferedImage resizeImage(BufferedImage originalImage, int type, int IMG_WIDTH, int IMG_HEIGHT) {
+				BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
+				Graphics2D g = resizedImage.createGraphics();
+				g.drawImage(originalImage, 0, 0, IMG_WIDTH, IMG_HEIGHT, null);
+				g.dispose();
 
-				// Convert to BufferedImage
-				image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_BYTE_INDEXED);
-
-				Graphics2D bGr = image.createGraphics();
-				bGr.drawImage(img, 0, 0, null);
-				bGr.dispose();
-
-				return image;
+				return resizedImage;
 			}
 
 			@Override
