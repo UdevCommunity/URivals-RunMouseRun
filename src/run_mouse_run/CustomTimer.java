@@ -21,7 +21,6 @@ public class CustomTimer
     public CustomTimer(GameManager gameManager)
     {
         this.gameManager = gameManager;
-        startTime = Time.valueOf(LocalTime.now());
 
         task = createUpdateTask();
         timer = new Timer();
@@ -49,6 +48,7 @@ public class CustomTimer
 
     public void startTimer()
     {
+        startTime = Time.valueOf(LocalTime.now());
         timer.scheduleAtFixedRate(task, 0, GAME_SPEED/4);
     }
     public void stopTimer()
