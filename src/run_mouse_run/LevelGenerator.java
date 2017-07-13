@@ -87,7 +87,7 @@ public class LevelGenerator
             Position cheesePos;
             do{
                 cheesePos = getEmptyPos();
-            } while (!existPath(MOUSES_INITIAL_POS, cheesePos) ||
+            } while (!isPathOkay(MOUSES_INITIAL_POS, cheesePos) ||
             map.getTile(cheesePos.getPosX(), cheesePos.getPosY()) == Tile.CHEESE);
 
             // path exists, we add the cheese to the map
@@ -112,9 +112,9 @@ public class LevelGenerator
     /**
      * Checks if path exists, and distance is far enough ( >= INITIAL_MINIMUM_DISTANCE )
      */
-    private boolean isPathOkay(Position Mouse, Position Cat)
+    private boolean isPathOkay(Position src, Position dst)
     {
-        ArrayList<Position> path = pathFinder.getShortestPath(map, Mouse, Cat);
+        ArrayList<Position> path = pathFinder.getShortestPath(map, src, dst);
 
         if(path.isEmpty() || path.size() < INITIAL_MINIMUM_DISTANCE)
             return false;
