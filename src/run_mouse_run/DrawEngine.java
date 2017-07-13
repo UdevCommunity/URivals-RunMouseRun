@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 
 public class DrawEngine {
 
-	public final int TILE_SIZE = 16; // Tiles will resize to this value
+	public final int TILE_SIZE = 24; // Tiles will resize to this value
 
 	private PathFinder pathFinder;
 	private GameManager gameManager;
@@ -91,7 +91,19 @@ public class DrawEngine {
 	{
 		DrawEngineFrame newFrame = new DrawEngineFrame(maps);
 		newFrame.startGameButton.setText(frames.get(0).startGameButton.getText());
-		newFrame.changeState(newFrame.startGameButton.getText());
+
+		// Set state to the same state of her
+		if(newFrame.startGameButton.getText().equals("Resume Game")) // if game Paused
+		{
+			newFrame.changeState("Pause Game");
+			newFrame.hideControlPanel();
+		}
+		else if(newFrame.startGameButton.getText().equals("Pause Game")) // if game running
+		{
+			newFrame.changeState("Resume Game");
+			newFrame.hideControlPanel();
+		}
+
 		newFrame.setVisible(true);
 		frames.add(newFrame);
 	}
