@@ -1,5 +1,6 @@
 package run_mouse_run;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -8,11 +9,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import javax.imageio.ImageIO;
 
 public class DrawEngine {
 
-	public final int TILE_SIZE = 36; // Tiles will resize to this value
+	public final int TILE_SIZE = 32; // Tiles will resize to this value
 
 	private PathFinder pathFinder;
 	private GameManager gameManager;
@@ -505,16 +505,28 @@ public class DrawEngine {
 		}
 
 		/**
+		 * Convert time to mm:ss format and show on timeLabel
+		 * @param currentTime (float) current time in miliseconds
+		 */
+		private void updateTime(String currentTime)
+		{
+			timeLabel.setText("Time : " + currentTime.substring(3));
+		}
+
+		/**
 		 * Refresh map ( draw level, characters and objects )
 		 * Draw Cat and mouse DestinationPath /// TODO
 		 */
 		public void update() /// TODO : draw cat computed path
 		{
 			mapPanel.update();
+			updateTime(gameManager.getTimer().getCurrentTime().toString());
+
 			for (Cat cat : gameManager.getCats())
 				mapPanel.drawPath(cat.getDestinationPath());
 			for (Mouse mouse : gameManager.getMouses())
 				mapPanel.drawPath(mouse.getDestinationPath());
+
 
 		}
 
