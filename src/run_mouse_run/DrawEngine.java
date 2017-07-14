@@ -19,11 +19,34 @@ public class DrawEngine {
 	private ArrayList<DrawEngineFrame> frames;	// All open frames
 
 
-	public DrawEngine(GameManager gameManager)
+	public DrawEngine(GameManager gameManager, Map map)
+	{
+		frames = new ArrayList<>();
+		this.gameManager = gameManager;
+		frames.add(new DrawEngineFrame(map));
+	}
+
+	public DrawEngine(GameManager gameManager, ArrayList<Map> maps)
 	{
 		frames = new ArrayList<>();
 		this.gameManager = gameManager;
 		frames.add(new DrawEngineFrame(gameManager.getLevelGenerator().getMap()));
+	}
+
+	public void addMap(Map map)
+	{
+		for(DrawEngineFrame frame : frames)
+		{
+			frame.addMap(map);
+		}
+	}
+
+	public void removeMap(Map map)
+	{
+		for(DrawEngineFrame frame : frames)
+		{
+			frame.removeMap(map);
+		}
 	}
 
 	/**
@@ -365,6 +388,7 @@ public class DrawEngine {
 		 */
 		public DrawEngineFrame(ArrayList<Map> maps) {
 			this(maps.get(0));
+
 			for (int i = 1; i < maps.size(); i++)
 				addMap(maps.get(i));
 		}

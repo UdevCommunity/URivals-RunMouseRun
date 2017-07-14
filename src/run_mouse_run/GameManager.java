@@ -24,7 +24,7 @@ public class GameManager /// TODO : access via static VS references
 
         level = new LevelGenerator(this);
         physicsEngine = new PhysicsEngine(this);
-        frame = new DrawEngine(this);
+        frame = new DrawEngine(this, level.getMap());
         timer = new CustomTimer(this);
     }
 
