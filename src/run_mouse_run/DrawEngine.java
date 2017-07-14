@@ -2,6 +2,7 @@ package run_mouse_run;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
@@ -11,8 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class DrawEngine {
-
-	public final int TILE_SIZE = 32; // Tiles will resize to this value
 
 	private PathFinder pathFinder;
 	private GameManager gameManager;
@@ -83,7 +82,7 @@ public class DrawEngine {
 	}
 
 	/**
-	 * Add a new frame
+	 * Add a new frame, open at small size
 	 * apply changes depending on state
 	 * @param maps
 	 */
@@ -91,6 +90,11 @@ public class DrawEngine {
 	{
 		DrawEngineFrame newFrame = new DrawEngineFrame(maps);
 		newFrame.startGameButton.setText(frames.get(0).startGameButton.getText());
+
+		// We only need one control panel
+		newFrame.hideControlPanel();
+		newFrame.setBounds(100,100, 500,500);
+		newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		// Set state to the same state of her
 		if(newFrame.startGameButton.getText().equals("Resume Game")) // if game Paused
@@ -109,6 +113,8 @@ public class DrawEngine {
 	}
 
 	public class DrawEngineFrame extends JFrame {
+
+		public int TILE_SIZE = 32; // Tiles will resize to this value
 
 		private JPanel contentPane;
 		private JScrollPane mapContainerPanel;
@@ -201,6 +207,22 @@ public class DrawEngine {
 
 			gamePanel.add(topPanel, BorderLayout.NORTH);
 
+		/*=========================================================================================*/
+		/*====================================== Map Panel ========================================*/
+		/*=========================================================================================*/
+			mapPanel = new MapPanel(map);
+
+			mapContainerPanel = new JScrollPane(mapPanel);
+
+			setMapPanel(mapPanel);
+
+			// Speed up scrolling
+			mapContainerPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			mapContainerPanel.getVerticalScrollBar().setUnitIncrement(10);
+			mapContainerPanel.getHorizontalScrollBar().setUnitIncrement(10);
+
+			gamePanel.add(mapContainerPanel, BorderLayout.CENTER);
+
 
 
 		/*=========================================================================================*/
@@ -214,6 +236,7 @@ public class DrawEngine {
 			btnDrawShortest.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					mapPanel.drawPath(pathFinder.getShortestPath(maps.get(0), initialPos, finalPos));
+
 				}
 			});
 
@@ -324,17 +347,51 @@ public class DrawEngine {
 
 			controlPanel.add(eastPanel, BorderLayout.CENTER);
 
+
+
 			/*Panels initialised, add to frame */
-			contentPane.add(gamePanel, BorderLayout.EAST);
-			contentPane.add(controlPanel, BorderLayout.WEST);
+			contentPane.add(gamePanel);//, BorderLayout.WEST);
+			contentPane.add(controlPanel);//, BorderLayout.EAST);
 
-		/*=========================================================================================*/
-		/*====================================== Map Panel ========================================*/
-		/*=========================================================================================*/
+
+			/*Over, clean spaces and resize*/
+			pack();
+
+		} // End of constructor
+
+		/**
+		 * Constructor to instantiate a frame with several maps
+		 * @param maps an arrayList of maps to show
+		 */
+		public DrawEngineFrame(ArrayList<Map> maps) {
+			this(maps.get(0));
+			for (int i = 1; i < maps.size(); i++)
+				addMap(maps.get(i));
+		}
+
+		/**
+		 * Adjust Tile size to fit all the screen
+		 * @param map to adjust to
+		 */
+		private void adjustTileSize(Map map)
+		{
+			// TODO : Adjust tile size
+			/*TILE_SIZE = 48;
+
+			mapContainerPanel.remove(mapPanel);
 			mapPanel = new MapPanel(map);
+			setMapPanel(mapPanel);
+			mapContainerPanel.add(mapPanel);
+			mapContainerPanel.repaint();
+			update();*/
+		}
 
-			mapContainerPanel = new JScrollPane(mapPanel);
-
+        /**
+         * Add MouseListener to given mapPanel
+         * @param mapPanel (MapPanel)
+         */
+		private void setMapPanel(MapPanel mapPanel)
+		{
 			mapPanel.addMouseListener(new MouseAdapter() {
 				/*
                  * On LeftClick : Set InitialPosition ( testing pathfinding )
@@ -367,46 +424,7 @@ public class DrawEngine {
 				}
 			});
 
-			mapContainerPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-			mapContainerPanel.getVerticalScrollBar().setUnitIncrement(10);
 
-			mapContainerPanel.setPreferredSize(new Dimension(Math.min(map.getWidth() * TILE_SIZE,
-					(int)Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 250),
-					map.getHeight() * TILE_SIZE)); // TODO: Hard Coded ...
-
-			gamePanel.add(mapContainerPanel, BorderLayout.CENTER);
-
-			/*Over, clean spaces and resize*/
-			pack();
-			//adjustFrameSize(map);
-		} // End of constructor
-
-		/**
-		 * Constructor to instantiate a frame with several maps
-		 * @param maps an arrayList of maps to show
-		 */
-		public DrawEngineFrame(ArrayList<Map> maps) {
-			this(maps.get(0));
-			for (int i = 1; i < maps.size(); i++)
-				addMap(maps.get(i));
-		}
-
-		/**
-		 * Adjust frame height to given map size and window size
-		 * @param map to adjust to
-		 */
-		private void adjustFrameSize(Map map)
-		{
-			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-			int winHeight = Math.min((int)screenSize.getHeight() - 50, TILE_SIZE * map.getHeight() + TILE_SIZE + 50);
-			int winWidth = (controlPanel != null) ?
-					Math.min((int)screenSize.getWidth(), TILE_SIZE * map.getWidth() + controlPanel.getWidth() + 20):
-					Math.min((int)screenSize.getWidth(), TILE_SIZE * map.getWidth() + 10);
-
-			this.setPreferredSize(new Dimension(winWidth, winHeight));
-
-			pack();
 		}
 
 		/**
@@ -418,12 +436,12 @@ public class DrawEngine {
 
 			// Set on FullScreen
 			setExtendedState(JFrame.MAXIMIZED_BOTH );
-			//adjustFrameSize(maps.get(0));
 
-			setResizable(false);
+			//setResizable(false);
 			contentPane = new JPanel();
-			contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-			contentPane.setLayout(new BorderLayout(5, 0));
+			contentPane.setBorder(new EmptyBorder(5, 10, 5, 10));
+
+			contentPane.setLayout(new GridLayout(1,2,5,0));
 			setContentPane(contentPane);
 		}
 
@@ -480,26 +498,21 @@ public class DrawEngine {
 			mapName.setText(map.getName());
 			update();
 			mapPanel.adjustPanelSize();
-			adjustFrameSize(map);
 			update();
 		}
 
 		/**
-		 * Remove Control Panel from contentPane, and resize window
+		 * Remove Control Panel from contentPane
 		 */
 		private void hideControlPanel()
 		{
 			controlPanel.setVisible(false);
 			contentPane.remove(controlPanel);
 			contentPane.invalidate();
-			Map currentMap = maps.get(mapsCmBox.getSelectedIndex());
-			//adjustFrameSize(currentMap);
-			mapContainerPanel.setPreferredSize(new Dimension(Math.min(currentMap.getWidth() * TILE_SIZE + TILE_SIZE,
-					(int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()),
-					currentMap.getHeight() * TILE_SIZE));
 
-			controlPanel = null;
+			adjustTileSize(maps.get(0));
 		}
+
 		/**
 		 * Convert time to mm:ss format and show on timeLabel
 		 * @param currentTime (float) current time in miliseconds
@@ -554,7 +567,7 @@ public class DrawEngine {
 				graphic = bufferedMap.createGraphics();
 
 				// Load Sprites
-				loadSprites();
+				sprites = loadSprites();
 
 				// draw map
 				drawMap();
@@ -566,15 +579,18 @@ public class DrawEngine {
 			public void adjustPanelSize() {
 				setPreferredSize(new Dimension(map.getWidth() * TILE_SIZE,
 						map.getHeight() * TILE_SIZE));
+
+				if(sprites != null)
+					sprites = loadSprites();
 			}
 
 			public void setMap(Map map) {
 				this.map = map;
 			}
 
-			private void loadSprites() {
+			private ArrayList<BufferedImage> loadSprites() {
             /*Load sprites files */
-				sprites = new ArrayList<>();
+				ArrayList<BufferedImage> sprites = new ArrayList<>();
 
 				final String[] spritesFileNames = {
 						"cat_Sprite.png",
@@ -610,7 +626,7 @@ public class DrawEngine {
 						sprites.add(new BufferedImage(TILE_SIZE, TILE_SIZE, BufferedImage.TYPE_BYTE_INDEXED));
 					}
 				}
-
+				return sprites;
 			}
 
 			private BufferedImage resizeImage(BufferedImage originalImage, int type, int IMG_WIDTH, int IMG_HEIGHT) {
