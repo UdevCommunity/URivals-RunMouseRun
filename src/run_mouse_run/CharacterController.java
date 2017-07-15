@@ -26,13 +26,12 @@ public abstract class CharacterController
 
     public CharacterController(String name, Position initialPosition)
     {
-        destinationPath = new ArrayList<>();
-
         this.name = name;
         this.position = initialPosition;
-        this.moveSpeed = INITIAL_MOVE_SPEED;
-        this.viewDistance = INITIAL_VIEW_DISTANCE;
-        this.map = new Map(String.format("%s Map", name), LevelGenerator.MAP_WIDTH, LevelGenerator.MAP_HEIGHT, Tile.NOT_DISCOVERED);
+        destinationPath = new ArrayList<>();
+        moveSpeed = INITIAL_MOVE_SPEED;
+        viewDistance = INITIAL_VIEW_DISTANCE;
+        map = new Map(String.format("%s Map", name), LevelGenerator.MAP_WIDTH, LevelGenerator.MAP_HEIGHT, Tile.NOT_DISCOVERED);
 
         task = createUpdateTask();
         timer = new Timer();
@@ -107,7 +106,7 @@ public abstract class CharacterController
 
     final private void discoverMap()
     {
-        viewedMap = GameManager.gameManager.getLevelGenerator().getViewedMap(position, viewDistance);
+        Map tempMap = GameManager.gameManager.getLevelGenerator().getViewedMap(position, viewDistance);
     }
 
     final protected ArrayList<Position> computePath(Position destination)
