@@ -718,7 +718,8 @@ public class DrawEngine {
 
 			public void bufferCharacters() {
 				// for each mouse
-				for (Mouse m : GameManager.gameManager.getMouses())
+				/* // Chars are on map now, no need to display them
+				for (Mouse m : gameManager.getMouses())
 				{
 					graphic.drawImage(sprites.get(MOUSE_SPRITE),
 							m.getPosition().getPosX() * TILE_SIZE,

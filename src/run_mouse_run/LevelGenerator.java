@@ -1,12 +1,14 @@
 package run_mouse_run;
 
+import javafx.geometry.Pos;
+
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class LevelGenerator
 {
     private final int MAP_WIDTH_MIN = 30;
-    private final int MAP_WIDTH_MAX = 50;
+    private final int MAP_WIDTH_MAX = 70;
 
     private final int MAP_HEIGHT_MIN = 30;
     private final int MAP_HEIGHT_MAX = 50;
@@ -76,8 +78,13 @@ public class LevelGenerator
             MOUSES_INITIAL_POS = getEmptyPos();
             CATS_INITIAL_POS = getEmptyPos();
         }
-        while( !isPathOkay(MOUSES_INITIAL_POS, CATS_INITIAL_POS) // repeat until path exists
+        while( !isPathOkay(MOUSES_INITIAL_POS, CATS_INITIAL_POS, INITIAL_MINIMUM_DISTANCE) // repeat until path exists
                 );  // And mouses and cats are far enough
+
+        /*Add Mouse and cats to the map */
+        map.setTile(MOUSES_INITIAL_POS.getPosX(), MOUSES_INITIAL_POS.getPosY(), Tile.MOUSE);
+        map.setTile(CATS_INITIAL_POS.getPosX(), CATS_INITIAL_POS.getPosY(), Tile.CAT);
+
 
         /*Spawn cheese*/
         for (int i = 0; i < GameManager.gameManager.CAT_NUMBER+1; i++)
@@ -85,7 +92,7 @@ public class LevelGenerator
             Position cheesePos;
             do{
                 cheesePos = getEmptyPos();
-            } while (!isPathOkay(MOUSES_INITIAL_POS, cheesePos) ||
+            } while (!isPathOkay(MOUSES_INITIAL_POS, cheesePos, INITIAL_MINIMUM_DISTANCE) ||
             map.getTile(cheesePos.getPosX(), cheesePos.getPosY()) == Tile.CHEESE);
 
             // path exists, we add the cheese to the map
@@ -110,11 +117,11 @@ public class LevelGenerator
     /**
      * Checks if path exists, and distance is far enough ( >= INITIAL_MINIMUM_DISTANCE )
      */
-    private boolean isPathOkay(Position src, Position dst)
+    private boolean isPathOkay(Position src, Position dst, int dist)
     {
         ArrayList<Position> path = pathFinder.getShortestPath(map, src, dst);
 
-        if(path.isEmpty() || path.size() < INITIAL_MINIMUM_DISTANCE)
+        if(path.isEmpty() || path.size() < dist)
             return false;
         else
             return true;
@@ -233,6 +240,49 @@ public class LevelGenerator
                 return new Position(x, y);
             }
         }
+    }
+
+    /**
+     * Get a random position far enough from every mouse/cat
+     * @return Position : a valid respawn position
+     */
+    public Position getValidRespawnPosition()
+    {
+        int minDist = INITIAL_MINIMUM_DISTANCE;
+
+        while (minDist > 0)
+        {
+            int tests = 0;
+            /*Try 3 times */
+            while (tests < 3)
+            {
+                Position randomPos = getEmptyPos();
+                boolean okay = true;
+
+                // Check MINIMUM_DISTANCE from mouses
+                for (Mouse m : gameManager.getMouses())
+                {
+                    if (!isPathOkay(randomPos, m.getPosition(), minDist))
+                        okay = false;
+                }
+
+                // Check MINIMUM_DISTANCE from cats
+                for (Cat c : gameManager.getCats())
+                {
+                    if (!isPathOkay(randomPos, c.getPosition(), minDist))
+                        okay = false;
+                }
+
+                if (okay)
+                    return randomPos;
+
+                tests++;
+            }
+            /*If not found, reduce minimal distance*/
+            minDist--;
+        }
+
+        return getEmptyPos(); // if none, ..
     }
 
 }
