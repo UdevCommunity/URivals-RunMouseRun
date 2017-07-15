@@ -296,7 +296,7 @@ public class LevelGenerator
     }
 
     public final Map getViewedMap(Position position, int viewDistance)
-    {
+    {/*
         Map viewMap = new Map("", LevelGenerator.MAP_WIDTH , LevelGenerator.MAP_HEIGHT, Tile.NOT_DISCOVERED);
 
         Position startPoint = new Position(position.getPosX(), position.getPosY());
@@ -304,12 +304,12 @@ public class LevelGenerator
         startPoint.setPosX((startPoint.getPosX() - viewDistance >=0)?startPoint.getPosX() - viewDistance:0);
         startPoint.setPosY((startPoint.getPosX() - viewDistance >=0)?startPoint.getPosY() - viewDistance:0);
 
-        for (int i = 0; i < viewDistance && startPoint.getPosX() + i < LevelGenerator.MAP_WIDTH; i++)
-            for (int j = 0; j < viewDistance && startPoint.getPosY() + j < LevelGenerator.MAP_HEIGHT; j++)
+        for (int i = startPoint.getPosX(); i < startPoint.getPosX()+ viewDistance && startPoint.getPosX() + i < LevelGenerator.MAP_WIDTH; i++)
+            for (int j = startPoint.getPosY(); j < startPoint.getPosY() + viewDistance && startPoint.getPosY() + j < LevelGenerator.MAP_HEIGHT; j++)
             {
                 viewMap.setTile(i, j, (map.getTile(i, j) != Tile.MINE)? map.getTile(i, j): Tile.EMPTY);
             }
 
-        return viewMap;
+        return viewMap;*/ return map.copy();
     }
 }

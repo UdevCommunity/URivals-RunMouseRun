@@ -133,6 +133,9 @@ public abstract class CharacterController
 
         for (int i = 0; i < moveSpeed; i++)
         {
+            if (i > 0)
+                try {Thread.sleep(CONSEQUENT_MOVE_DELAY);} catch (InterruptedException e) {e.printStackTrace();}
+
             if (destinationPath.isEmpty())
                 return;
 

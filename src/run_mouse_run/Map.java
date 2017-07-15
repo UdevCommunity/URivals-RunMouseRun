@@ -66,4 +66,15 @@ public class Map
 
         return cheesesPosition;
     }
+
+    public Map copy()
+    {
+        Map mapCopy = new Map(name, width, height, Tile.NOT_DISCOVERED);
+
+        for (int i = 0; i < width; i++)
+            for (int j = 0; j < height; j++)
+                mapCopy.setTile(i, j, getTile(i, j));
+
+        return mapCopy;
+    }
 }
