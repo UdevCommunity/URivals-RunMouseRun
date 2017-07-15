@@ -11,13 +11,13 @@ public abstract class CharacterController
 
     private String name;
     private Position position;
-    private ArrayList<Position> destinationPath;
+    protected ArrayList<Position> destinationPath;
     private int moveSpeed;
     private int viewDistance;
     private long movePowerupTourLeft = 0;
     private long visionPowerupTourLeft = 0;
-    private Map map;
-    private Map viewedMap;
+    protected Map map;
+    protected Map viewedMap;
 
     private final int CONSEQUENT_MOVE_DELAY = CustomTimer.GAME_SPEED/2; // In milliseconds, the delay between two moves
     private final int UPDATE_FREQUENCE = CustomTimer.GAME_SPEED; // In milliseconds
@@ -120,13 +120,17 @@ public abstract class CharacterController
             }
     }
 
-    final protected void computePath(Position destination)
+    final protected ArrayList<Position> computePath(Map map, Position destination)
     {
-        destinationPath = GameManager.gameManager.getLevelGenerator().getPathFinder().getShortestPath(map, position, destination);
+        return GameManager.gameManager.getLevelGenerator().getPathFinder().getShortestPath(map, position, destination);
     }
 
     final private void move()
     {
+        if (!destinationPath.isEmpty() && (((destinationPath.get(0).getPosX() - position.getPosX()) > 1) ||
+                ((destinationPath.get(0).getPosY() - position.getPosY()) > 1)))
+            GameManager.gameManager.stopGame("Cat Lose", name);
+
         for (int i = 0; i < moveSpeed; i++)
         {
             if (destinationPath.isEmpty())

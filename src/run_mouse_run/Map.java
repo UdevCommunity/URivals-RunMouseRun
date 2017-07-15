@@ -1,5 +1,7 @@
 package run_mouse_run;
 
+import java.util.ArrayList;
+
 /**
  * Created by Oussama on 09/07/2017.
  */
@@ -51,5 +53,17 @@ public class Map
     public String getName()
     {
         return name;
+    }
+
+    public ArrayList<Position> getCheesesPosition()
+    {
+        ArrayList<Position> cheesesPosition = new ArrayList<>();
+
+        for (int i = 0; i < width; i++)
+            for (int j = 0; j < height; j++)
+                if (getTile(i, j) == Tile.CHEESE)
+                    cheesesPosition.add(new Position(i, j));
+
+        return cheesesPosition;
     }
 }
