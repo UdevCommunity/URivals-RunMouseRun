@@ -88,7 +88,7 @@ public class PathFinder {
                 grid[i][j] = new Node(j, i); // j is x, i is y
                 grid[i][j].f = -1;          // init distance to null
 
-                if (map.getTile(j, i) == Tile.WALL)
+                if (map.getTile(j, i) == Tile.WALL || map.getTile(j, i) == Tile.NOT_DISCOVERED)
                     grid[i][j].setPass(false);
                 else
                     grid[i][j].setPass(true);
@@ -420,7 +420,7 @@ public class PathFinder {
                 return neighbor;
             }
         }
-        if (getNode(x + dx, y).pass || getNode(x, y + dy).pass)
+         if (getNode(x + dx, y).pass || getNode(x, y + dy).pass)
         { //moving diagonally, must make sure one of the vertical/horizontal neighbors is open to allow the path
             return jump(new Position(x + dx, y + dy), new Position(x, y));
         } else

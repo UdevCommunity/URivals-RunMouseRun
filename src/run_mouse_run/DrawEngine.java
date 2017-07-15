@@ -18,41 +18,40 @@ public class DrawEngine {
 
 	private ArrayList<DrawEngineFrame> frames;	// All open frames
 
+    private ArrayList<Map> maps;
 
-	public DrawEngine(Map map)
+
+
+    public DrawEngine(Map map)
 	{
+        maps = new ArrayList<>();
+        updateMapsList(map);
+
 		frames = new ArrayList<>();
 		frames.add(new DrawEngineFrame(map));
-	}
 
-	public DrawEngine(ArrayList<Map> maps)
-	{
-		frames = new ArrayList<>();
-		frames.add(new DrawEngineFrame(GameManager.gameManager.getLevelGenerator().getMap()));
-	}
+    }
 
-	public void addMapAll(Map map)
-	{
-		for(DrawEngineFrame frame : frames)
-		{
-			frame.addMap(map);
-		}
-	}
+    private void updateMapsList(Map map)
+    {
+        maps.clear();
+        maps.add(map);
+        // add mouse Maps
+        for(Mouse m: GameManager.gameManager.getMouses())
+            maps.add(m.getViewedMap());
+        // add cat Maps
+        for(Cat c : GameManager.gameManager.getCats())
+            maps.add(c.getViewedMap());
+    }
 
-	public void removeMapAll(Map map)
-	{
-		for(DrawEngineFrame frame : frames)
-		{
-			frame.removeMap(map);
-		}
-	}
-
-	/**
+    /**
 	 * Update all frames
 	 */
 	public void update()
 	{
-		for(DrawEngineFrame frame: frames)
+        updateMapsList(maps.get(0));
+
+        for(DrawEngineFrame frame: frames)
 		{
 			frame.update();
 		}
@@ -77,7 +76,10 @@ public class DrawEngine {
 		for(DrawEngineFrame frame : frames)
 		{
 			frame.changeState("Start Game");
+            frame.updateCmBox();
 		}
+
+		update();
 	}
 
 	private void pauseGame()
@@ -109,7 +111,7 @@ public class DrawEngine {
 	 */
 	private void addNewframe(ArrayList<Map> maps)
 	{
-		DrawEngineFrame newFrame = new DrawEngineFrame(maps);
+		DrawEngineFrame newFrame = new DrawEngineFrame(maps.get(0));
 		newFrame.startGameButton.setText(frames.get(0).startGameButton.getText());
 
 		// We only need one control panel
@@ -133,6 +135,9 @@ public class DrawEngine {
 		frames.add(newFrame);
 	}
 
+    /**
+     * Frame that displays one of the maps in the maps ArrayList
+     */
 	public class DrawEngineFrame extends JFrame {
 
 		public int TILE_SIZE = 32; // Tiles will resize to this value
@@ -144,8 +149,6 @@ public class DrawEngine {
 		private JComboBox<String> mapsCmBox;
 		private JButton startGameButton, btnDrawShortest;
 		private JPanel gamePanel, controlPanel;
-
-		private ArrayList<Map> maps;
 
 		/* For testing path finding */
 		private Position initialPos = new Position(2, 2);
@@ -164,7 +167,6 @@ public class DrawEngine {
 		 */
 		public DrawEngineFrame(Map map)
 		{
-			maps = new ArrayList<>();
 			if (map == null)
 			{
 				map = new Map("Blank map", LevelGenerator.MAP_WIDTH, LevelGenerator.MAP_HEIGHT, Tile.NOT_DISCOVERED);
@@ -255,21 +257,23 @@ public class DrawEngine {
 
 			mapsCmBox.setPreferredSize(new Dimension(120, 20));
 			mapsCmBox.setFont(defaultFont);
-			mapsCmBox.addItem(map.getName());
+
+            //updateCmBox();
+            mapsCmBox.addItem(map.getName());
 
 			mapsCmBox.addItemListener(new ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent e) {
-					String mapName = (String) mapsCmBox.getSelectedItem();
+				    try
+                    {
+                        int i = mapsCmBox.getSelectedIndex();
 
-					// find map
-					for (Map m : maps)
-					{
-						if (m.getName().equals(mapName))
-						{
-							switchToMap(m);
-						}
-					}
+                        switchToMap(maps.get(i));
+                    }
+                    catch (Exception ex)
+                    {
+                        // do nothing
+                    }
 				}
 			});
 			centerPanel.add(mapsCmBox);
@@ -335,9 +339,9 @@ public class DrawEngine {
 						int w = Integer.parseInt(txtMapWidth.getText());
 						int h = Integer.parseInt(txtMapHeight.getText());
 
-						removeMapAll(GameManager.gameManager.getLevelGenerator().getMap()); // removeLevelMap
+						maps.remove(GameManager.gameManager.getLevelGenerator().getMap()); // removeLevelMap
 						GameManager.gameManager.getLevelGenerator().setMap(w, h);
-						addMapAll(GameManager.gameManager.getLevelGenerator().getMap()); // add new LevelMap
+						maps.add(0, GameManager.gameManager.getLevelGenerator().getMap()); // add new LevelMap
 
 						update();
 					}
@@ -400,18 +404,21 @@ public class DrawEngine {
 
 		} // End of constructor
 
-		/**
-		 * Constructor to instantiate a frame with several maps
-		 * @param maps an arrayList of maps to show
-		 */
-		public DrawEngineFrame(ArrayList<Map> maps) {
-			this(maps.get(0));
+        /**
+         *
+         */
+        private void updateCmBox()
+        {
+            if(mapsCmBox == null) return;
 
-			for (int i = 1; i < maps.size(); i++)
-				addMap(maps.get(i));
-		}
+            mapsCmBox.removeAllItems();
+            for(Map m : maps)
+            {
+                mapsCmBox.addItem(m.getName());
+            }
+        }
 
-		/**
+        /**
 		 * Adjust Tile size to fit all the screen
 		 * @param map to adjust to
          * @param size (int)
@@ -518,23 +525,6 @@ public class DrawEngine {
 			update();
 		}
 
-		/**
-		 * Add map to maps list and ComboBox
-		 * @param map well ... a MAP
-		 */
-		public void addMap(Map map) {
-			maps.add(map);
-			mapsCmBox.addItem(map.getName());
-		}
-
-		/**
-		 * Remove map from list and comboBox
-		 * @param map (Map) map to remove
-		 */
-		public void removeMap(Map map) {
-			maps.remove(map);
-			mapsCmBox.removeItem(map.getName());
-		}
 
 		/**
 		 * Set map to show in mapPanel
@@ -578,11 +568,12 @@ public class DrawEngine {
 			mapPanel.update();
 			updateTime(GameManager.gameManager.getTimer().getCurrentTime().toString());
 
+			/*
 			for (Cat cat : GameManager.gameManager.getCats())
 				mapPanel.drawPath(cat.getDestinationPath());
 			for (Mouse mouse : GameManager.gameManager.getMouses())
 				mapPanel.drawPath(mouse.getDestinationPath());
-
+            */
 
 		}
 
@@ -751,11 +742,16 @@ public class DrawEngine {
 				if (path == null || path.isEmpty()) return;
 
 				graphic.setColor(Color.BLUE);
+                Composite composite = graphic.getComposite();
+
+                graphic.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.25f));
 				for (Position t : path)
 				{
 					graphic.fillRect(t.getPosX() * TILE_SIZE, t.getPosY() * TILE_SIZE,
 							TILE_SIZE, TILE_SIZE);
 				}
+
+				graphic.setComposite(composite);
 			}
 
 			private void bufferObjects() {

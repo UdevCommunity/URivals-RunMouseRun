@@ -19,7 +19,7 @@ public class GameManager /// TODO : access via static VS references
 
     private final LevelGenerator level;
     private final PhysicsEngine physicsEngine;
-    private final DrawEngine frame;
+    private final DrawEngine drawEngine;
     private final CustomTimer timer;
 
     private GameManager()
@@ -31,7 +31,7 @@ public class GameManager /// TODO : access via static VS references
 
         level = new LevelGenerator();
         physicsEngine = new PhysicsEngine();
-        frame = new DrawEngine(level.getMap());
+        drawEngine = new DrawEngine(level.getMap());
         timer = new CustomTimer();
     }
 
@@ -59,7 +59,7 @@ public class GameManager /// TODO : access via static VS references
                 securityManager.checkForImportGameManager("Mouses");
 
                 GameManager gameManager = new GameManager();
-                gameManager.frame.setVisible(true);
+                gameManager.drawEngine.setVisible(true);
             }
         });
     }
@@ -72,12 +72,12 @@ public class GameManager /// TODO : access via static VS references
         {
             case "Cat Win":
             case "Mouse Win":
-                frame.displayEndGameScreen(characterName + " Win !!");
+                drawEngine.displayEndGameScreen(characterName + " Win !!");
                 break;
             case "Cat Lose":
-                frame.displayEndGameScreen(characterName + " Ghouchaaaach fa9oulek ..");
+                drawEngine.displayEndGameScreen(characterName + " Ghouchaaaach fa9oulek ..");
             case "Everybody Lose":
-                frame.displayEndGameScreen("Losers .. losers everywhere ..");
+                drawEngine.displayEndGameScreen("Losers .. losers everywhere ..");
                 break;
         }
     }
@@ -114,7 +114,7 @@ public class GameManager /// TODO : access via static VS references
 
     public DrawEngine getDrawEngine()
     {
-        return frame;
+        return drawEngine;
     }
 
     public CustomTimer getTimer()
