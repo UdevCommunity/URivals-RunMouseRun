@@ -50,6 +50,11 @@ public class LevelGenerator
 
     }
 
+    public PathFinder getPathFinder()
+    {
+        return pathFinder;
+    }
+
     public Map getMap()
     {
         return map;
@@ -292,7 +297,7 @@ public class LevelGenerator
 
     public final Map getViewedMap(Position position, int viewDistance)
     {
-        Map viewMap = new Map("", viewDistance +1 , viewDistance+1, Tile.EMPTY);
+        Map viewMap = new Map("", LevelGenerator.MAP_WIDTH , LevelGenerator.MAP_HEIGHT, Tile.NOT_DISCOVERED);
 
         Position startPoint = new Position(position.getPosX(), position.getPosY());
 

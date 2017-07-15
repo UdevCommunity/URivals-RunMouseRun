@@ -106,12 +106,23 @@ public abstract class CharacterController
 
     final private void discoverMap()
     {
-        Map tempMap = GameManager.gameManager.getLevelGenerator().getViewedMap(position, viewDistance);
+        viewedMap = GameManager.gameManager.getLevelGenerator().getViewedMap(position, viewDistance);
+
+        for (int i = 0; i < viewedMap.getWidth(); i++)
+            for (int j = 0; j < viewedMap.getHeight(); j++)
+            {
+                Tile viewedTile = viewedMap.getTile(i, j);
+
+                if(viewedTile == Tile.NOT_DISCOVERED)
+                    viewedMap.setTile(i, j, map.getTile(i, j));
+                else
+                    map.setTile(i, j, (viewedTile != Tile.CAT && viewedTile != Tile.MOUSE)? viewedTile: Tile.EMPTY);
+            }
     }
 
-    final protected ArrayList<Position> computePath(Position destination)
+    final protected void computePath(Position destination)
     {
-        return null;
+        destinationPath = GameManager.gameManager.getLevelGenerator().getPathFinder().getShortestPath(map, position, destination);
     }
 
     final private void move()

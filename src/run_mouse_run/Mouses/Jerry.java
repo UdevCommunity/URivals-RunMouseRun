@@ -10,4 +10,12 @@ public class Jerry extends Mouse
     {
         super(name, initialPosition);
     }
+
+    @Override
+    protected void computeDecision()
+    {
+        super.computeDecision();
+
+
+    }
 }
