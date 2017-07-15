@@ -733,7 +733,7 @@ public class DrawEngine {
 							c.getPosition().getPosX() * TILE_SIZE,
 							c.getPosition().getPosY() * TILE_SIZE,
 							null);
-				}
+				}*/
 			}
 
 			private void bufferPath(ArrayList<Position> path) {

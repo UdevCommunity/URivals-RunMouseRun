@@ -285,4 +285,23 @@ public class LevelGenerator
         return getEmptyPos(); // if none, ..
     }
 
+    public final Map getViewedMap(Position position, int viewDistance)
+    {
+        Map viewMap = new Map("", viewDistance +1 , viewDistance+1, Tile.EMPTY);
+
+        //cleanMap(viewMap, viewDistance + 1, viewDistance + 1);
+
+        Position startPoint = new Position(position.getPosX(), position.getPosY());
+
+        startPoint.setPosX((startPoint.getPosX() - viewDistance >=0)?startPoint.getPosX() - viewDistance:0);
+        startPoint.setPosY((startPoint.getPosX() - viewDistance >=0)?startPoint.getPosY() - viewDistance:0);
+
+        for (int i = 0; i < viewDistance && startPoint.getPosX() + i < LevelGenerator.MAP_WIDTH; i++)
+            for (int j = 0; j < viewDistance && startPoint.getPosY() + j < LevelGenerator.MAP_HEIGHT; j++)
+            {
+                /// TODO : getViewedMap
+            }
+
+        return viewMap;
+    }
 }
