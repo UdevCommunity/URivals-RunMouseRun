@@ -762,10 +762,8 @@ public class DrawEngine {
 					for (int j = 0; j < map.getWidth(); j++)
 					{
 						// Choose tile
-
 						switch (map.getTile(j, i))
 						{
-
 							case NOT_DISCOVERED:
 								graphic.drawImage(sprites.get(NOT_DISCOVERED_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
 								break;
@@ -795,6 +793,14 @@ public class DrawEngine {
 							case MINE:
 								graphic.drawImage(sprites.get(EMPTY_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
 								graphic.drawImage(sprites.get(MINE_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
+								break;
+							case CAT:
+								graphic.drawImage(sprites.get(EMPTY_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
+								graphic.drawImage(sprites.get(CAT_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
+								break;
+							case MOUSE:
+								graphic.drawImage(sprites.get(EMPTY_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
+								graphic.drawImage(sprites.get(MOUSE_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
 								break;
 						}
 					}

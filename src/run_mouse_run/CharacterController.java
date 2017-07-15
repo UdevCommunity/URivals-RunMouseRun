@@ -27,7 +27,9 @@ public abstract class CharacterController
 
     public CharacterController(String name, Position initialPosition)
     {
-        this.gameManager = gameManager;
+        destinationPath = new ArrayList<>();
+
+        this.gameManager = GameManager.gameManager;
         this.name = name;
         this.position = initialPosition;
         this.moveSpeed = INITIAL_MOVE_SPEED;
