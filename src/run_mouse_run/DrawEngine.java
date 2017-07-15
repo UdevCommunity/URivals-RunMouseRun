@@ -31,7 +31,7 @@ public class DrawEngine {
 		frames.add(new DrawEngineFrame(GameManager.gameManager.getLevelGenerator().getMap()));
 	}
 
-	public void addMap(Map map)
+	public void addMapAll(Map map)
 	{
 		for(DrawEngineFrame frame : frames)
 		{
@@ -39,7 +39,7 @@ public class DrawEngine {
 		}
 	}
 
-	public void removeMap(Map map)
+	public void removeMapAll(Map map)
 	{
 		for(DrawEngineFrame frame : frames)
 		{
@@ -330,8 +330,21 @@ public class DrawEngine {
 			btnNewLevel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					/// TODO : implement new Level button
-					// create a new map with TextFields dimensions
+					try
+					{
+						int w = Integer.parseInt(txtMapWidth.getText());
+						int h = Integer.parseInt(txtMapHeight.getText());
+
+						removeMapAll(GameManager.gameManager.getLevelGenerator().getMap()); // removeLevelMap
+						GameManager.gameManager.getLevelGenerator().setMap(w, h);
+						addMapAll(GameManager.gameManager.getLevelGenerator().getMap()); // add new LevelMap
+
+						update();
+					}
+					catch (Exception ex)
+					{
+						System.err.println("Error " + ex.getMessage());
+					}
 				}
 			});
 

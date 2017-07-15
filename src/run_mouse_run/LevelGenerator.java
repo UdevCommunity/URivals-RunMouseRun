@@ -55,6 +55,11 @@ public class LevelGenerator
         return map;
     }
 
+    public void setMap(int width, int height)
+    {
+        map = generateRandomMap(width, height);
+        setInitialPosition();
+    }
     public void spawnVisionPowerup()
     {
 
