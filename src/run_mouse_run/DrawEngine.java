@@ -418,7 +418,6 @@ public class DrawEngine {
 		 */
 		private void adjustTileSize(Map map, int size)
 		{
-			// TODO : Adjust tile size
             TILE_SIZE = size;
 			gamePanel.remove(mapContainerPanel);
             addMapContainerPanel(map);
@@ -467,10 +466,10 @@ public class DrawEngine {
 				}
 			});
 
-            // Speed up scrolling TODO : Smooth scrolling value
+            // Speed up scrolling
             mapContainerPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            mapContainerPanel.getVerticalScrollBar().setUnitIncrement(TILE_SIZE/4);
-            mapContainerPanel.getHorizontalScrollBar().setUnitIncrement(TILE_SIZE/4);
+            mapContainerPanel.getVerticalScrollBar().setUnitIncrement(TILE_SIZE/2);
+            mapContainerPanel.getHorizontalScrollBar().setUnitIncrement(TILE_SIZE/2);
 
             gamePanel.add(mapContainerPanel, BorderLayout.CENTER);
 		}
@@ -572,7 +571,7 @@ public class DrawEngine {
 
 		/**
 		 * Refresh map ( draw level, characters and objects )
-		 * Draw Cat and mouse DestinationPath /// TODO
+		 * Draw Cat and mouse DestinationPath
 		 */
 		public void update() /// TODO : draw cat computed path
 		{
@@ -731,8 +730,7 @@ public class DrawEngine {
 
 			public void bufferCharacters() {
 				// for each mouse
-				/* // Chars are on map now, no need to display them
-				for (Mouse m : gameManager.getMouses())
+				for (Mouse m : GameManager.gameManager.getMouses())
 				{
 					graphic.drawImage(sprites.get(MOUSE_SPRITE),
 							m.getPosition().getPosX() * TILE_SIZE,
@@ -746,7 +744,7 @@ public class DrawEngine {
 							c.getPosition().getPosX() * TILE_SIZE,
 							c.getPosition().getPosY() * TILE_SIZE,
 							null);
-				}*/
+				}
 			}
 
 			private void bufferPath(ArrayList<Position> path) {
@@ -809,11 +807,9 @@ public class DrawEngine {
 								break;
 							case CAT:
 								graphic.drawImage(sprites.get(EMPTY_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
-								graphic.drawImage(sprites.get(CAT_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
 								break;
 							case MOUSE:
 								graphic.drawImage(sprites.get(EMPTY_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
-								graphic.drawImage(sprites.get(MOUSE_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
 								break;
 						}
 					}
