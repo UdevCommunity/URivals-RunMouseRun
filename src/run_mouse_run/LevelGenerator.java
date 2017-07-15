@@ -7,7 +7,7 @@ public class LevelGenerator
 {
     private GameManager gameManager;
     private final int MAP_WIDTH_MIN = 30;
-    private final int MAP_WIDTH_MAX = 50;
+    private final int MAP_WIDTH_MAX = 70;
 
     private final int MAP_HEIGHT_MIN = 30;
     private final int MAP_HEIGHT_MAX = 50;
@@ -233,6 +233,23 @@ public class LevelGenerator
             if (map.getTile(x, y) == Tile.EMPTY)
             {
                 return new Position(x, y);
+            }
+        }
+    }
+
+    public Position getValidRespawnPosition()
+    {
+        while(true)
+        {
+            Position randomPos = getEmptyPos();
+            try
+            {
+                if (isPathOkay(randomPos, gameManager.getMouses().get(0).getPosition()))
+                    return randomPos;
+            }catch (Exception e)    // si y a pas de souris, get a valid path without checking distance
+            {
+                if (isPathOkay(randomPos, MOUSES_INITIAL_POS))
+                    return randomPos;
             }
         }
     }
