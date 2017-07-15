@@ -260,14 +260,14 @@ public class LevelGenerator
                 boolean okay = true;
 
                 // Check MINIMUM_DISTANCE from mouses
-                for (Mouse m : gameManager.getMouses())
+                for (Mouse m : GameManager.gameManager.getMouses())
                 {
                     if (!isPathOkay(randomPos, m.getPosition(), minDist))
                         okay = false;
                 }
 
                 // Check MINIMUM_DISTANCE from cats
-                for (Cat c : gameManager.getCats())
+                for (Cat c : GameManager.gameManager.getCats())
                 {
                     if (!isPathOkay(randomPos, c.getPosition(), minDist))
                         okay = false;
