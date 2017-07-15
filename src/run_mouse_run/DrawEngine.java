@@ -258,8 +258,7 @@ public class DrawEngine {
 			mapsCmBox.setPreferredSize(new Dimension(120, 20));
 			mapsCmBox.setFont(defaultFont);
 
-            //updateCmBox();
-            mapsCmBox.addItem(map.getName());
+            updateCmBox();
 
 			mapsCmBox.addItemListener(new ItemListener() {
 				@Override
