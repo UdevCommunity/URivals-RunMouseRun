@@ -9,7 +9,6 @@ public abstract class CharacterController
     private final int INITIAL_MOVE_SPEED = 1;
     private final int INITIAL_VIEW_DISTANCE = 5;
 
-    private GameManager gameManager;
     private String name;
     private Position position;
     private ArrayList<Position> destinationPath;
@@ -29,7 +28,6 @@ public abstract class CharacterController
     {
         destinationPath = new ArrayList<>();
 
-        this.gameManager = GameManager.gameManager;
         this.name = name;
         this.position = initialPosition;
         this.moveSpeed = INITIAL_MOVE_SPEED;
@@ -73,7 +71,7 @@ public abstract class CharacterController
 
     final public void die()
     {
-        position = gameManager.getLevelGenerator().getValidRespawnPosition();
+        position = GameManager.gameManager.getLevelGenerator().getValidRespawnPosition();
         destinationPath.clear();
         moveSpeed = INITIAL_MOVE_SPEED;
         viewDistance = INITIAL_VIEW_DISTANCE;
@@ -88,8 +86,8 @@ public abstract class CharacterController
         viewDistance = INITIAL_VIEW_DISTANCE + 1;
         visionPowerupTourLeft = 10;
 
-        if(gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY()) != Tile.POWERUP_VISION)
-            gameManager.stopGame("Cat Lose", name);
+        if(GameManager.gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY()) != Tile.POWERUP_VISION)
+            GameManager.gameManager.stopGame("Cat Lose", name);
     }
 
     final public void applyMoveSpeedPowerup()
@@ -97,8 +95,8 @@ public abstract class CharacterController
         moveSpeed = INITIAL_MOVE_SPEED + 1;
         movePowerupTourLeft = 10;
 
-        if(gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY()) != Tile.POWERUP_SPEED)
-            gameManager.stopGame("Cat Lose", name);
+        if(GameManager.gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY()) != Tile.POWERUP_SPEED)
+            GameManager.gameManager.stopGame("Cat Lose", name);
     }
 
     final private void reducePowerupsTour()
@@ -109,7 +107,7 @@ public abstract class CharacterController
 
     final private void discoverMap()
     {
-        gameManager.getLevelGenerator().getViewedMap(position, viewDistance);
+        viewedMap = GameManager.gameManager.getLevelGenerator().getViewedMap(position, viewDistance);
     }
 
     final protected ArrayList<Position> computePath(Position destination)
@@ -124,7 +122,7 @@ public abstract class CharacterController
             if (destinationPath.isEmpty())
                 return;
 
-            gameManager.getLevelGenerator().getMap().setTile(position.getPosX(), position.getPosY(), Tile.EMPTY);
+            GameManager.gameManager.getLevelGenerator().getMap().setTile(position.getPosX(), position.getPosY(), Tile.EMPTY);
             position = destinationPath.remove(0);
         }
 
