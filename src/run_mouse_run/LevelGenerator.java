@@ -83,6 +83,11 @@ public class LevelGenerator
         while( !isPathOkay(MOUSES_INITIAL_POS, CATS_INITIAL_POS, INITIAL_MINIMUM_DISTANCE) // repeat until path exists
                 );  // And mouses and cats are far enough
 
+        /*Add Mouse and cats to the map */
+        map.setTile(MOUSES_INITIAL_POS.getPosX(), MOUSES_INITIAL_POS.getPosY(), Tile.MOUSE);
+        map.setTile(CATS_INITIAL_POS.getPosX(), CATS_INITIAL_POS.getPosY(), Tile.CAT);
+
+
         /*Spawn cheese*/
         for (int i = 0; i < gameManager.CAT_NUMBER+1; i++)
         {

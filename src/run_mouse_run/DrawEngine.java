@@ -721,6 +721,7 @@ public class DrawEngine {
 
 			public void bufferCharacters() {
 				// for each mouse
+				/* // Chars are on map now, no need to display them
 				for (Mouse m : gameManager.getMouses())
 				{
 					graphic.drawImage(sprites.get(MOUSE_SPRITE),
@@ -735,7 +736,7 @@ public class DrawEngine {
 							c.getPosition().getPosX() * TILE_SIZE,
 							c.getPosition().getPosY() * TILE_SIZE,
 							null);
-				}
+				}*/
 			}
 
 			private void bufferPath(ArrayList<Position> path) {
@@ -797,6 +798,14 @@ public class DrawEngine {
 							case MINE:
 								graphic.drawImage(sprites.get(EMPTY_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
 								graphic.drawImage(sprites.get(MINE_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
+								break;
+							case CAT:
+								graphic.drawImage(sprites.get(EMPTY_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
+								graphic.drawImage(sprites.get(CAT_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
+								break;
+							case MOUSE:
+								graphic.drawImage(sprites.get(EMPTY_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
+								graphic.drawImage(sprites.get(MOUSE_SPRITE), j * TILE_SIZE, i * TILE_SIZE, null);
 								break;
 						}
 					}
