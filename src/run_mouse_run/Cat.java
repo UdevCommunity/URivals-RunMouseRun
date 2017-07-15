@@ -1,9 +1,10 @@
 package run_mouse_run;
 
-public class Cat extends CharacterController
+public abstract class Cat extends CharacterController
 {
-    public Cat(GameManager gameManager, String name, Position initialPosition)
+    public Cat(String name, Position initialPosition)
     {
-        super(gameManager, name, initialPosition);
+        super(name, initialPosition);
     }
+
 }

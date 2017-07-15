@@ -15,23 +15,20 @@ import java.util.ArrayList;
 public class DrawEngine {
 
 	private PathFinder pathFinder;
-	private GameManager gameManager;
 
 	private ArrayList<DrawEngineFrame> frames;	// All open frames
 
 
-	public DrawEngine(GameManager gameManager, Map map)
+	public DrawEngine(Map map)
 	{
 		frames = new ArrayList<>();
-		this.gameManager = gameManager;
 		frames.add(new DrawEngineFrame(map));
 	}
 
-	public DrawEngine(GameManager gameManager, ArrayList<Map> maps)
+	public DrawEngine(ArrayList<Map> maps)
 	{
 		frames = new ArrayList<>();
-		this.gameManager = gameManager;
-		frames.add(new DrawEngineFrame(gameManager.getLevelGenerator().getMap()));
+		frames.add(new DrawEngineFrame(GameManager.gameManager.getLevelGenerator().getMap()));
 	}
 
 	public void addMap(Map map)
@@ -76,7 +73,7 @@ public class DrawEngine {
 	 */
 	private void startGame()
 	{
-		gameManager.startGame();
+		GameManager.gameManager.startGame();
 		for(DrawEngineFrame frame : frames)
 		{
 			frame.changeState("Start Game");
@@ -85,7 +82,7 @@ public class DrawEngine {
 
 	private void pauseGame()
 	{
-		gameManager.pauseGame();
+		GameManager.gameManager.pauseGame();
 		for(DrawEngineFrame frame: frames)
 		{
 			frame.changeState("Pause Game");
@@ -94,7 +91,7 @@ public class DrawEngine {
 
 	private void resumeGame()
 	{
-		gameManager.resumeGame();
+		GameManager.gameManager.resumeGame();
 		for(DrawEngineFrame frame: frames)
 		{
 			frame.changeState("Resume Game");
@@ -567,11 +564,11 @@ public class DrawEngine {
 		public void update() /// TODO : draw cat computed path
 		{
 			mapPanel.update();
-			updateTime(gameManager.getTimer().getCurrentTime().toString());
+			updateTime(GameManager.gameManager.getTimer().getCurrentTime().toString());
 
-			for (Cat cat : gameManager.getCats())
+			for (Cat cat : GameManager.gameManager.getCats())
 				mapPanel.drawPath(cat.getDestinationPath());
-			for (Mouse mouse : gameManager.getMouses())
+			for (Mouse mouse : GameManager.gameManager.getMouses())
 				mapPanel.drawPath(mouse.getDestinationPath());
 
 
@@ -721,7 +718,7 @@ public class DrawEngine {
 
 			public void bufferCharacters() {
 				// for each mouse
-				for (Mouse m : gameManager.getMouses())
+				for (Mouse m : GameManager.gameManager.getMouses())
 				{
 					graphic.drawImage(sprites.get(MOUSE_SPRITE),
 							m.getPosition().getPosX() * TILE_SIZE,
@@ -729,7 +726,7 @@ public class DrawEngine {
 							null);
 				}
 				// for each cat
-				for (Cat c : gameManager.getCats())
+				for (Cat c : GameManager.gameManager.getCats())
 				{
 					graphic.drawImage(sprites.get(CAT_SPRITE),
 							c.getPosition().getPosX() * TILE_SIZE,

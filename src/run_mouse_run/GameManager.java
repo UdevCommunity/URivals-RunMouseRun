@@ -1,11 +1,16 @@
 package run_mouse_run;
 
+import run_mouse_run.Mouses.Jerry;
+import run_mouse_run.Cats.Tom;
+
 import java.awt.*;
 import java.util.ArrayList;
 
 
 public class GameManager /// TODO : access via static VS references
 {
+    static GameManager gameManager;
+
     public final int CAT_NUMBER = 2;
     public final int MOUSE_NUMBER = 1;
 
@@ -19,23 +24,25 @@ public class GameManager /// TODO : access via static VS references
 
     private GameManager()
     {
+        gameManager = this;
+
         cats = new ArrayList<>();
         mouses = new ArrayList<>();
 
-        level = new LevelGenerator(this);
-        physicsEngine = new PhysicsEngine(this);
-        frame = new DrawEngine(this, level.getMap());
-        timer = new CustomTimer(this);
+        level = new LevelGenerator();
+        physicsEngine = new PhysicsEngine();
+        frame = new DrawEngine(level.getMap());
+        timer = new CustomTimer();
     }
 
     public void startGame()
     {
         // Instantiate mouses (do not use a loop, here we may instantiate mouses from different classes)
-        mouses.add(new Mouse(this, "Jerry", LevelGenerator.MOUSES_INITIAL_POS));
+        mouses.add(new Jerry("Jerry", LevelGenerator.MOUSES_INITIAL_POS));
 
         // Instantiate cats (do not use a loop, here we may instantiate cats from different classes)
-        cats.add(new Cat(this, "Tom", LevelGenerator.CATS_INITIAL_POS));
-        cats.add(new Cat(this, "Tom2", LevelGenerator.CATS_INITIAL_POS));
+        cats.add(new Tom("Tom", LevelGenerator.CATS_INITIAL_POS));
+        cats.add(new Tom("Tom2", LevelGenerator.CATS_INITIAL_POS));
 
         // Start Timer
         timer.startTimer();
@@ -47,6 +54,10 @@ public class GameManager /// TODO : access via static VS references
         {
             public void run()
             {
+                SecurityManager securityManager = new SecurityManager();
+                securityManager.checkForImportGameManager("Cats");
+                securityManager.checkForImportGameManager("Mouses");
+
                 GameManager gameManager = new GameManager();
                 gameManager.frame.setVisible(true);
             }
@@ -63,6 +74,8 @@ public class GameManager /// TODO : access via static VS references
             case "Mouse Win":
                 frame.displayEndGameScreen(characterName + " Win !!");
                 break;
+            case "Cat Lose":
+                frame.displayEndGameScreen(characterName + " Ghouchaaaach fa9oulek ..");
             case "Everybody Lose":
                 frame.displayEndGameScreen("Losers .. losers everywhere ..");
                 break;

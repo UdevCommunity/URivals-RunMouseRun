@@ -4,23 +4,22 @@ import java.util.ArrayList;
 
 public class PhysicsEngine
 {
-    private GameManager gameManager;
     private Map levelMap;
     private ArrayList<Cat> cats;
     private ArrayList<Mouse> mouses;
 
-    public PhysicsEngine(GameManager gameManager)
+    public PhysicsEngine()
     {
-        this.gameManager = gameManager;
-        this.levelMap = gameManager.getLevelGenerator().getMap();
-        this.cats = gameManager.getCats();
-        this.mouses = gameManager.getMouses();
+        this.levelMap = GameManager.gameManager.getLevelGenerator().getMap();
+        this.cats = GameManager.gameManager.getCats();
+        this.mouses = GameManager.gameManager.getMouses();
     }
 
     public void update()
     {
-        checkIsCatsOnSpecialTile();
+        // Check in this order, if a cat is hiding behind a cheese and mouse reach it, mouse win
         checkIsMouseOnSpecialTile();
+        checkIsCatsOnSpecialTile();
     }
 
     private void checkIsCatsOnSpecialTile()
@@ -32,7 +31,7 @@ public class PhysicsEngine
             switch (tileCatIsStandingOn)
             {
                 case MOUSE:
-                    gameManager.stopGame("Cat Win", cat.getName());
+                    GameManager.gameManager.stopGame("Cat Win", cat.getName());
                     break;
                 case MINE:
                     tileCatIsStandingOn = Tile.EMPTY;
@@ -41,11 +40,11 @@ public class PhysicsEngine
                     break;
                 case POWERUP_VISION:
                     cat.applyVisionPowerUp();
-                    gameManager.getLevelGenerator().spawnVisionPowerup();
+                    GameManager.gameManager.getLevelGenerator().spawnVisionPowerup();
                     break;
                 case POWERUP_SPEED:
                     cat.applyMoveSpeedPowerup();
-                    gameManager.getLevelGenerator().spawnSpeedPowerup();
+                    GameManager.gameManager.getLevelGenerator().spawnSpeedPowerup();
                     break;
             }
 
@@ -64,14 +63,14 @@ public class PhysicsEngine
             switch (tileMouseIsStandingOn)
             {
                 case CHEESE:
-                    gameManager.stopGame("Mouse Win", mouse.getName());
+                    GameManager.gameManager.stopGame("Mouse Win", mouse.getName());
                     break;
                 case CAT:
                     for (Cat winningCat: cats)
                     {
                         if(Position.comparePosition(mouse.getPosition(), winningCat.getPosition()))
                         {
-                            gameManager.stopGame("Cat Win", winningCat.getName());
+                            GameManager.gameManager.stopGame("Cat Win", winningCat.getName());
                         }
                     }
                     break;
@@ -82,11 +81,11 @@ public class PhysicsEngine
                     break;
                 case POWERUP_VISION:
                     mouse.applyVisionPowerUp();
-                    gameManager.getLevelGenerator().spawnVisionPowerup();
+                    GameManager.gameManager.getLevelGenerator().spawnVisionPowerup();
                     break;
                 case POWERUP_SPEED:
                     mouse.applyMoveSpeedPowerup();
-                    gameManager.getLevelGenerator().spawnSpeedPowerup();
+                    GameManager.gameManager.getLevelGenerator().spawnSpeedPowerup();
                     break;
             }
 

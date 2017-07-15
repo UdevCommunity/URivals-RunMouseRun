@@ -8,20 +8,15 @@ import java.util.TimerTask;
 
 public class CustomTimer
 {
-    private GameManager gameManager;
     private Time currentTime = new Time(0); // In milliseconds
     public static final int GAME_SPEED = 1000; // In milliseconds
     public static final int UPDATE_FREQUENCE = GAME_SPEED/4; // In milliseconds
-    public static final int POWERUP_DURABILITY = 10000; // In milliseconds
     private final long TIME_LIMIT = 180000; // In milliseconds
     private Timer timer;
     private TimerTask task;
 
-
-    public CustomTimer(GameManager gameManager)
+    public CustomTimer()
     {
-        this.gameManager = gameManager;
-
         task = createUpdateTask();
         timer = new Timer();
     }
@@ -37,11 +32,11 @@ public class CustomTimer
 
                 if (currentTime.getTime() > TIME_LIMIT)
                 {
-                    gameManager.stopGame("Everybody Lose", "");
+                    GameManager.gameManager.stopGame("Everybody Lose", "");
                 }
 
-                gameManager.getPhysicsEngine().update();
-                gameManager.getDrawEngine().update();
+                GameManager.gameManager.getPhysicsEngine().update();
+                GameManager.gameManager.getDrawEngine().update();
             }
         };
     }
@@ -49,17 +44,35 @@ public class CustomTimer
     public void startTimer()
     {
         timer.scheduleAtFixedRate(task, 0, UPDATE_FREQUENCE);
+
+        for (Mouse mouse: GameManager.gameManager.getMouses())
+            mouse.startTimer();
+
+        for (Cat cat: GameManager.gameManager.getCats())
+            cat.startTimer();
     }
     public void stopTimer()
     {
         timer.cancel();
+
+        for (Mouse mouse: GameManager.gameManager.getMouses())
+            mouse.stopTimer();
+
+        for (Cat cat: GameManager.gameManager.getCats())
+            cat.stopTimer();
     }
 
     public void resumeTimer()
     {
         task = createUpdateTask();
         timer = new Timer();
-        timer.scheduleAtFixedRate(task, 0, GAME_SPEED/4);
+        timer.scheduleAtFixedRate(task, 0, UPDATE_FREQUENCE);
+
+        for (Mouse mouse: GameManager.gameManager.getMouses())
+            mouse.resumeTimer();
+
+        for (Cat cat: GameManager.gameManager.getCats())
+            cat.resumeTimer();
     }
 
     public Time getCurrentTime()
