@@ -42,14 +42,15 @@ public class Jerry extends Mouse
             {
                 System.out.print(destinationPath.get(i).getPosX() + " " + destinationPath.get(i).getPosY() + "\n");
             }
-        }/*
+        }
         else
         {
             do
             {
+
                 int i = ThreadLocalRandom.current().nextInt(0, viewedMap.getWidth());
                 int j = ThreadLocalRandom.current().nextInt(0, viewedMap.getHeight());
-
+                System.out.print("\nSearch..." + i + " " + j + "\n");
                 Tile viewedTile = viewedMap.getTile(i, j);
 
                 if(viewedTile == Tile.NOT_DISCOVERED || viewedTile == Tile.WALL)
@@ -60,7 +61,7 @@ public class Jerry extends Mouse
 
                 break;
             }while (true);
-        }*/
+        }
 
     }
 }

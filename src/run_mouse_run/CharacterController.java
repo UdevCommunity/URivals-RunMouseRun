@@ -122,7 +122,7 @@ public abstract class CharacterController
 
     final protected ArrayList<Position> computePath(Map map, Position destination)
     {
-        return GameManager.gameManager.getLevelGenerator().getPathFinder().getShortestPath(map, position, destination);
+        return GameManager.gameManager.getLevelGenerator().getPathFinder().getShortestPath(map, destination, position);
     }
 
     final private void move()
