@@ -33,6 +33,7 @@ public class DrawEngine {
 
 	public void addMapAll(Map map)
 	{
+	    if(map == null) return;
 		for(DrawEngineFrame frame : frames)
 		{
 			frame.addMap(map);
@@ -41,6 +42,7 @@ public class DrawEngine {
 
 	public void removeMapAll(Map map)
 	{
+        if(map == null) return;
 		for(DrawEngineFrame frame : frames)
 		{
 			frame.removeMap(map);
@@ -578,11 +580,12 @@ public class DrawEngine {
 			mapPanel.update();
 			updateTime(GameManager.gameManager.getTimer().getCurrentTime().toString());
 
+			/*
 			for (Cat cat : GameManager.gameManager.getCats())
 				mapPanel.drawPath(cat.getDestinationPath());
 			for (Mouse mouse : GameManager.gameManager.getMouses())
 				mapPanel.drawPath(mouse.getDestinationPath());
-
+            */
 
 		}
 
@@ -751,11 +754,16 @@ public class DrawEngine {
 				if (path == null || path.isEmpty()) return;
 
 				graphic.setColor(Color.BLUE);
+                Composite composite = graphic.getComposite();
+
+                graphic.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.25f));
 				for (Position t : path)
 				{
 					graphic.fillRect(t.getPosX() * TILE_SIZE, t.getPosY() * TILE_SIZE,
 							TILE_SIZE, TILE_SIZE);
 				}
+
+				graphic.setComposite(composite);
 			}
 
 			private void bufferObjects() {

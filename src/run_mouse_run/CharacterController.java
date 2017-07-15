@@ -153,14 +153,17 @@ public abstract class CharacterController
         return name;
     }
 
-    final public Position getPosition()
-    {
+    final public Position getPosition() {
         return position;
     }
 
     final public ArrayList<Position> getDestinationPath()
     {
         return destinationPath;
+    }
+
+    public Map getViewedMap() {
+        return viewedMap;
     }
 }
 
