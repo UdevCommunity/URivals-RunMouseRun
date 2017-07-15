@@ -55,13 +55,13 @@ public class Map
         return name;
     }
 
-    public ArrayList<Position> getCheesesPosition()
+    public ArrayList<Position> getSpecialTilesPosition(Tile tile)
     {
         ArrayList<Position> cheesesPosition = new ArrayList<>();
 
         for (int i = 0; i < width; i++)
             for (int j = 0; j < height; j++)
-                if (getTile(i, j) == Tile.CHEESE)
+                if (getTile(i, j) == tile)
                     cheesesPosition.add(new Position(i, j));
 
         return cheesesPosition;

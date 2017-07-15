@@ -19,7 +19,7 @@ public class Jerry extends Mouse
     {
         super.computeDecision();
 
-        ArrayList<Position> cheesesPosition = viewedMap.getCheesesPosition();
+        ArrayList<Position> cheesesPosition = viewedMap.getSpecialTilesPosition(Tile.CHEESE);
 
         if(!destinationPath.isEmpty())
             return;
