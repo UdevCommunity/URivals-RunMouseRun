@@ -2,8 +2,9 @@ package run_mouse_run;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -233,20 +234,7 @@ public class DrawEngine {
 		/*=========================================================================================*/
 		/*====================================== Map Panel ========================================*/
 		/*=========================================================================================*/
-			mapPanel = new MapPanel(map);
-
-			mapContainerPanel = new JScrollPane(mapPanel);
-
-			setMapPanel(mapPanel);
-
-			// Speed up scrolling
-			mapContainerPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-			mapContainerPanel.getVerticalScrollBar().setUnitIncrement(10);
-			mapContainerPanel.getHorizontalScrollBar().setUnitIncrement(10);
-
-			gamePanel.add(mapContainerPanel, BorderLayout.CENTER);
-
-
+		    addMapContainerPanel(map);
 
 		/*=========================================================================================*/
 		/*====================================== Bottom Panel =====================================*/
@@ -288,6 +276,28 @@ public class DrawEngine {
 				}
 			});
 			centerPanel.add(mapsCmBox);
+
+			// TILE SIZE Slider
+            JSlider slide = new JSlider();
+
+            slide.setMaximum(128);
+            slide.setMinimum(16);
+            slide.setValue(TILE_SIZE);
+            slide.setPaintTicks(true);
+            slide.setPaintLabels(true);
+            slide.setMinorTickSpacing(8);
+            slide.setMajorTickSpacing(8);
+
+            slide.addChangeListener(new ChangeListener(){
+                public void stateChanged(ChangeEvent event)
+                {
+                    int size = ((JSlider)event.getSource()).getValue();
+
+                    adjustTileSize(maps.get(mapsCmBox.getSelectedIndex()), size);
+                }
+            });
+
+            btnPanel.add(slide, BorderLayout.SOUTH);
 
 			// new Map button
 			JButton newMapButton = new JButton("New Window");
@@ -370,8 +380,6 @@ public class DrawEngine {
 
 			controlPanel.add(eastPanel, BorderLayout.CENTER);
 
-
-
 			/*Panels initialised, add to frame */
 			contentPane.add(gamePanel);//, BorderLayout.WEST);
 			contentPane.add(controlPanel);//, BorderLayout.EAST);
@@ -396,26 +404,27 @@ public class DrawEngine {
 		/**
 		 * Adjust Tile size to fit all the screen
 		 * @param map to adjust to
+         * @param size (int)
 		 */
-		private void adjustTileSize(Map map)
+		private void adjustTileSize(Map map, int size)
 		{
 			// TODO : Adjust tile size
-			/*TILE_SIZE = 48;
+            TILE_SIZE = size;
+			gamePanel.remove(mapContainerPanel);
+            addMapContainerPanel(map);
 
-			mapContainerPanel.remove(mapPanel);
-			mapPanel = new MapPanel(map);
-			setMapPanel(mapPanel);
-			mapContainerPanel.add(mapPanel);
-			mapContainerPanel.repaint();
-			update();*/
+			update();
 		}
 
         /**
-         * Add MouseListener to given mapPanel
-         * @param mapPanel (MapPanel)
+         * add a mapContainerPanel to gamePanel with MouseListener
+         * @param map Map
          */
-		private void setMapPanel(MapPanel mapPanel)
+		private void addMapContainerPanel(Map map)
 		{
+            mapPanel = new MapPanel(map);
+            mapContainerPanel = new JScrollPane(mapPanel);
+
 			mapPanel.addMouseListener(new MouseAdapter() {
 				/*
                  * On LeftClick : Set InitialPosition ( testing pathfinding )
@@ -448,7 +457,12 @@ public class DrawEngine {
 				}
 			});
 
+            // Speed up scrolling TODO : Smooth scrolling value
+            mapContainerPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            mapContainerPanel.getVerticalScrollBar().setUnitIncrement(TILE_SIZE/4);
+            mapContainerPanel.getHorizontalScrollBar().setUnitIncrement(TILE_SIZE/4);
 
+            gamePanel.add(mapContainerPanel, BorderLayout.CENTER);
 		}
 
 		/**
@@ -534,7 +548,7 @@ public class DrawEngine {
 			contentPane.remove(controlPanel);
 			contentPane.invalidate();
 
-			adjustTileSize(maps.get(0));
+			adjustTileSize(maps.get(0), TILE_SIZE);
 		}
 
 		/**
