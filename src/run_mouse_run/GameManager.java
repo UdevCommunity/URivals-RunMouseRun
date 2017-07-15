@@ -44,7 +44,6 @@ public class GameManager /// TODO : access via static VS references
         cats.add(new Tom("Tom", LevelGenerator.CATS_INITIAL_POS));
         cats.add(new Tom("Tom2", LevelGenerator.CATS_INITIAL_POS));
 
-        drawEngine.addMapAll(mouses.get(0).getViewedMap());
         // Start Timer
         timer.startTimer();
     }

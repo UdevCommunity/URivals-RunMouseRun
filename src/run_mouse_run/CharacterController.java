@@ -165,6 +165,8 @@ public abstract class CharacterController
     public Map getViewedMap() {
         return viewedMap;
     }
+
+    public Map getMap() { return map; }
 }
 
 
