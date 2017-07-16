@@ -11,25 +11,28 @@ public abstract class CharacterController
 
     private String name;
     private Position position;
-    protected ArrayList<Position> destinationPath;
+    private ArrayList<Position> destinationPath;
+    private ArrayList<Tile> invisibleTiles;
     private int moveSpeed;
     private int viewDistance;
     private long movePowerupTourLeft = 0;
     private long visionPowerupTourLeft = 0;
-    protected Map map;
-    protected Map viewedMap;
+    private Map map;
+    private Map viewedMap;
     private PathFinder pathFinder;
+    private boolean seeBehindWalls = false;
 
     private final int CONSEQUENT_MOVE_DELAY = CustomTimer.GAME_SPEED/2; // In milliseconds, the delay between two moves
     private final int UPDATE_FREQUENCE = CustomTimer.GAME_SPEED; // In milliseconds
     private Timer timer;
     private TimerTask task;
 
-    public CharacterController(String name, Position initialPosition)
+    public CharacterController(String name, Position initialPosition, ArrayList<Tile> invisibleTiles)
     {
         this.name = name;
         this.position = initialPosition;
         destinationPath = new ArrayList<>();
+        this.invisibleTiles = invisibleTiles;
         moveSpeed = INITIAL_MOVE_SPEED;
         viewDistance = INITIAL_VIEW_DISTANCE;
 
@@ -42,7 +45,7 @@ public abstract class CharacterController
         timer = new Timer();
     }
 
-    final public TimerTask createUpdateTask()
+    final private TimerTask createUpdateTask()
     {
         return new TimerTask()
         {
@@ -56,24 +59,24 @@ public abstract class CharacterController
         };
     }
 
-    final public void startTimer()
+    final void startTimer()
     {
         timer.scheduleAtFixedRate(task, 0, UPDATE_FREQUENCE);
     }
 
-    final public void stopTimer()
+    final void stopTimer()
     {
         timer.cancel();
     }
 
-    final public void resumeTimer()
+    final void resumeTimer()
     {
         task = createUpdateTask();
         timer = new Timer();
         timer.scheduleAtFixedRate(task, 0, UPDATE_FREQUENCE);
     }
 
-    final public void die()
+    final void die()
     {
         position = GameManager.gameManager.getLevelGenerator().getValidRespawnPosition();
         destinationPath.clear();
@@ -85,31 +88,25 @@ public abstract class CharacterController
         resumeTimer();
     }
 
-    final public void applyVisionPowerUp()
+    final void applyVisionPowerUp()
     {
         viewDistance = INITIAL_VIEW_DISTANCE + 1;
         visionPowerupTourLeft = 10;
-
-        if(GameManager.gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY()) != Tile.POWERUP_VISION)
-            GameManager.gameManager.stopGame("Cat Lose", name);
     }
 
-    final public void applyMoveSpeedPowerup()
+    final void applyMoveSpeedPowerup()
     {
         moveSpeed = INITIAL_MOVE_SPEED + 1;
         movePowerupTourLeft = 10;
-
-        if(GameManager.gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY()) != Tile.POWERUP_SPEED)
-            GameManager.gameManager.stopGame("Cat Lose", name);
     }
 
-    final private void reducePowerupsTour()
+    private void reducePowerupsTour()
     {
         moveSpeed = (--movePowerupTourLeft > 0)? moveSpeed: INITIAL_MOVE_SPEED;
         viewDistance = (--visionPowerupTourLeft > 0)? viewDistance: INITIAL_VIEW_DISTANCE;
     }
 
-    final private void discoverMap()
+    private void discoverMap()
     {
         viewedMap = GameManager.gameManager.getLevelGenerator().getViewedMap(viewedMap, position, viewDistance);
 
@@ -125,17 +122,22 @@ public abstract class CharacterController
             }
     }
 
-    final protected ArrayList<Position> computePath(Map map, Position destination)
+    final protected ArrayList<Position> computeDestinationPath(Map map, Position destination)
     {
         return pathFinder.getShortestPath(map, position, destination);
     }
 
-    protected boolean canCrossByDiagonalWall(Position position, Position next)
+    final protected ArrayList<Position> computePath(Map map, Position source, Position destination)
     {
-        return GameManager.gameManager.getLevelGenerator().canCrossByDiagonalWall(position, next);
+        return pathFinder.getShortestPath(map, source, destination);
     }
 
-    final private void move()
+    final protected boolean canCrossByDiagonal(Position position, Position next)
+    {
+        return GameManager.gameManager.getLevelGenerator().canCrossByDiagonal(position, next);
+    }
+
+    private void move()
     {
         if (!destinationPath.isEmpty() && (((destinationPath.get(0).getPosX() - position.getPosX()) > 1) ||
                 ((destinationPath.get(0).getPosY() - position.getPosY()) > 1)))
@@ -147,7 +149,7 @@ public abstract class CharacterController
                 try {Thread.sleep(CONSEQUENT_MOVE_DELAY);} catch (InterruptedException e) {e.printStackTrace();}
 
             if (destinationPath.isEmpty() ||
-                    !canCrossByDiagonalWall(position, destinationPath.get(0)))
+                    !canCrossByDiagonal(position, destinationPath.get(0)))
                 return;
 
             Tile actualTile = GameManager.gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY());
@@ -179,15 +181,22 @@ public abstract class CharacterController
         return destinationPath;
     }
 
-    public Map getViewedMap() {
+    final protected void setDestinationPath(ArrayList<Position> destinationPath)
+    {
+        this.destinationPath = destinationPath;
+    }
+
+    final public Map getViewedMap() {
         return viewedMap;
     }
 
-    public Map getMap() { return map; }
+    final public Map getMap() { return map; }
 
-    public void setPosition(Position position) {
+    final public void setPosition(Position position) {
         this.position = position;
     }
+
+
 }
 
 

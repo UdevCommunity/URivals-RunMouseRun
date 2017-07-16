@@ -298,7 +298,7 @@ public class LevelGenerator
         return getEmptyPos(); // if none, ..
     }
 
-    public Map getViewedMap(Map viewedMap, Position position, int viewDistance)
+    public Map getViewedMap(Map viewedMap, Position position, int viewDistance, boolean seeBehindWalls, ArrayList<Tile> tilesToIgnore)
     {
         viewedMap.clear(Tile.NOT_DISCOVERED);
 
@@ -310,10 +310,10 @@ public class LevelGenerator
         for (int i = startPoint.getPosX(); i <= position.getPosX()+ viewDistance && i < LevelGenerator.MAP_WIDTH; i++)
             for (int j = startPoint.getPosY(); j <= position.getPosY() + viewDistance && j < LevelGenerator.MAP_HEIGHT; j++)
             {
-                if(isSegmentCutByWall(new Position(i, j), position))
+                if(!seeBehindWalls && isSegmentCutByWall(new Position(i, j), position))
                     continue;
 
-                viewedMap.setTile(i, j, (map.getTile(i, j) != Tile.MINE)? map.getTile(i, j): Tile.EMPTY);
+                viewedMap.setTile(i, j, (tilesToIgnore.contains(map.getTile(i, j)))? Tile.EMPTY: map.getTile(i, j));
             }
 
         return viewedMap;
@@ -328,7 +328,7 @@ public class LevelGenerator
             int dx = (destination.getPosX() - currentPos.getPosX() >= 0)? ((destination.getPosX() - currentPos.getPosX() == 0)?0:1): -1;
             int dy = (destination.getPosY() - currentPos.getPosY() >= 0)? ((destination.getPosY() - currentPos.getPosY() == 0)?0:1): -1;
 
-            if (!canCrossByDiagonalWall(currentPos, new Position(currentPos.getPosX() + dx, currentPos.getPosY() + dy))
+            if (!canCrossByDiagonal(currentPos, new Position(currentPos.getPosX() + dx, currentPos.getPosY() + dy))
                     || map.getTile(currentPos.getPosX() + dx, currentPos.getPosY() + dy) == Tile.WALL)
                 return true;
 
@@ -339,7 +339,7 @@ public class LevelGenerator
         return false;
     }
 
-    public boolean canCrossByDiagonalWall(Position current, Position next)
+    public boolean canCrossByDiagonal(Position current, Position next)
     {
         int dx = next.getPosX() - current.getPosX();
         int dy = next.getPosY() - current.getPosY();
