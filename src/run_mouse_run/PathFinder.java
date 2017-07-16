@@ -373,7 +373,7 @@ public class PathFinder {
                 finalPath.add(0, begin);
             }
         }
-        finalPath.add(end);
+        // finalPath.add(0, end); // Do not add source position to the path
 
         return finalPath;
     }
