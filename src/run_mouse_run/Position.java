@@ -40,4 +40,9 @@ public class Position
     {
         return new Position(posX, posY);
     }
+
+    public static boolean areDiagonal(Position positionOne, Position positionTwo)
+    {
+        return (positionOne.getPosX() - positionTwo.getPosX() != 0) && (positionOne.getPosY() - positionTwo.getPosY() != 0);
+    }
 }

@@ -29,7 +29,7 @@ public class DumbTom extends Cat
         if(!destinationPath.isEmpty())
         {
             if(viewedMap.getTile(destinationPath.get(0).getPosX(), destinationPath.get(0).getPosY()) == Tile.WALL
-                    || !canCrossByDiagonalWall(destinationPath.get(0)))
+                    || !canCrossByDiagonalWall(getPosition(), destinationPath.get(0)))
                 destinationPath.clear();
 
             return;
@@ -41,7 +41,8 @@ public class DumbTom extends Cat
             ArrayList<Position> borders = viewedMap.getBorders();
 
             do {
-                Position pos = borders.get(ThreadLocalRandom.current().nextInt(0, borders.size()));
+                int posIndex = ThreadLocalRandom.current().nextInt(0, borders.size());
+                Position pos = borders.get(posIndex);
 
                 Tile viewedTile = viewedMap.getTile(pos.getPosX(), pos.getPosY());
 
