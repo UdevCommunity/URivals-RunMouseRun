@@ -34,7 +34,7 @@ public class PhysicsEngine
                     GameManager.gameManager.stopGame("Cat Win", cat.getName());
                     break;
                 case MINE:
-                    tileCatIsStandingOn = Tile.EMPTY;
+                    levelMap.setTile(cat.getPosition().getPosX(), cat.getPosition().getPosY(), Tile.EMPTY);
                 case WALL:
                     cat.die();
                     break;
@@ -50,7 +50,7 @@ public class PhysicsEngine
 
             if(tileCatIsStandingOn == Tile.POWERUP_SPEED || tileCatIsStandingOn == Tile.POWERUP_VISION
                     || tileCatIsStandingOn == Tile.EMPTY)
-                tileCatIsStandingOn = Tile.CAT;
+                levelMap.setTile(cat.getPosition().getPosX(), cat.getPosition().getPosY(), Tile.CAT);
         }
     }
 
@@ -75,7 +75,7 @@ public class PhysicsEngine
                     }
                     break;
                 case MINE:
-                    tileMouseIsStandingOn = Tile.EMPTY;
+                    levelMap.setTile(mouse.getPosition().getPosX(), mouse.getPosition().getPosY(), Tile.EMPTY);
                 case WALL:
                     mouse.die();
                     break;
@@ -91,7 +91,7 @@ public class PhysicsEngine
 
             if(tileMouseIsStandingOn == Tile.POWERUP_SPEED || tileMouseIsStandingOn == Tile.POWERUP_VISION
                     || tileMouseIsStandingOn == Tile.EMPTY)
-                tileMouseIsStandingOn = Tile.MOUSE;
+                levelMap.setTile(mouse.getPosition().getPosX(), mouse.getPosition().getPosY(), Tile.MOUSE);
         }
 
     }

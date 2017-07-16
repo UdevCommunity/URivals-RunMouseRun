@@ -10,7 +10,7 @@ public class CustomTimer
 {
     private Time currentTime = new Time(0); // In milliseconds
     public static final int GAME_SPEED = 500; // In milliseconds
-    public static final int UPDATE_FREQUENCE = GAME_SPEED/4; // In milliseconds
+    public static final int UPDATE_FREQUENCE = GAME_SPEED/5; // In milliseconds
     private final long TIME_LIMIT = 180000; // In milliseconds
     private Timer timer;
     private TimerTask task;
