@@ -30,13 +30,7 @@ public class GameManager /// TODO : access via static VS references
         mouses = new ArrayList<>();
 
         level = new LevelGenerator();
-        physicsEngine = new PhysicsEngine();
-        drawEngine = new DrawEngine(level.getMap());
-        timer = new CustomTimer();
-    }
 
-    public void startGame()
-    {
         // Instantiate mouses (do not use a loop, here we may instantiate mouses from different classes)
         mouses.add(new Jerry("Jerry", LevelGenerator.MOUSES_INITIAL_POS));
 
@@ -44,7 +38,13 @@ public class GameManager /// TODO : access via static VS references
         cats.add(new Tom("Tom", LevelGenerator.CATS_INITIAL_POS));
         cats.add(new Tom("Tom2", LevelGenerator.CATS_INITIAL_POS));
 
-        // Start Timer
+        physicsEngine = new PhysicsEngine();
+        drawEngine = new DrawEngine(level.getMap());
+        timer = new CustomTimer();
+    }
+
+    public void startGame()
+    {
         timer.startTimer();
     }
 

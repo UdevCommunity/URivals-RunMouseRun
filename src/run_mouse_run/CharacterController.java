@@ -31,7 +31,9 @@ public abstract class CharacterController
         destinationPath = new ArrayList<>();
         moveSpeed = INITIAL_MOVE_SPEED;
         viewDistance = INITIAL_VIEW_DISTANCE;
-        map = new Map(String.format("%s Map", name), LevelGenerator.MAP_WIDTH, LevelGenerator.MAP_HEIGHT, Tile.NOT_DISCOVERED);
+
+        map = GameManager.gameManager.getLevelGenerator().getViewedMap(String.format("%s Map", name), position, viewDistance);
+        viewedMap = map.copy();
 
         task = createUpdateTask();
         timer = new Timer();
@@ -106,7 +108,7 @@ public abstract class CharacterController
 
     final private void discoverMap()
     {
-        viewedMap = GameManager.gameManager.getLevelGenerator().getViewedMap(position, viewDistance);
+        viewedMap = GameManager.gameManager.getLevelGenerator().getViewedMap(name, position, viewDistance);
 
         for (int i = 0; i < viewedMap.getWidth(); i++)
             for (int j = 0; j < viewedMap.getHeight(); j++)

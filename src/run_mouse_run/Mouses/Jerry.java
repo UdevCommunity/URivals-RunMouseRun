@@ -18,49 +18,54 @@ public class Jerry extends Mouse
     {
         super.computeDecision();
 
-        /*System.out.print("\n\n");
-        for (int i = 0; i < viewedMap.getWidth(); i++)
-        {
-            for (int j = 0; j < viewedMap.getHeight(); j++)
-                System.out.print(viewedMap.getTile(i, j));
-            System.out.print("\n");
-        }
-        */
 
+        System.out.print("Begin Decision\n");
 
         ArrayList<Position> cheesesPosition = viewedMap.getSpecialTilesPosition(Tile.CHEESE);
 
         if(!destinationPath.isEmpty())
-            return;
+        {
+            if(viewedMap.getTile(destinationPath.get(0).getPosX(), destinationPath.get(0).getPosY()) == Tile.WALL)
+                destinationPath.clear();
+        }
+
+        System.out.print("Path Empty\n");
 
         if (!cheesesPosition.isEmpty())
         {
+            System.out.print("CheeseList Not Empy\n");
             destinationPath = computePath(viewedMap, cheesesPosition.get(0));
             System.out.print("Initial Position: "+ LevelGenerator.MOUSES_INITIAL_POS.getPosX() + " " + LevelGenerator.MOUSES_INITIAL_POS.getPosY() +"\n");// getPosition().getPosX() + " " + getPosition().getPosY() +"\n" );
             System.out.print("Path:\n");
-            for (int i = 0; i < destinationPath.size(); i++)
+            for (Position pos: destinationPath)
             {
-                System.out.print(destinationPath.get(i).getPosX() + " " + destinationPath.get(i).getPosY() + "\n");
+                System.out.print(pos.getPosX() + " " + pos.getPosY() + "\n");
             }
         }
         else
         {
-            do
+            System.out.print("Didn't Found Cheese\n");
+            ArrayList<Position> borders = viewedMap.getBorders();
+
+            for (Position pos: borders)
             {
+                Tile viewedTile = viewedMap.getTile(pos.getPosX(), pos.getPosY());
 
-                int i = ThreadLocalRandom.current().nextInt(0, viewedMap.getWidth());
-                int j = ThreadLocalRandom.current().nextInt(0, viewedMap.getHeight());
-                System.out.print("\nSearch..." + i + " " + j + "\n");
-                Tile viewedTile = viewedMap.getTile(i, j);
-
+                System.out.print("Border: " + pos.getPosX()+ " " + pos.getPosY()+ "\n");
                 if(viewedTile == Tile.NOT_DISCOVERED || viewedTile == Tile.WALL)
                     continue;
 
-                destinationPath = computePath(viewedMap, new Position(i, j));
-                System.out.print("\nFound it !!" + i + " " + j + "\n");
+                System.out.print("\nFound it !!" + pos.getPosX() + " " + pos.getPosY() + "\n");
 
-                break;
-            }while (true);
+                destinationPath = computePath(viewedMap, new Position(pos.getPosX(), pos.getPosY()));
+                for (Position p: destinationPath)
+                {
+                    System.out.print(p.getPosX() + " " + p.getPosY() + "\n");
+                }
+
+                if (!destinationPath.isEmpty())
+                    break;
+            }
         }
 
     }

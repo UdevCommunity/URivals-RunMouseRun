@@ -2,9 +2,6 @@ package run_mouse_run;
 
 import java.util.ArrayList;
 
-/**
- * Created by Oussama on 09/07/2017.
- */
 public class Map
 {
     private Tile[][] map;
@@ -25,8 +22,16 @@ public class Map
                 map[j][i] = defaultTile;
     }
 
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
     public Tile getTile(int x, int y)
     {
+        if (x < 0 || y < 0 || x >= width || y >= height)
+            return null;
+
         return map[y][x];
     }
 
@@ -65,6 +70,30 @@ public class Map
                     cheesesPosition.add(new Position(i, j));
 
         return cheesesPosition;
+    }
+
+    public ArrayList<Tile> getAdjacentsTile(int x, int y)
+    {
+        ArrayList<Tile> adjacentsTile = new ArrayList<>();
+
+        for (int i = x - 1; i <= x + 1; i++)
+            for (int j = y - 1; j <= y + 1; j++)
+                if(getTile(i, j) != null && x != i && y != j)
+                    adjacentsTile.add(getTile(i, j));
+
+        return adjacentsTile;
+    }
+
+    public ArrayList<Position> getBorders()
+    {
+        ArrayList<Position> borders = new ArrayList<>();
+
+        for (int i = 0; i < width; i++)
+            for (int j = 0; j < height; j++)
+                if (getTile(i, j) != Tile.NOT_DISCOVERED && getAdjacentsTile(i, j).contains(Tile.NOT_DISCOVERED))
+                    borders.add(new Position(i, j));
+
+        return borders;
     }
 
     public Map copy()

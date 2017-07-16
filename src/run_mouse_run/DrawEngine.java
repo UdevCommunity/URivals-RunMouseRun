@@ -76,7 +76,7 @@ public class DrawEngine {
 		for(DrawEngineFrame frame : frames)
 		{
 			frame.changeState("Start Game");
-            frame.updateCmBox();
+            //frame.updateCmBox();
 		}
 
 		update();
