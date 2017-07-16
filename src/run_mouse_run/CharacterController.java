@@ -39,7 +39,7 @@ public abstract class CharacterController
         map = new Map(name, LevelGenerator.MAP_WIDTH, LevelGenerator.MAP_HEIGHT, Tile.NOT_DISCOVERED);
                 //GameManager.gameManager.getLevelGenerator().getViewedMap(String.format("%s Map", name), position, viewDistance);
         viewedMap = map.copy();
-        pathFinder = new PathFinder();
+        pathFinder = new PathFinder(map);
 
         task = createUpdateTask();
         timer = new Timer();

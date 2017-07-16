@@ -34,8 +34,6 @@ public class LevelGenerator
 
     public LevelGenerator()
     {
-        pathFinder = new PathFinder();
-
         // nextInt is normally exclusive of the top value,
         // so we add 1 to make it inclusive
         this.MAP_WIDTH = ThreadLocalRandom.current().nextInt(MAP_WIDTH_MIN, MAP_WIDTH_MAX + 1);
@@ -44,10 +42,13 @@ public class LevelGenerator
         // Generate map
         map = generateRandomMap(MAP_WIDTH, MAP_HEIGHT);
 
+        pathFinder = new PathFinder(map);
+
         setValidRespawnPositions();
 
         // Set objects initial position
         setInitialPosition();
+
     }
 
     public PathFinder getPathFinder()

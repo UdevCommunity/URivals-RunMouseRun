@@ -27,7 +27,9 @@ public class DrawEngine {
 
 		frames = new ArrayList<>();
 		frames.add(new DrawEngineFrame(map));
-    }
+
+		pathFinder = new PathFinder(map);
+	}
 
     private synchronized void updateMapsList(Map map)
     {
@@ -179,8 +181,6 @@ public class DrawEngine {
 				map = new Map("Blank map", LevelGenerator.MAP_WIDTH, LevelGenerator.MAP_HEIGHT, Tile.NOT_DISCOVERED);
 			}
 			maps.add(map); // don't use addMap() because cmBox is null
-
-			pathFinder = new PathFinder();
 
 			// Set GUI
 			initWindow();

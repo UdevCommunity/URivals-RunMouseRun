@@ -19,23 +19,42 @@ public class PathFinder {
 
     private LinkedList<Node> heap = new LinkedList<>();
 
-    public PathFinder()
+    public PathFinder(Map map)
     {
-        cleanSolver();
+        try
+        {
+            setupSolver(map, initialPos, finalPos);
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error setting the PathFinder ! ");
+        }
     }
 
     public ArrayList<Position> getShortestPath(Map map, Position initialPos, Position finalPos)
     {
-        if(isSetup(map, initialPos, finalPos))
-            return shortestPath;
+        try
+        {
+            if(isSetup(map, initialPos, finalPos)) // if same request sent
+                return shortestPath;
 
-        setupSolver(map, initialPos, finalPos);
+            setupSolver(map, initialPos, finalPos);
 
-        if (!getNode(initialPos).pass || !getNode(finalPos).pass) // if it's unreachable ( a wall )
-            return shortestPath;
-
-        solve();
-        return shortestPath;
+            if (!getNode(initialPos).pass || !getNode(finalPos).pass) // if it's unreachable ( a wall )
+            {
+                return new ArrayList<Position>();   // empty path
+            }
+            else
+            {
+                solve();
+                return shortestPath;
+            }
+        }catch (Exception e)
+        {
+            System.out.println("Error while setting up solver : ");
+            e.printStackTrace();
+            return new ArrayList<Position>();   // empty path
+        }
     }
 
     public boolean isSetup(Map map, Position initialPos, Position finalPos)
@@ -48,35 +67,53 @@ public class PathFinder {
         return false;
     }
 
-    private void cleanSolver()
+    private void cleanSolver(int width, int height)
     {
-        map = null;
-        grid = null;
+        if(grid == null || height != mapHeight || width != mapWidth)
+        {
+            grid = new Node[height][width];
+
+            for (int i = 0; i < height; i++)
+            {
+                for (int j = 0; j < width; j++)
+                {
+                    grid[i][j] = new Node(0,0);
+                }
+            }
+        }
+        else
+        {
+            clearGraph();
+        }
 
         heap.clear();
         shortestPath.clear();
     }
 
-    private void setupSolver(Map map, Position initialPos, Position finalPos)
+    private void setupSolver(Map map, Position initialPos, Position finalPos) throws Exception
     {
-        cleanSolver();
-        try
-        {
-            /*affect values to attributes*/
-            this.map = map;
-            this.mapHeight = map.getHeight();
-            this.mapWidth = map.getWidth();
-            this.initialPos = initialPos;
-            this.finalPos = finalPos;
+        cleanSolver(map.getWidth(), map.getHeight());
 
-            /* generate Nodes from map*/
-            tileToNode();
-        }
-        catch (Exception e)
+        /*affect values to attributes*/
+        this.map = map;
+        this.mapHeight = map.getHeight();
+        this.mapWidth = map.getWidth();
+        this.initialPos = initialPos;
+        this.finalPos = finalPos;
+
+        /* generate Nodes from map*/
+        tileToNode();
+
+    }
+
+    private void clearGraph()
+    {
+        for(int i = 0; i < grid.length; i++)
         {
-            System.out.println("Error while setting up solver : ");
-            e.printStackTrace();
-            cleanSolver();
+            for(int j = 0; j < grid[i].length; j++)
+            {
+                grid[i][j].clear();
+            }
         }
     }
 
@@ -86,13 +123,11 @@ public class PathFinder {
      */
     private void tileToNode()
     {
-        grid = new Node[mapHeight][mapWidth];
-
         for (int i = 0; i < mapHeight; i++)
         {
             for (int j = 0; j < mapWidth; j++)
             {
-                grid[i][j] = new Node(j, i); // j is x, i is y
+                grid[i][j].setPosition(j, i); // j is x, i is y
                 grid[i][j].f = -1;          // init distance to null
 
                 if (map.getTile(j, i) == Tile.WALL)
@@ -555,7 +590,9 @@ public class PathFinder {
 
         public Node(int x, int y) {
             pos = new Position(x, y);
+            parent = null;
             this.pass = true;
+            g = h = f = 0;
         }
 
         public void updateGHFP(float g, float h, Node parent) {
@@ -568,6 +605,18 @@ public class PathFinder {
         public boolean setPass(boolean pass) {
             this.pass = pass;
             return pass;
+        }
+
+        public void clear()
+        {
+            parent = null;
+            this.pass = true;
+            g = h = f = 0;
+        }
+
+        public void setPosition(int x, int y) {
+            pos.setPosX(x);
+            pos.setPosY(y);
         }
     }
 

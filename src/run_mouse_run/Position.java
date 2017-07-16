@@ -33,7 +33,13 @@ public class Position
 
     public static boolean comparePosition(Position positionOne, Position positionTwo)
     {
-        return positionOne.getPosX() == positionTwo.getPosX() && positionOne.getPosY() == positionTwo.getPosY();
+        try
+        {
+            return positionOne.getPosX() == positionTwo.getPosX() && positionOne.getPosY() == positionTwo.getPosY();
+        }catch (NullPointerException e)
+        {
+            return false;
+        }
     }
 
     public Position copy()
