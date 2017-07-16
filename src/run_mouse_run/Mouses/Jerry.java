@@ -20,13 +20,17 @@ public class Jerry extends Mouse
 
 
         System.out.print("Begin Decision\n");
+        System.out.print("Pos: "+ getPosition().getPosX() + " " + getPosition().getPosY() + "\n");
 
         ArrayList<Position> cheesesPosition = viewedMap.getSpecialTilesPosition(Tile.CHEESE);
 
         if(!destinationPath.isEmpty())
         {
+            System.out.print("Path Not Empty\n");
             if(viewedMap.getTile(destinationPath.get(0).getPosX(), destinationPath.get(0).getPosY()) == Tile.WALL)
                 destinationPath.clear();
+
+            return;
         }
 
         System.out.print("Path Empty\n");
