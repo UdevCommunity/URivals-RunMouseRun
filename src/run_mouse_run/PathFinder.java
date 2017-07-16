@@ -26,6 +26,9 @@ public class PathFinder {
 
     public ArrayList<Position> getShortestPath(Map map, Position initialPos, Position finalPos)
     {
+        if(isSetup(map, initialPos, finalPos))
+            return shortestPath;
+
         setupSolver(map, initialPos, finalPos);
 
         if (!getNode(initialPos).pass || !getNode(finalPos).pass) // if it's unreachable ( a wall )
@@ -35,12 +38,14 @@ public class PathFinder {
         return shortestPath;
     }
 
-    public boolean isSetup()
+    public boolean isSetup(Map map, Position initialPos, Position finalPos)
     {
-        if (map == null || grid == null)
-            return false;
+        if(this.map == map
+                && Position.comparePosition(initialPos, this.initialPos)
+                && Position.comparePosition(finalPos, this.finalPos))
+            return true;
 
-        return true;
+        return false;
     }
 
     private void cleanSolver()
