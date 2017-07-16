@@ -108,7 +108,7 @@ public abstract class CharacterController
 
     private void discoverMap()
     {
-        viewedMap = GameManager.gameManager.getLevelGenerator().getViewedMap(viewedMap, position, viewDistance);
+        viewedMap = GameManager.gameManager.getLevelGenerator().getViewedMap(viewedMap, position, viewDistance, seeBehindWalls, invisibleTiles);
 
         for (int i = 0; i < viewedMap.getWidth(); i++)
             for (int j = 0; j < viewedMap.getHeight(); j++)
