@@ -47,8 +47,9 @@ public class Jerry extends Mouse
             System.out.print("Didn't Found Cheese\n");
             ArrayList<Position> borders = viewedMap.getBorders();
 
-            for (Position pos: borders)
-            {
+            do {
+                Position pos = borders.get(ThreadLocalRandom.current().nextInt(0, borders.size()));
+
                 Tile viewedTile = viewedMap.getTile(pos.getPosX(), pos.getPosY());
 
                 System.out.print("Border: " + pos.getPosX()+ " " + pos.getPosY()+ "\n");
@@ -65,7 +66,7 @@ public class Jerry extends Mouse
 
                 if (!destinationPath.isEmpty())
                     break;
-            }
+            }while (true);
         }
 
     }
