@@ -60,6 +60,13 @@ public class Map
         return name;
     }
 
+    public void clear(Tile tile)
+    {
+        for(int i = 0; i < width; i++)
+            for(int j = 0; j < height; j++)
+                setTile(i,j, tile);
+    }
+
     public ArrayList<Position> getSpecialTilesPosition(Tile tile)
     {
         ArrayList<Position> cheesesPosition = new ArrayList<>();

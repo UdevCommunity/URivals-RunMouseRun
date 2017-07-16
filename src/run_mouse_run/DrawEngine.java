@@ -46,7 +46,7 @@ public class DrawEngine {
 	 */
 	public void update()
 	{
-        updateMapsList(maps.get(0));
+        //updateMapsList(maps.get(0));
 
         for(DrawEngineFrame frame: frames)
 		{
@@ -583,9 +583,8 @@ public class DrawEngine {
 				mapPanel.drawPath(cat.getDestinationPath(), mapPanel.CAT_SPRITE);
 			for (Mouse mouse : GameManager.gameManager.getMouses())
 				mapPanel.drawPath(mouse.getDestinationPath(), mapPanel.MOUSE_SPRITE);
-
-
 		}
+
 
 		public void displayEndGameScreen(String result)
 		{

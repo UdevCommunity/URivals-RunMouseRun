@@ -298,9 +298,9 @@ public class LevelGenerator
         return getEmptyPos(); // if none, ..
     }
 
-    public Map getViewedMap(String name, Position position, int viewDistance)
+    public Map getViewedMap(Map viewedMap, Position position, int viewDistance)
     {
-        Map viewMap = new Map(name, LevelGenerator.MAP_WIDTH , LevelGenerator.MAP_HEIGHT, Tile.NOT_DISCOVERED);
+        viewedMap.clear(Tile.NOT_DISCOVERED);
 
         Position startPoint = new Position(position.getPosX(), position.getPosY());
 
@@ -313,10 +313,10 @@ public class LevelGenerator
                 if(isSegmentCutByWall(new Position(i, j), position))
                     continue;
 
-                viewMap.setTile(i, j, (map.getTile(i, j) != Tile.MINE)? map.getTile(i, j): Tile.EMPTY);
+                viewedMap.setTile(i, j, (map.getTile(i, j) != Tile.MINE)? map.getTile(i, j): Tile.EMPTY);
             }
 
-        return viewMap;
+        return viewedMap;
     }
 
     private boolean isSegmentCutByWall(Position source, Position destination)
