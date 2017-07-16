@@ -245,7 +245,10 @@ public class DrawEngine {
 			btnDrawShortest = new JButton("Draw shortest");
 			btnDrawShortest.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					mapPanel.drawPath(pathFinder.getShortestPath(maps.get(0), initialPos, finalPos));
+					mapPanel.drawPath(
+					        pathFinder.getShortestPath(maps.get(0), initialPos, finalPos),
+                            mapPanel.CAT_SPRITE
+                    );
 
 				}
 			});
@@ -564,15 +567,16 @@ public class DrawEngine {
 		 */
 		public void update() /// TODO : draw cat computed path
 		{
+		    mapPanel.setMap(maps.get(mapsCmBox.getSelectedIndex()));
 			mapPanel.update();
 			updateTime(GameManager.gameManager.getTimer().getCurrentTime().toString());
 
-			/*
+
 			for (Cat cat : GameManager.gameManager.getCats())
-				mapPanel.drawPath(cat.getDestinationPath());
+				mapPanel.drawPath(cat.getDestinationPath(), mapPanel.CAT_SPRITE);
 			for (Mouse mouse : GameManager.gameManager.getMouses())
-				mapPanel.drawPath(mouse.getDestinationPath());
-            */
+				mapPanel.drawPath(mouse.getDestinationPath(), mapPanel.MOUSE_SPRITE);
+
 
 		}
 
@@ -709,8 +713,8 @@ public class DrawEngine {
 			}
 
 
-			public void drawPath(ArrayList<Position> path) {
-				bufferPath(path);
+			public void drawPath(ArrayList<Position> path, int spriteIndex) {
+				bufferPath(path, spriteIndex);
 				bufferObjects();
 				bufferCharacters();
 				repaint();
@@ -737,7 +741,7 @@ public class DrawEngine {
 				}
 			}
 
-			private void bufferPath(ArrayList<Position> path) {
+			private void bufferPath(ArrayList<Position> path, int spriteIndex) {
 				if (path == null || path.isEmpty()) return;
 
 				graphic.setColor(Color.BLUE);
@@ -746,9 +750,11 @@ public class DrawEngine {
                 graphic.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.25f));
 				for (Position t : path)
 				{
-					graphic.fillRect(t.getPosX() * TILE_SIZE, t.getPosY() * TILE_SIZE,
-							TILE_SIZE, TILE_SIZE);
-				}
+                    graphic.drawImage(sprites.get(spriteIndex),
+                            t.getPosX() * TILE_SIZE, t.getPosY() * TILE_SIZE,
+                            null);
+
+                }
 
 				graphic.setComposite(composite);
 			}
