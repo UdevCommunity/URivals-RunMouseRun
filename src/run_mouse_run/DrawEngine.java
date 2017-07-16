@@ -20,8 +20,6 @@ public class DrawEngine {
 
     private ArrayList<Map> maps;
 
-
-
     public DrawEngine(Map map)
 	{
         maps = new ArrayList<>();
@@ -29,10 +27,9 @@ public class DrawEngine {
 
 		frames = new ArrayList<>();
 		frames.add(new DrawEngineFrame(map));
-
     }
 
-    private void updateMapsList(Map map)
+    private synchronized void updateMapsList(Map map)
     {
         maps.clear();
         maps.add(map);
@@ -100,8 +97,12 @@ public class DrawEngine {
 		}
 	}
 
-	public void displayEndGameScreen(String result) {
+	public void displayEndGameScreen(String result)
+	{
+		for(int i = 1; i < frames.size(); i++)
+			frames.get(i).dispose();
 
+		frames.get(0).displayEndGameScreen(result);
 	}
 
 	/**
@@ -109,30 +110,36 @@ public class DrawEngine {
 	 * apply changes depending on state
 	 * @param maps
 	 */
-	private void addNewframe(ArrayList<Map> maps)
+	private void addNewFrame(ArrayList<Map> maps)
 	{
-		DrawEngineFrame newFrame = new DrawEngineFrame(maps.get(0));
-		newFrame.startGameButton.setText(frames.get(0).startGameButton.getText());
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				DrawEngineFrame newFrame = new DrawEngineFrame(maps.get(0));
+				newFrame.startGameButton.setText(frames.get(0).startGameButton.getText());
 
-		// We only need one control panel
-		newFrame.hideControlPanel();
-		newFrame.setBounds(100,100, 500,500);
-		newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				// We only need one control panel
+				newFrame.hideControlPanel();
+				newFrame.setBounds(100,100, 500,500);
+				newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-		// Set state to the same state of her
-		if(newFrame.startGameButton.getText().equals("Resume Game")) // if game Paused
-		{
-			newFrame.changeState("Pause Game");
-			newFrame.hideControlPanel();
-		}
-		else if(newFrame.startGameButton.getText().equals("Pause Game")) // if game running
-		{
-			newFrame.changeState("Resume Game");
-			newFrame.hideControlPanel();
-		}
+				// Set state to the same state of her
+				if(newFrame.startGameButton.getText().equals("Resume Game")) // if game Paused
+				{
+					newFrame.changeState("Pause Game");
+					newFrame.hideControlPanel();
+				}
+				else if(newFrame.startGameButton.getText().equals("Pause Game")) // if game running
+				{
+					newFrame.changeState("Resume Game");
+					newFrame.hideControlPanel();
+				}
 
-		newFrame.setVisible(true);
-		frames.add(newFrame);
+				newFrame.setVisible(true);
+				frames.add(newFrame);
+			}
+		});
+
 	}
 
     /**
@@ -307,7 +314,7 @@ public class DrawEngine {
 			newMapButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					addNewframe(maps);
+					addNewFrame(maps);
 				}
 			});
 
@@ -580,6 +587,22 @@ public class DrawEngine {
 
 		}
 
+		public void displayEndGameScreen(String result)
+		{
+			JPanel endGamePanel = new JPanel();
+
+			JLabel lblResult = new JLabel(result);
+			lblResult.setFont(new Font("Cambria", Font.PLAIN, 48));
+
+			endGamePanel.add(lblResult);
+			endGamePanel.setVisible(false);
+			contentPane.add(endGamePanel);
+
+			gamePanel.setVisible(false);
+			contentPane.remove(gamePanel);
+			endGamePanel.setVisible(true);
+		}
+
 		class MapPanel extends JPanel {
 			private static final long serialVersionUID = 1L;
 
@@ -713,8 +736,9 @@ public class DrawEngine {
 			}
 
 
-			public void drawPath(ArrayList<Position> path, int spriteIndex) {
-				bufferPath(path, spriteIndex);
+			public void drawPath(ArrayList<Position> path, int spriteIndex)
+			{
+				bufferPath((ArrayList<Position>) path.clone(), spriteIndex);
 				bufferObjects();
 				bufferCharacters();
 				repaint();
