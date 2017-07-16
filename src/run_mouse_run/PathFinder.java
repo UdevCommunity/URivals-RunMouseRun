@@ -356,6 +356,9 @@ public class PathFinder {
         }
         // finally, return the path
 
+        if(connectedPath.isEmpty())
+            return connectedPath;
+
         ///TODO : better fix
         /*Temporary : remove duplicates from array and reverse path */
         ArrayList<Position> finalPath = new ArrayList<>();
