@@ -1,5 +1,7 @@
 package run_mouse_run;
 
+import javafx.geometry.Pos;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -88,7 +90,7 @@ public class PathFinder {
                 grid[i][j] = new Node(j, i); // j is x, i is y
                 grid[i][j].f = -1;          // init distance to null
 
-                if (map.getTile(j, i) == Tile.WALL || map.getTile(j, i) == Tile.NOT_DISCOVERED)
+                if (map.getTile(j, i) == Tile.WALL)
                     grid[i][j].setPass(false);
                 else
                     grid[i][j].setPass(true);
@@ -351,7 +353,27 @@ public class PathFinder {
             }
         }
         // finally, return the path
-        return connectedPath;
+
+        ///TODO : better fix
+        /*Temporary : remove duplicates from array and reverse path */
+        ArrayList<Position> finalPath = new ArrayList<>();
+
+        Position begin = connectedPath.get(0), end = connectedPath.get(0);
+
+        for(int i = 0; i < connectedPath.size()-1; i++)
+        {
+            // take two points
+            begin = connectedPath.get(i);
+            end = connectedPath.get(i+1);
+
+            if(!Position.comparePosition(begin, end)) // if not duplicates, add them
+            {
+                finalPath.add(begin);
+            }
+        }
+        finalPath.add(end);
+
+        return finalPath;
     }
     /**
      * jump method recursively searches in the direction of parent (px,py) to child, the current node (x,y).
