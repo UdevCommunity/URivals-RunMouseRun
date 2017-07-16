@@ -196,6 +196,10 @@ public abstract class CharacterController
     }
 
     public Map getMap() { return map; }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
 }
 
 

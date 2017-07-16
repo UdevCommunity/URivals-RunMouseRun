@@ -64,6 +64,11 @@ public class LevelGenerator
     {
         map = generateRandomMap(width, height);
         setInitialPosition();
+        for(CharacterController m : GameManager.gameManager.getMouses())
+            m.setPosition(MOUSES_INITIAL_POS);
+
+        for(CharacterController c : GameManager.gameManager.getCats())
+            c.setPosition(CATS_INITIAL_POS);
     }
     public void spawnVisionPowerup()
     {
