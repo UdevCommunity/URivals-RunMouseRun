@@ -34,6 +34,7 @@ public class PhysicsEngine
                     GameManager.gameManager.stopGame("Cat Win", cat.getName());
                     break;
                 case MINE:
+                    //TODO: Explosion animation, method and sprite ready
                     levelMap.setTile(cat.getPosition().getPosX(), cat.getPosition().getPosY(), Tile.EMPTY);
                 case WALL:
                     cat.die();
@@ -75,6 +76,7 @@ public class PhysicsEngine
                     }
                     break;
                 case MINE:
+                    //TODO: Explosion animation, method and sprite ready
                     levelMap.setTile(mouse.getPosition().getPosX(), mouse.getPosition().getPosY(), Tile.EMPTY);
                 case WALL:
                     mouse.die();

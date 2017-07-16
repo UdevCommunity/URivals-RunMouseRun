@@ -3,7 +3,6 @@ package run_mouse_run.Mouses;
 import run_mouse_run.*;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class DumbJerry extends Mouse
@@ -18,18 +17,18 @@ public class DumbJerry extends Mouse
     {
         super.computeDecision();
 
-        ArrayList<Position> cheesesPosition = viewedMap.getSpecialTilesPosition(Tile.CHEESE);
+        ArrayList<Position> cheesesPosition = getViewedMap().getSpecialTilesPosition(Tile.CHEESE);
 
         if (!cheesesPosition.isEmpty())
         {
-            destinationPath = computePath(viewedMap, cheesesPosition.get(0));
+            setDestinationPath(computeDestinationPath(getViewedMap(), cheesesPosition.get(0)));
         }
 
-        if(!destinationPath.isEmpty())
+        if(!getDestinationPath().isEmpty())
         {
-            if(viewedMap.getTile(destinationPath.get(0).getPosX(), destinationPath.get(0).getPosY()) == Tile.WALL
-                    || !canCrossByDiagonalWall(getPosition(), destinationPath.get(0)))
-                destinationPath.clear();
+            if(getViewedMap().getTile(getDestinationPath().get(0).getPosX(), getDestinationPath().get(0).getPosY()) == Tile.WALL
+                    || !canCrossByDiagonal(getPosition(), getDestinationPath().get(0)))
+                getDestinationPath().clear();
 
             return;
         }
@@ -37,25 +36,43 @@ public class DumbJerry extends Mouse
 
         else
         {
-            ArrayList<Position> borders = viewedMap.getBorders();
-
-            do {
-                int posIndex = ThreadLocalRandom.current().nextInt(0, borders.size());
-                Position pos = borders.get(posIndex);
-
-                Tile viewedTile = viewedMap.getTile(pos.getPosX(), pos.getPosY());
-
-                if(viewedTile == Tile.NOT_DISCOVERED || viewedTile == Tile.WALL)
-                    continue;
-
-                destinationPath = computePath(viewedMap, new Position(pos.getPosX(), pos.getPosY()));
-
-                if (!destinationPath.isEmpty())
-                    break;
-            }while (true);
+            searchAtRandomNotDiscovredTile();
         }
 
-        // MAybe search random Not Discovred Dest
+    }
 
+    void searchAtRandomNotDiscovredTile()
+    {
+        ArrayList<Position> notDiscovredTiles = getViewedMap().getSpecialTilesPosition(Tile.NOT_DISCOVERED);
+
+        do {
+            int posIndex = ThreadLocalRandom.current().nextInt(0, notDiscovredTiles.size());
+            Position pos = notDiscovredTiles.remove(posIndex);
+
+            setDestinationPath(computeDestinationPath(getViewedMap(), new Position(pos.getPosX(), pos.getPosY())));
+
+            if (!getDestinationPath().isEmpty())
+                break;
+        }while (true);
+    }
+
+    void searchAtBorders()
+    {
+        ArrayList<Position> borders = getViewedMap().getBorders();
+
+        do {
+            int posIndex = ThreadLocalRandom.current().nextInt(0, borders.size());
+            Position pos = borders.remove(posIndex);
+
+            Tile viewedTile = getViewedMap().getTile(pos.getPosX(), pos.getPosY());
+
+            if(viewedTile == Tile.NOT_DISCOVERED || viewedTile == Tile.WALL)
+                continue;
+
+            setDestinationPath(computeDestinationPath(getViewedMap(), new Position(pos.getPosX(), pos.getPosY())));
+
+            if (!getDestinationPath().isEmpty())
+                break;
+        }while (true);
     }
 }
