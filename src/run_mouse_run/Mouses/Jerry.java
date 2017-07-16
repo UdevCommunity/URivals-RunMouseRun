@@ -18,37 +18,25 @@ public class Jerry extends Mouse
     {
         super.computeDecision();
 
-
-        System.out.print("Begin Decision\n");
-        System.out.print("Pos: "+ getPosition().getPosX() + " " + getPosition().getPosY() + "\n");
-
         ArrayList<Position> cheesesPosition = viewedMap.getSpecialTilesPosition(Tile.CHEESE);
+
+        if (!cheesesPosition.isEmpty())
+        {
+            destinationPath = computePath(viewedMap, cheesesPosition.get(0));
+        }
 
         if(!destinationPath.isEmpty())
         {
-            System.out.print("Path Not Empty\n");
-            if(viewedMap.getTile(destinationPath.get(0).getPosX(), destinationPath.get(0).getPosY()) == Tile.WALL)
+            if(viewedMap.getTile(destinationPath.get(0).getPosX(), destinationPath.get(0).getPosY()) == Tile.WALL
+                    || !checkDiagonalWallCrossBy(destinationPath.get(0)))
                 destinationPath.clear();
 
             return;
         }
 
-        System.out.print("Path Empty\n");
 
-        if (!cheesesPosition.isEmpty())
-        {
-            System.out.print("CheeseList Not Empy\n");
-            destinationPath = computePath(viewedMap, cheesesPosition.get(0));
-            System.out.print("Initial Position: "+ LevelGenerator.MOUSES_INITIAL_POS.getPosX() + " " + LevelGenerator.MOUSES_INITIAL_POS.getPosY() +"\n");// getPosition().getPosX() + " " + getPosition().getPosY() +"\n" );
-            System.out.print("Path:\n");
-            for (Position pos: destinationPath)
-            {
-                System.out.print(pos.getPosX() + " " + pos.getPosY() + "\n");
-            }
-        }
         else
         {
-            System.out.print("Didn't Found Cheese\n");
             ArrayList<Position> borders = viewedMap.getBorders();
 
             do {
@@ -56,17 +44,10 @@ public class Jerry extends Mouse
 
                 Tile viewedTile = viewedMap.getTile(pos.getPosX(), pos.getPosY());
 
-                System.out.print("Border: " + pos.getPosX()+ " " + pos.getPosY()+ "\n");
                 if(viewedTile == Tile.NOT_DISCOVERED || viewedTile == Tile.WALL)
                     continue;
 
-                System.out.print("\nFound it !!" + pos.getPosX() + " " + pos.getPosY() + "\n");
-
                 destinationPath = computePath(viewedMap, new Position(pos.getPosX(), pos.getPosY()));
-                for (Position p: destinationPath)
-                {
-                    System.out.print(p.getPosX() + " " + p.getPosY() + "\n");
-                }
 
                 if (!destinationPath.isEmpty())
                     break;

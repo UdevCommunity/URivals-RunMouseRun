@@ -18,6 +18,7 @@ public abstract class CharacterController
     private long visionPowerupTourLeft = 0;
     protected Map map;
     protected Map viewedMap;
+    private PathFinder pathFinder;
 
     private final int CONSEQUENT_MOVE_DELAY = CustomTimer.GAME_SPEED/2; // In milliseconds, the delay between two moves
     private final int UPDATE_FREQUENCE = CustomTimer.GAME_SPEED; // In milliseconds
@@ -34,6 +35,7 @@ public abstract class CharacterController
 
         map = GameManager.gameManager.getLevelGenerator().getViewedMap(String.format("%s Map", name), position, viewDistance);
         viewedMap = map.copy();
+        pathFinder = new PathFinder();
 
         task = createUpdateTask();
         timer = new Timer();
@@ -124,7 +126,26 @@ public abstract class CharacterController
 
     final protected ArrayList<Position> computePath(Map map, Position destination)
     {
-        return GameManager.gameManager.getLevelGenerator().getPathFinder().getShortestPath(map, position, destination);
+        return pathFinder.getShortestPath(map, position, destination);
+    }
+
+    final protected boolean checkDiagonalWallCrossBy(Position next)
+    {
+        int dx = next.getPosX() - position.getPosX();
+        int dy = next.getPosY() - position.getPosY();
+
+        if(dx != 0 && dy != 0)
+        {
+            if(GameManager.gameManager.getLevelGenerator().getMap()
+                    .getTile(position.getPosX() + dx, position.getPosY()) == Tile.WALL
+                    &&
+                    GameManager.gameManager.getLevelGenerator().getMap()
+                            .getTile(position.getPosX(), position.getPosY()+dy) == Tile.WALL
+                    )
+                return false;
+        }
+
+        return true;
     }
 
     final private void move()
@@ -138,10 +159,13 @@ public abstract class CharacterController
             if (i > 0)
                 try {Thread.sleep(CONSEQUENT_MOVE_DELAY);} catch (InterruptedException e) {e.printStackTrace();}
 
-            if (destinationPath.isEmpty())
+            if (destinationPath.isEmpty() || !checkDiagonalWallCrossBy(destinationPath.get(0)))
                 return;
 
-            GameManager.gameManager.getLevelGenerator().getMap().setTile(position.getPosX(), position.getPosY(), Tile.EMPTY);
+            Tile actualTile = GameManager.gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY());
+            if(actualTile == Tile.CAT || actualTile == Tile.MOUSE)
+                GameManager.gameManager.getLevelGenerator().getMap().setTile(position.getPosX(), position.getPosY(), Tile.EMPTY);
+
             position = destinationPath.remove(0);
         }
 
