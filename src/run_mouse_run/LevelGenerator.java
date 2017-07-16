@@ -1,5 +1,7 @@
 package run_mouse_run;
 
+import javafx.geometry.Pos;
+
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -44,10 +46,11 @@ public class LevelGenerator
         // Generate map
         map = generateRandomMap(MAP_WIDTH, MAP_HEIGHT);
 
-        setValidRespawnPositions();
-
         // Set objects initial position
         setInitialPosition();
+
+        setValidRespawnPositions();
+        //validRespawnPositions = map.getSpecialTilesPosition(Tile.EMPTY);
     }
 
     public PathFinder getPathFinder()
@@ -64,8 +67,8 @@ public class LevelGenerator
     {
         map = generateRandomMap(width, height);
 
-        setValidRespawnPositions();
         setInitialPosition();
+        setValidRespawnPositions();
         for(CharacterController m : GameManager.gameManager.getMouses())
             m.setPosition(MOUSES_INITIAL_POS);
 
@@ -213,7 +216,7 @@ public class LevelGenerator
      * @param visited an empty ArrayList to keep track of visited nodes when visiting
      * @return the number of tiles in that space
      */
-    public int getEmptyCellCount(Position start, ArrayList<Position> visited)
+    private int getEmptyCellCount(Position start, ArrayList<Position> visited)
     {
         boolean isOutOfBound = (start.getPosX() >= MAP_WIDTH || start.getPosX() < 0
                                 || start.getPosY() >= MAP_HEIGHT || start.getPosY() < 0);
@@ -246,9 +249,17 @@ public class LevelGenerator
      * keep generating random x, y coordinates until getting an empty position
      * @return an Empty run_mouse_run.Position
      */
-    public Position getEmptyPos()
+    private Position getRespawnPosition()
     {
         Position randomPosition = validRespawnPositions.get(ThreadLocalRandom.current().nextInt(0, validRespawnPositions.size()));
+
+        return new Position(randomPosition.getPosX(), randomPosition.getPosY());
+    }
+
+    private Position getEmptyPos()
+    {
+        Position randomPosition = map.getSpecialTilesPosition(Tile.EMPTY).
+                get(ThreadLocalRandom.current().nextInt(0, map.getSpecialTilesPosition(Tile.EMPTY).size()));
 
         return new Position(randomPosition.getPosX(), randomPosition.getPosY());
     }
@@ -257,7 +268,7 @@ public class LevelGenerator
      * Get a random position far enough from every mouse/cat
      * @return Position : a valid respawn position
      */
-    public Position getValidRespawnPosition(String characterType)
+    Position getValidRespawnPosition(String characterType)
     {
         int minDist = INITIAL_MINIMUM_DISTANCE;
         final int RANDOM_POSITION_TEST_TRIES = 3;
@@ -266,7 +277,7 @@ public class LevelGenerator
         {
             for (int i = 0; i < RANDOM_POSITION_TEST_TRIES; i++) retry:{
 
-                Position randomPos = getEmptyPos();
+                Position randomPos = getRespawnPosition();
                 switch (characterType)
                 {
                     case "Cat":
@@ -288,24 +299,22 @@ public class LevelGenerator
             minDist--;
         }
 
-        return getEmptyPos(); // if none, ..
+        return getRespawnPosition(); // if none, ..
     }
 
     private void setValidRespawnPositions()
     {
-        validRespawnPositions = map.getSpecialTilesPosition(Tile.EMPTY);
+        validRespawnPositions = new ArrayList<>();
+        ArrayList<Position> tempValidRespawnPositions = map.getSpecialTilesPosition(Tile.EMPTY);
         ArrayList<Position> cheesePositions = map.getSpecialTilesPosition(Tile.CHEESE);
 
-        for (Position emptyPos: validRespawnPositions)
-        {
+        for (Position emptyPos: tempValidRespawnPositions) retry:{
             for (Position cheesePos: cheesePositions)
             {
                 if (!isPathOkay(emptyPos, cheesePos, INITIAL_MINIMUM_DISTANCE))
-                {
-                    validRespawnPositions.remove(emptyPos);
-                    break;
-                }
+                    break retry;
             }
+            validRespawnPositions.add(emptyPos);
         }
     }
 
