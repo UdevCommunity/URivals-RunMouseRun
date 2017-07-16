@@ -129,23 +129,9 @@ public abstract class CharacterController
         return pathFinder.getShortestPath(map, position, destination);
     }
 
-    final protected boolean checkDiagonalWallCrossBy(Position next)
+    protected boolean canCrossByDiagonalWall(Position next)
     {
-        int dx = next.getPosX() - position.getPosX();
-        int dy = next.getPosY() - position.getPosY();
-
-        if(dx != 0 && dy != 0)
-        {
-            if(GameManager.gameManager.getLevelGenerator().getMap()
-                    .getTile(position.getPosX() + dx, position.getPosY()) == Tile.WALL
-                    &&
-                    GameManager.gameManager.getLevelGenerator().getMap()
-                            .getTile(position.getPosX(), position.getPosY()+dy) == Tile.WALL
-                    )
-                return false;
-        }
-
-        return true;
+        return GameManager.gameManager.getLevelGenerator().canCrossByDiagonalWall(position, next);
     }
 
     final private void move()
@@ -159,7 +145,8 @@ public abstract class CharacterController
             if (i > 0)
                 try {Thread.sleep(CONSEQUENT_MOVE_DELAY);} catch (InterruptedException e) {e.printStackTrace();}
 
-            if (destinationPath.isEmpty() || !checkDiagonalWallCrossBy(destinationPath.get(0)))
+            if (destinationPath.isEmpty() ||
+                    !canCrossByDiagonalWall(destinationPath.get(0)))
                 return;
 
             Tile actualTile = GameManager.gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY());

@@ -1,7 +1,7 @@
 package run_mouse_run;
 
-import run_mouse_run.Mouses.Jerry;
-import run_mouse_run.Cats.Tom;
+import run_mouse_run.Mouses.DumbJerry;
+import run_mouse_run.Cats.DumbTom;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -32,11 +32,11 @@ public class GameManager /// TODO : access via static VS references
         level = new LevelGenerator();
 
         // Instantiate mouses (do not use a loop, here we may instantiate mouses from different classes)
-        mouses.add(new Jerry("Jerry", LevelGenerator.MOUSES_INITIAL_POS));
+        mouses.add(new DumbJerry("DumbJerry", LevelGenerator.MOUSES_INITIAL_POS));
 
         // Instantiate cats (do not use a loop, here we may instantiate cats from different classes)
-        cats.add(new Tom("Tom", LevelGenerator.CATS_INITIAL_POS));
-        cats.add(new Tom("Tom2", LevelGenerator.CATS_INITIAL_POS));
+        cats.add(new DumbTom("DumbTom", LevelGenerator.CATS_INITIAL_POS));
+        cats.add(new DumbTom("Tom2", LevelGenerator.CATS_INITIAL_POS));
 
         physicsEngine = new PhysicsEngine();
         drawEngine = new DrawEngine(level.getMap());
