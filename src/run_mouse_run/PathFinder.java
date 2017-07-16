@@ -314,6 +314,8 @@ public class PathFinder {
      */
     private ArrayList<Position> connectPath(ArrayList<Position> path)
     {
+        if(path.isEmpty()) return path;
+
         ArrayList<Position> connectedPath = new ArrayList<>();
 
         for(int i = 0; i < path.size()-1; i++)
@@ -368,7 +370,7 @@ public class PathFinder {
 
             if(!Position.comparePosition(begin, end)) // if not duplicates, add them
             {
-                finalPath.add(begin);
+                finalPath.add(0, begin);
             }
         }
         finalPath.add(end);
