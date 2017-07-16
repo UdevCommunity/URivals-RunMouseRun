@@ -69,14 +69,14 @@ public class Map
 
     public ArrayList<Position> getSpecialTilesPosition(Tile tile)
     {
-        ArrayList<Position> cheesesPosition = new ArrayList<>();
+        ArrayList<Position> specialTilesPosition = new ArrayList<>();
 
         for (int i = 0; i < width; i++)
             for (int j = 0; j < height; j++)
                 if (getTile(i, j) == tile)
-                    cheesesPosition.add(new Position(i, j));
+                    specialTilesPosition.add(new Position(i, j));
 
-        return cheesesPosition;
+        return specialTilesPosition;
     }
 
     public ArrayList<Tile> getAdjacentsTile(int x, int y)

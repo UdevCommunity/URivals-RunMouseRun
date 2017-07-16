@@ -19,6 +19,7 @@ public class LevelGenerator
     private final static int INITIAL_MINIMUM_DISTANCE = 15; // minimum eloignés de 15 cases
 
     private Map map;
+    private ArrayList<Position> validRespawnPositions;
 
     private final int WALL_PROBABILITY_THRESHOLD = 35;
     private final int POWERUP_VISION_PROBABILITY_THRESHOLD = WALL_PROBABILITY_THRESHOLD + 1;    // 1%
@@ -43,9 +44,10 @@ public class LevelGenerator
         // Generate map
         map = generateRandomMap(MAP_WIDTH, MAP_HEIGHT);
 
+        setValidRespawnPositions();
+
         // Set objects initial position
         setInitialPosition();
-
     }
 
     public PathFinder getPathFinder()
@@ -61,12 +63,16 @@ public class LevelGenerator
     public void setMap(int width, int height)
     {
         map = generateRandomMap(width, height);
+
+        setValidRespawnPositions();
         setInitialPosition();
         for(CharacterController m : GameManager.gameManager.getMouses())
             m.setPosition(MOUSES_INITIAL_POS);
 
         for(CharacterController c : GameManager.gameManager.getCats())
             c.setPosition(CATS_INITIAL_POS);
+
+
     }
     public void spawnVisionPowerup()
     {
@@ -242,60 +248,65 @@ public class LevelGenerator
      */
     public Position getEmptyPos()
     {
-        while (true)
-        {
-            // get random position
-            int x = ThreadLocalRandom.current().nextInt(0, MAP_WIDTH);
-            int y = ThreadLocalRandom.current().nextInt(0, MAP_HEIGHT);
+        Position randomPosition = validRespawnPositions.get(ThreadLocalRandom.current().nextInt(0, validRespawnPositions.size()));
 
-            if (map.getTile(x, y) == Tile.EMPTY)
-            {
-                return new Position(x, y);
-            }
-        }
+        return new Position(randomPosition.getPosX(), randomPosition.getPosY());
     }
 
     /**
      * Get a random position far enough from every mouse/cat
      * @return Position : a valid respawn position
      */
-    public Position getValidRespawnPosition()
+    public Position getValidRespawnPosition(String characterType)
     {
         int minDist = INITIAL_MINIMUM_DISTANCE;
+        final int RANDOM_POSITION_TEST_TRIES = 3;
 
         while (minDist > 0)
         {
-            int tests = 0;
-            /*Try 3 times */
-            while (tests < 3)
-            {
+            for (int i = 0; i < RANDOM_POSITION_TEST_TRIES; i++) retry:{
+
                 Position randomPos = getEmptyPos();
-                boolean okay = true;
-
-                // Check MINIMUM_DISTANCE from mouses
-                for (Mouse m : GameManager.gameManager.getMouses())
+                switch (characterType)
                 {
-                    if (!isPathOkay(randomPos, m.getPosition(), minDist))
-                        okay = false;
+                    case "Cat":
+                        for (Mouse mouse : GameManager.gameManager.getMouses())
+                            if (!isPathOkay(randomPos, mouse.getPosition(), minDist))
+                                break retry;
+
+                        break;
+
+                    case "Mouse":
+                        for (Cat cat : GameManager.gameManager.getCats())
+                            if (!isPathOkay(randomPos, cat.getPosition(), minDist))
+                                break retry;
+
+                        break;
                 }
-
-                // Check MINIMUM_DISTANCE from cats
-                for (Cat c : GameManager.gameManager.getCats())
-                {
-                    if (!isPathOkay(randomPos, c.getPosition(), minDist))
-                        okay = false;
-                }
-
-                if (okay)
-                    return randomPos;
-
-                tests++;
+                return randomPos;
             }
-            /*If not found, reduce minimal distance*/
             minDist--;
         }
 
         return getEmptyPos(); // if none, ..
+    }
+
+    private void setValidRespawnPositions()
+    {
+        validRespawnPositions = map.getSpecialTilesPosition(Tile.EMPTY);
+        ArrayList<Position> cheesePositions = map.getSpecialTilesPosition(Tile.CHEESE);
+
+        for (Position emptyPos: validRespawnPositions)
+        {
+            for (Position cheesePos: cheesePositions)
+            {
+                if (!isPathOkay(emptyPos, cheesePos, INITIAL_MINIMUM_DISTANCE))
+                {
+                    validRespawnPositions.remove(emptyPos);
+                    break;
+                }
+            }
+        }
     }
 
     public Map getViewedMap(Map viewedMap, Position position, int viewDistance, boolean seeBehindWalls, ArrayList<Tile> tilesToIgnore)

@@ -9,4 +9,9 @@ public abstract class Mouse extends CharacterController
     {
         super(name, initialPosition, new ArrayList<Tile>(){{add(Tile.MINE);}});
     }
+
+    final void die()
+    {
+        super.die("Mouse");
+    }
 }

@@ -76,9 +76,9 @@ public abstract class CharacterController
         timer.scheduleAtFixedRate(task, 0, UPDATE_FREQUENCE);
     }
 
-    final void die()
+    void die(String characterType)
     {
-        position = GameManager.gameManager.getLevelGenerator().getValidRespawnPosition();
+        position = GameManager.gameManager.getLevelGenerator().getValidRespawnPosition(characterType);
         destinationPath.clear();
         moveSpeed = INITIAL_MOVE_SPEED;
         viewDistance = INITIAL_VIEW_DISTANCE;
