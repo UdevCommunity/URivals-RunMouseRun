@@ -1,7 +1,5 @@
 package run_mouse_run;
 
-import javafx.geometry.Pos;
-
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -300,7 +298,7 @@ public class LevelGenerator
         return getEmptyPos(); // if none, ..
     }
 
-    public final Map getViewedMap(String name, Position position, int viewDistance)
+    public Map getViewedMap(String name, Position position, int viewDistance)
     {
         Map viewMap = new Map(name, LevelGenerator.MAP_WIDTH , LevelGenerator.MAP_HEIGHT, Tile.NOT_DISCOVERED);
 
@@ -312,9 +310,47 @@ public class LevelGenerator
         for (int i = startPoint.getPosX(); i <= position.getPosX()+ viewDistance && i < LevelGenerator.MAP_WIDTH; i++)
             for (int j = startPoint.getPosY(); j <= position.getPosY() + viewDistance && j < LevelGenerator.MAP_HEIGHT; j++)
             {
+                if(isSegmentCutByWall(new Position(i, j), position))
+                    continue;
+
                 viewMap.setTile(i, j, (map.getTile(i, j) != Tile.MINE)? map.getTile(i, j): Tile.EMPTY);
             }
 
         return viewMap;
+    }
+
+    private boolean isSegmentCutByWall(Position source, Position destination)
+    {
+        Position currentPos = source.copy();
+        while (!Position.comparePosition(currentPos, destination))
+        {
+            // Normalized direction vector
+            int dx = (destination.getPosX() - currentPos.getPosX() >= 0)? ((destination.getPosX() - currentPos.getPosX() == 0)?0:1): -1;
+            int dy = (destination.getPosY() - currentPos.getPosY() >= 0)? ((destination.getPosY() - currentPos.getPosY() == 0)?0:1): -1;
+
+            if (!canCrossByDiagonalWall(currentPos, new Position(currentPos.getPosX() + dx, currentPos.getPosY() + dy))
+                    || map.getTile(currentPos.getPosX() + dx, currentPos.getPosY() + dy) == Tile.WALL)
+                return true;
+
+            currentPos.setPosX(currentPos.getPosX() + dx);
+            currentPos.setPosY(currentPos.getPosY() + dy);
+        }
+
+        return false;
+    }
+
+    public boolean canCrossByDiagonalWall(Position current, Position next)
+    {
+        int dx = next.getPosX() - current.getPosX();
+        int dy = next.getPosY() - current.getPosY();
+
+        if(dx != 0 && dy != 0)
+        {
+            if(getMap().getTile(current.getPosX() + dx, current.getPosY()) == Tile.WALL
+                    && getMap().getTile(current.getPosX(), current.getPosY()+dy) == Tile.WALL)
+                return false;
+        }
+
+        return true;
     }
 }

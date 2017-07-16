@@ -1,15 +1,14 @@
-package run_mouse_run.Cats;
+package run_mouse_run.Mouses;
 
-import run_mouse_run.Cat;
-import run_mouse_run.Position;
-import run_mouse_run.Tile;
+import run_mouse_run.*;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Tom extends Cat
+public class DumbJerry extends Mouse
 {
-    public Tom(String name, Position initialPosition)
+    public DumbJerry(String name, Position initialPosition)
     {
         super(name, initialPosition);
     }
@@ -19,17 +18,17 @@ public class Tom extends Cat
     {
         super.computeDecision();
 
-        ArrayList<Position> mousesPosition = viewedMap.getSpecialTilesPosition(Tile.MOUSE);
+        ArrayList<Position> cheesesPosition = viewedMap.getSpecialTilesPosition(Tile.CHEESE);
 
-        if (!mousesPosition.isEmpty())
+        if (!cheesesPosition.isEmpty())
         {
-            destinationPath = computePath(viewedMap, mousesPosition.get(0));
+            destinationPath = computePath(viewedMap, cheesesPosition.get(0));
         }
 
         if(!destinationPath.isEmpty())
         {
             if(viewedMap.getTile(destinationPath.get(0).getPosX(), destinationPath.get(0).getPosY()) == Tile.WALL
-                    || !checkDiagonalWallCrossBy(destinationPath.get(0)))
+                    || !canCrossByDiagonalWall(destinationPath.get(0)))
                 destinationPath.clear();
 
             return;
