@@ -191,7 +191,7 @@ public class PathFinder {
             if (heap.isEmpty())
             {
                 //if the heap size is 0, and we have not found our end, the end is unreachable
-                System.out.println("Path doesn't exist");
+               // System.out.println("Path doesn't exist");
                 break;   //loop is done
             }
         }

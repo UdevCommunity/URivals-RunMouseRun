@@ -149,7 +149,7 @@ public class DrawEngine {
      */
 	public class DrawEngineFrame extends JFrame {
 
-		public int TILE_SIZE = 32; // Tiles will resize to this value
+		public int TILE_SIZE = 48; // Tiles will resize to this value
 
 		private JPanel contentPane;
 		private JScrollPane mapContainerPanel;
@@ -260,7 +260,7 @@ public class DrawEngine {
 				}
 			});
 
-			// Center buttons ( Checkbox )
+			// Center buttons ( ComboBox )
 			JPanel centerPanel = new JPanel();
 
 			mapsCmBox = new JComboBox<>();
@@ -286,6 +286,17 @@ public class DrawEngine {
 				}
 			});
 			centerPanel.add(mapsCmBox);
+
+			// Control Buttons
+			JButton btnCenterScroll = new JButton("Find Mouse");
+
+			btnCenterScroll.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					centerScroll(GameManager.gameManager.getMouses().get(0).getPosition());
+				}
+			});
+			centerPanel.add(btnCenterScroll);
 
 			// TILE SIZE Slider
             JSlider slide = new JSlider();
@@ -569,6 +580,62 @@ public class DrawEngine {
 		}
 
 		/**
+		 * A little hard coded, know which character to follow depending on map
+		 */
+		private void updateScroll()
+		{
+
+			int index = mapsCmBox.getSelectedIndex();
+			if( index > 0) // if not levelMap
+			{
+				if(index < GameManager.gameManager.getMouses().size()+1)
+				{
+					// Mouse
+					centerScroll(
+							GameManager.gameManager.getMouses().get(index-1)
+							.getPosition()
+					);
+				}
+				else if(index < GameManager.gameManager.getCats().size()
+						+ GameManager.gameManager.getMouses().size() +1)
+				{
+					// Cat
+					centerScroll(
+							GameManager.gameManager.getCats()
+							.get(index -GameManager.gameManager.getMouses().size() -1)
+							.getPosition()
+					);
+				}
+			}
+		}
+
+		/**
+		 * Calculate and set position of scrol View port (mapContainerPanel)
+		 * se that the given p is in center
+		 * @param p (Position)
+		 */
+		private void centerScroll(Position p)
+		{
+			/*Get width (Vw) and height (Vh) of viewport*/
+			double vw = mapContainerPanel.getWidth();
+			double vh = mapContainerPanel.getHeight();
+
+			int vx = (int) (p.getPosX()*TILE_SIZE - vw/2) + TILE_SIZE/2;
+			int vy = (int) (p.getPosY()*TILE_SIZE - vh/2) + TILE_SIZE/2;
+
+			// check for bounds
+			int maxX = (int) (maps.get(mapsCmBox.getSelectedIndex()).getWidth()*TILE_SIZE-vw);
+			int maxY = (int) (maps.get(mapsCmBox.getSelectedIndex()).getHeight()*TILE_SIZE-vh);
+			maxX = (maxX >= 0)? maxX: 0;  maxY = (maxY >= 0)? maxY: 0;
+
+			vx = (vx >= 0)? vx: 0;  vy = (vy >= 0)? vy: 0;
+			vx = (vx >= maxX)? maxX : vx; vy = (vy >= maxY)? maxY : vy;
+
+
+			mapContainerPanel.getViewport().setViewPosition(new Point(vx,vy));
+
+		}
+		/**
 		 * Refresh map ( draw level, characters and objects )
 		 * Draw Cat and mouse DestinationPath
 		 */
@@ -577,7 +644,7 @@ public class DrawEngine {
 		    mapPanel.setMap(maps.get(mapsCmBox.getSelectedIndex()));
 			mapPanel.update();
 			updateTime(GameManager.gameManager.getTimer().getCurrentTime().toString());
-
+			updateScroll();
 
 			for (Cat cat : GameManager.gameManager.getCats())
 				mapPanel.drawPath(cat.getDestinationPath(), mapPanel.CAT_SPRITE);
