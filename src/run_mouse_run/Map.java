@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Map
 {
     private Tile[][] map;
+    private Position[][] positionsMap;
 
     private String name;
     private int height;
@@ -19,7 +20,15 @@ public class Map
 
         for (int i = 0; i < width; i++)
             for (int j = 0; j < height; j++)
+            {
                 map[j][i] = defaultTile;
+                positionsMap[j][i] = new Position(i, j);
+            }
+    }
+
+    public Position getPosition(int x, int y)
+    {
+        return positionsMap[y][x];
     }
 
     public void setName(String name)
