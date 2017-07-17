@@ -78,12 +78,16 @@ public class LevelGenerator
     }
     public void spawnVisionPowerup()
     {
-
+        Position spawnPosition = getRespawnPosition();
+        validRespawnPositions.remove(spawnPosition);
+        map.setTile(spawnPosition.getPosX(), spawnPosition.getPosY(), Tile.POWERUP_VISION);
     }
 
     public void spawnSpeedPowerup()
     {
-
+        Position spawnPosition = getRespawnPosition();
+        validRespawnPositions.remove(spawnPosition);
+        map.setTile(spawnPosition.getPosX(), spawnPosition.getPosY(), Tile.POWERUP_SPEED);
     }
 
     /***
