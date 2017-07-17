@@ -6,6 +6,7 @@ public class Map
 {
     private Tile[][] map;
     private Position[][] positionsMap;
+    private Position nullPosition = new Position(-1, -1);
 
     private String name;
     private int height;
@@ -29,7 +30,7 @@ public class Map
     public Position getPosition(int x, int y)
     {
         if (x < 0 || y < 0 || x >= width || y >= height)
-            return null;
+            return nullPosition;
 
         return positionsMap[y][x];
     }
