@@ -50,9 +50,9 @@ public class DrawEngine {
 	{
         //updateMapsList(maps.get(0));
 
-        for(DrawEngineFrame frame: frames)
+        for(int i = 0; i < frames.size(); i++)
 		{
-			frame.update();
+			frames.get(i).update();
 		}
 	}
 
@@ -572,7 +572,7 @@ public class DrawEngine {
 		 * Refresh map ( draw level, characters and objects )
 		 * Draw Cat and mouse DestinationPath
 		 */
-		public void update() /// TODO : draw cat computed path
+		public void update()
 		{
 		    mapPanel.setMap(maps.get(mapsCmBox.getSelectedIndex()));
 			mapPanel.update();
@@ -768,7 +768,7 @@ public class DrawEngine {
 				if (path == null || path.isEmpty()) return;
 
 				graphic.setColor(Color.BLUE);
-                Composite composite = graphic.getComposite();
+               // Composite composite = graphic.getComposite();
 
                 graphic.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.25f));
 				for (Position t : path)
@@ -779,7 +779,7 @@ public class DrawEngine {
 
                 }
 
-				graphic.setComposite(composite);
+				graphic.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
 			}
 
 			private void bufferObjects() {
