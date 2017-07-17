@@ -10,7 +10,7 @@ public class PathFinder {
     private Map map = null;   // run_mouse_run.Map given by run_mouse_run.LevelGenerator
     private Node[][] grid = null;  // map on which we apply the search
 
-    private Position initialPos = new Position(0, 0), finalPos = new Position(0, 0);
+    private Position initialPos, finalPos;
 
     private int mapWidth, mapHeight;
 
@@ -21,6 +21,11 @@ public class PathFinder {
 
     public PathFinder(Map map)
     {
+        this.map = map;
+
+        initialPos = map.getPosition(0, 0);
+        finalPos = map.getPosition(0, 0);
+
         try
         {
             setupSolver(map, initialPos, finalPos);
@@ -47,6 +52,7 @@ public class PathFinder {
             else
             {
                 solve();
+                clearGraph();
                 return shortestPath;
             }
         }catch (Exception e)
@@ -65,6 +71,19 @@ public class PathFinder {
             return true;
 
         return false;
+        /*
+        if(this.map == map)
+        {
+            if(Position.comparePosition(initialPos, this.initialPos)
+                    && Position.comparePosition(finalPos, this.finalPos))
+                return true;
+            else
+            {
+                //Check if
+
+            }
+        }
+        return false;*/
     }
 
     private void cleanSolver(int width, int height)
@@ -77,7 +96,7 @@ public class PathFinder {
             {
                 for (int j = 0; j < width; j++)
                 {
-                    grid[i][j] = new Node(0,0);
+                    grid[i][j] = new Node(map.getPosition(0,0));
                 }
             }
         }
@@ -127,7 +146,7 @@ public class PathFinder {
         {
             for (int j = 0; j < mapWidth; j++)
             {
-                grid[i][j].setPosition(j, i); // j is x, i is y
+                grid[i][j].setPosition(map.getPosition(j,i)); // j is x, i is y
                 grid[i][j].f = -1;          // init distance to null
 
                 if (map.getTile(j, i) == Tile.WALL)
@@ -251,25 +270,25 @@ public class PathFinder {
                 // Up ( or down )
                 if (getNode(x, y + dy).pass)
                 {
-                    neighbors.add(new Position(x, y + dy));
+                    neighbors.add(map.getPosition(x, y + dy));
                 }
                 // Right ( or left )
                 if (getNode(x + dx, y).pass)
                 {
-                    neighbors.add(new Position(x + dx, y));
+                    neighbors.add(map.getPosition(x + dx, y));
                 }
                 // diagonale
                 if ((getNode(x, y + dy).pass || getNode(x + dx, y).pass) && getNode(x + dx, y + dy).pass)
                 {
-                    neighbors.add(new Position(x + dx, y + dy));
+                    neighbors.add(map.getPosition(x + dx, y + dy));
                 }
                 if (!getNode(x - dx, y).pass && getNode(x, y + dy).pass)
                 {
-                    neighbors.add(new Position(x - dx, y + dy));
+                    neighbors.add(map.getPosition(x - dx, y + dy));
                 }
                 if (!getNode(x, y - dy).pass && getNode(x + dx, y).pass)
                 {
-                    neighbors.add(new Position(x + dx, y - dy));
+                    neighbors.add(map.getPosition(x + dx, y - dy));
                 }
             } else
             {
@@ -280,15 +299,15 @@ public class PathFinder {
                     {
                         if (getNode(x, y + dy).pass)
                         {
-                            neighbors.add(new Position(x, y + dy));
+                            neighbors.add(map.getPosition(x, y + dy));
                         }
                         if (!getNode(x + 1, y).pass)
                         {
-                            neighbors.add(new Position(x + 1, y + dy));
+                            neighbors.add(map.getPosition(x + 1, y + dy));
                         }
                         if (!getNode(x - 1, y).pass)
                         {
-                            neighbors.add(new Position(x - 1, y + dy));
+                            neighbors.add(map.getPosition(x - 1, y + dy));
                         }
                     }
                 }
@@ -299,15 +318,15 @@ public class PathFinder {
                     {
                         if (getNode(x + dx, y).pass)
                         {
-                            neighbors.add(new Position(x + dx, y));
+                            neighbors.add(map.getPosition(x + dx, y));
                         }
                         if (!getNode(x, y + 1).pass)
                         {
-                            neighbors.add(new Position(x + dx, y + 1));
+                            neighbors.add(map.getPosition(x + dx, y + 1));
                         }
                         if (!getNode(x, y - 1).pass)
                         {
-                            neighbors.add(new Position(x + dx, y - 1));
+                            neighbors.add(map.getPosition(x + dx, y - 1));
                         }
                     }
                 }
@@ -326,9 +345,10 @@ public class PathFinder {
      * @param current (Node) : the final position node ( current when finished JPS )
      * @return connected traced Path ( apply connectPath to result trail )
      */
+    private ArrayList<Position> trail = new ArrayList<Position>();
+
     private ArrayList<Position> tracePath(Node current) {
-        ArrayList<Position> trail = new ArrayList<Position>();
-        //System.out.println("Tracing Back Path...");
+        trail.clear();
         while (current.parent != null)
         {
             try
@@ -337,9 +357,11 @@ public class PathFinder {
             } catch (Exception e)
             {
                 // ;_;
-                //System.out.println("trace path exception");
+               System.out.println("trace path exception");
             }
+            Node tmp = current;
             current = current.parent;
+            tmp.parent = null;
         }
         trail.add(current.pos);
         //System.out.println("Path Trace Complete!");
@@ -352,11 +374,14 @@ public class PathFinder {
      * @param path the tracePath
      * @return connected path with initial position first
      */
+    private ArrayList<Position> connectedPath = new ArrayList<>();
+    private ArrayList<Position> finalPath = new ArrayList<>();
+
     private ArrayList<Position> connectPath(ArrayList<Position> path)
     {
         if(path.isEmpty()) return path;
 
-        ArrayList<Position> connectedPath = new ArrayList<>();
+        connectedPath.clear();
 
         for(int i = 0; i < path.size()-1; i++)
         {
@@ -384,7 +409,7 @@ public class PathFinder {
                 Position tmp = begin;   // start at initial pos
                 do
                 {
-                    tmp = new Position(
+                    tmp = map.getPosition(
                             tmp.getPosX() + dx, // add 0/1 step in direction of end node
                             tmp.getPosY() + dy // add 0/1 step in direction of end node
                     );
@@ -401,8 +426,7 @@ public class PathFinder {
 
         ///TODO : better fix
         /*Temporary : remove duplicates from array and reverse path */
-        ArrayList<Position> finalPath = new ArrayList<>();
-
+        finalPath.clear();
         Position begin = connectedPath.get(0), end = connectedPath.get(0);
 
         for(int i = 0; i < connectedPath.size()-1; i++)
@@ -479,8 +503,8 @@ public class PathFinder {
 
         if (dx != 0 && dy != 0)
         { //when moving diagonally, must check for vertical/horizontal jump points
-            jx = jump(new Position(x + dx, y), new Position(x, y));
-            jy = jump(new Position(x, y + dy), new Position(x, y));
+            jx = jump(map.getPosition(x + dx, y), map.getPosition(x, y));
+            jy = jump(map.getPosition(x, y + dy), map.getPosition(x, y));
 
             if (jx != null || jy != null)
             {
@@ -489,7 +513,7 @@ public class PathFinder {
         }
          if (getNode(x + dx, y).pass || getNode(x, y + dy).pass)
         { //moving diagonally, must make sure one of the vertical/horizontal neighbors is open to allow the path
-            return jump(new Position(x + dx, y + dy), new Position(x, y));
+            return jump(map.getPosition(x + dx, y + dy), map.getPosition(x, y));
         } else
         { //if we are trying to move diagonally but we are blocked by two touching corners of adjacent nodes, we return a null
             return null;
@@ -514,39 +538,39 @@ public class PathFinder {
 
         if (getNode(x, y - 1).pass)
         {
-            neighbors.add(new Position(x, y - 1));
+            neighbors.add(map.getPosition(x, y - 1));
             d0 = d1 = true;
         }
         if (getNode(x + 1, y).pass)
         {
-            neighbors.add(new Position(x + 1, y));
+            neighbors.add(map.getPosition(x + 1, y));
             d1 = d2 = true;
         }
         if (getNode(x, y + 1).pass)
         {
-            neighbors.add(new Position(x, y + 1));
+            neighbors.add(map.getPosition(x, y + 1));
             d2 = d3 = true;
         }
         if (getNode(x - 1, y).pass)
         {
-            neighbors.add(new Position(x - 1, y));
+            neighbors.add(map.getPosition(x - 1, y));
             d3 = d0 = true;
         }
         if (d0 && getNode(x - 1, y - 1).pass)
         {
-            neighbors.add(new Position(x - 1, y - 1));
+            neighbors.add(map.getPosition(x - 1, y - 1));
         }
         if (d1 && getNode(x + 1, y - 1).pass)
         {
-            neighbors.add(new Position(x + 1, y - 1));
+            neighbors.add(map.getPosition(x + 1, y - 1));
         }
         if (d2 && getNode(x + 1, y + 1).pass)
         {
-            neighbors.add(new Position(x + 1, y + 1));
+            neighbors.add(map.getPosition(x + 1, y + 1));
         }
         if (d3 && getNode(x - 1, y + 1).pass)
         {
-            neighbors.add(new Position(x - 1, y + 1));
+            neighbors.add(map.getPosition(x - 1, y + 1));
         }
         return neighbors;
     }
@@ -558,7 +582,7 @@ public class PathFinder {
         } catch (Exception e)
         {
             //System.out.println("Null node");
-            Node n = new Node(-1, -1);
+            Node n = new Node(map.getPosition(-1, -1));
             n.setPass(false);
             return n;
 
@@ -572,7 +596,7 @@ public class PathFinder {
         } catch (Exception e)
         {
             //System.out.println("Null node ("+x+","+y+")" + heap.size());
-            Node n = new Node(-1, -1);
+            Node n = new Node(map.getPosition(-1, -1));
             n.setPass(false);
             return n;
         }
@@ -588,8 +612,8 @@ public class PathFinder {
         boolean pass;
         Node parent;
 
-        public Node(int x, int y) {
-            pos = new Position(x, y);
+        public Node(Position pos) {
+            this.pos = pos;
             parent = null;
             this.pass = true;
             g = h = f = 0;
@@ -610,13 +634,16 @@ public class PathFinder {
         public void clear()
         {
             parent = null;
-            this.pass = true;
+            this.pass = false;
             g = h = f = 0;
         }
 
         public void setPosition(int x, int y) {
-            pos.setPosX(x);
-            pos.setPosY(y);
+            pos = map.getPosition(x,y);
+        }
+
+        public void setPosition(Position position) {
+            this.pos = position;
         }
     }
 

@@ -128,6 +128,7 @@ public class LevelGenerator
             map = generateRandomMap(MAP_WIDTH, MAP_HEIGHT);
             // Set objects initial position
             setInitialPosition();
+            pathFinder = new PathFinder(map);
         }
         else
         {
