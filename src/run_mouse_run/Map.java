@@ -18,6 +18,7 @@ public class Map
         this.height = height;
         this.width = width;
         this.map = new Tile[height][width];
+        this.positionsMap = new Position[height][width];
 
         for (int i = 0; i < width; i++)
             for (int j = 0; j < height; j++)
