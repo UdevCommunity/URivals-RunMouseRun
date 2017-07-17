@@ -613,7 +613,7 @@ public class DrawEngine {
 			private final int CAT_SPRITE = 0, MOUSE_SPRITE = 1,
 					NOT_DISCOVERED_SPRITE = 2, EMPTY_SPRITE = 3,
 					WALL_SPRITE = 4, CHEESE_SPRITE = 5,
-					POWERUP_VISION_SPRITE = 6, POWERUP_SPEED_SPRITE = 7,
+					POWERUP_VISION_SPRITE = 7, POWERUP_SPEED_SPRITE = 6,
 					INVISIBLE_ZONE_SPRITE = 8, MINE_SPRITE = 9;
 
 			private ArrayList<BufferedImage> sprites;
