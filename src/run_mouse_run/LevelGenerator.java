@@ -50,7 +50,6 @@ public class LevelGenerator
         setInitialPosition();
 
         setValidRespawnPositions();
-        //validRespawnPositions = map.getSpecialTilesPosition(Tile.EMPTY);
     }
     public PathFinder getPathFinder()
     {

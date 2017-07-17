@@ -78,6 +78,7 @@ public abstract class CharacterController
 
     void die(String characterType)
     {
+        System.out.println(getName() + " Died at " + GameManager.gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY()));
         position = GameManager.gameManager.getLevelGenerator().getValidRespawnPosition(characterType);
         destinationPath.clear();
         moveSpeed = INITIAL_MOVE_SPEED;

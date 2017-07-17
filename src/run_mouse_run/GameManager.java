@@ -79,6 +79,12 @@ public class GameManager /// TODO : access via static VS references
             case "Everybody Lose":
                 drawEngine.displayEndGameScreen("Losers .. losers everywhere ..");
                 break;
+            case "Mouses Win":
+                drawEngine.displayEndGameScreen("Mouses Win !!");
+                break;
+            case "Cats Win":
+                drawEngine.displayEndGameScreen("Cats Win !!");
+                break;
         }
     }
 
