@@ -76,9 +76,9 @@ public abstract class CharacterController
         timer.scheduleAtFixedRate(task, 0, UPDATE_FREQUENCE);
     }
 
-    void die(String characterType)
+    void die(String characterType, String deathCause)
     {
-        System.out.println(getName() + " Died at " + GameManager.gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY()));
+        System.out.println(getName() + " Died, Death cause: " + deathCause);
         position = GameManager.gameManager.getLevelGenerator().getValidRespawnPosition(characterType);
         destinationPath.clear();
         moveSpeed = INITIAL_MOVE_SPEED;
