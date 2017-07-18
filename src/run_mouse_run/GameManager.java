@@ -7,7 +7,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 
-public class GameManager /// TODO : access via static VS references
+public class GameManager
 {
     static GameManager gameManager;
 

@@ -71,19 +71,6 @@ public class PathFinder {
             return true;
 
         return false;
-        /*
-        if(this.map == map)
-        {
-            if(Position.comparePosition(initialPos, this.initialPos)
-                    && Position.comparePosition(finalPos, this.finalPos))
-                return true;
-            else
-            {
-                //Check if
-
-            }
-        }
-        return false;*/
     }
 
     private void cleanSolver(int width, int height)
@@ -374,29 +361,26 @@ public class PathFinder {
      * @param path the tracePath
      * @return connected path with initial position first
      */
-    private ArrayList<Position> connectedPath = new ArrayList<>();
-    private ArrayList<Position> finalPath = new ArrayList<>();
-
     private ArrayList<Position> connectPath(ArrayList<Position> path)
     {
         if(path.isEmpty()) return path;
 
-        connectedPath.clear();
+        ArrayList<Position> connectedPath = new ArrayList<>();
+
+        // add first point
+        connectedPath.add(0,path.get(0));
 
         for(int i = 0; i < path.size()-1; i++)
         {
             // take two points
             Position begin = path.get(i), end = path.get(i+1);
 
-            // add first point
-            connectedPath.add(begin);
-
             // check if connected
             if(Math.abs(begin.getPosX()-end.getPosX()) <= 1
                     && Math.abs(begin.getPosY() - end.getPosY()) <= 1)
             {
                 // add the next point
-                connectedPath.add(end);
+                connectedPath.add(0, end);
             }
             else
             {
@@ -413,37 +397,16 @@ public class PathFinder {
                             tmp.getPosX() + dx, // add 0/1 step in direction of end node
                             tmp.getPosY() + dy // add 0/1 step in direction of end node
                     );
-                    connectedPath.add(tmp);    // add intermediate position
+                    connectedPath.add(0, tmp);    // add intermediate position at beggining ( reverse path )
 
                 }while ( ! Position.comparePosition(tmp, end) && getNode(tmp).pass); // repeat until begin reaches end pos
                 // note : at the end of the loop, end is already added ( tmp == end )
             }
         }
         // finally, return the path
-
-        if(connectedPath.isEmpty())
-            return connectedPath;
-
-        ///TODO : better fix
-        /*Temporary : remove duplicates from array and reverse path */
-        finalPath.clear();
-        Position begin = connectedPath.get(0), end = connectedPath.get(0);
-
-        for(int i = 0; i < connectedPath.size()-1; i++)
-        {
-            // take two points
-            begin = connectedPath.get(i);
-            end = connectedPath.get(i+1);
-
-            if(!Position.comparePosition(begin, end)) // if not duplicates, add them
-            {
-                finalPath.add(0, begin);
-            }
-        }
-        // finalPath.add(0, end); // Do not add source position to the path
-
-        return finalPath;
+        return connectedPath;
     }
+
     /**
      * jump method recursively searches in the direction of parent (px,py) to child, the current node (x,y).
      * It will stop and return its current position in three situations:

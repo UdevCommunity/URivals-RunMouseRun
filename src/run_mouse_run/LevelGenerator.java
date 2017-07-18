@@ -125,7 +125,7 @@ public class LevelGenerator
 
         int cellCount = getEmptyCellCount(MOUSES_INITIAL_POS, new ArrayList<Position>());
 
-        if(cellCount < MAP_HEIGHT*MAP_WIDTH*WALL_PROBABILITY_THRESHOLD/100*2/3) // 2/3 /// TODO : test values
+        if(cellCount < MAP_HEIGHT*MAP_WIDTH*WALL_PROBABILITY_THRESHOLD/100*2/3) // 2/3
         {
             // Generate map
             map = generateRandomMap(MAP_WIDTH, MAP_HEIGHT);
