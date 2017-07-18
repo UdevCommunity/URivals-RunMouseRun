@@ -772,7 +772,7 @@ public class DrawEngine {
 						"powerup_vision_sprite.png",
 						"invisible_zone_sprite.png",
 						"mine_sprite.png",
-						"cat_Sprite.png",
+						"cat_sprite.png",
 						"mouse_sprite.png"
 				};
 
