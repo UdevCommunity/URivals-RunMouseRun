@@ -253,8 +253,7 @@ public class DrawEngine {
 			btnDrawShortest.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					mapPanel.drawPath(
-					        pathFinder.getShortestPath(maps.get(0), initialPos, finalPos),
-                            mapPanel.CAT_SPRITE
+					        pathFinder.getShortestPath(maps.get(0), initialPos, finalPos)
                     );
 
 				}
@@ -646,10 +645,7 @@ public class DrawEngine {
 			updateTime(GameManager.gameManager.getTimer().getCurrentTime().toString());
 			updateScroll();
 
-			for (Cat cat : GameManager.gameManager.getCats())
-				mapPanel.drawPath(cat.getDestinationPath(), mapPanel.CAT_SPRITE);
-			for (Mouse mouse : GameManager.gameManager.getMouses())
-				mapPanel.drawPath(mouse.getDestinationPath(), mapPanel.MOUSE_SPRITE);
+			mapPanel.drawCharacterPaths();
 		}
 
 
@@ -657,13 +653,28 @@ public class DrawEngine {
 		{
 			JPanel endGamePanel = new JPanel();
 
+			endGamePanel.setLayout(new BorderLayout(10,10));
+
 			JLabel lblResult = new JLabel(result);
 			lblResult.setFont(new Font("Cambria", Font.PLAIN, 48));
 
-			endGamePanel.add(lblResult);
+			JButton playAgainButton = new JButton("PlayAgain");
+
+			playAgainButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+
+				}
+			});
+
+			endGamePanel.add(playAgainButton, BorderLayout.NORTH);
+			endGamePanel.add(lblResult, BorderLayout.CENTER);
+
+
+			// Show and udpdate screen
 			endGamePanel.setVisible(false);
 			contentPane.add(endGamePanel);
-
 			gamePanel.setVisible(false);
 			contentPane.remove(gamePanel);
 			endGamePanel.setVisible(true);
@@ -677,13 +688,15 @@ public class DrawEngine {
 			private BufferedImage bufferedMap;
 			private Graphics2D graphic;
 
-			private final int CAT_SPRITE = 0, MOUSE_SPRITE = 1,
-					NOT_DISCOVERED_SPRITE = 2, EMPTY_SPRITE = 3,
-					WALL_SPRITE = 4, CHEESE_SPRITE = 5,
-					POWERUP_VISION_SPRITE = 7, POWERUP_SPEED_SPRITE = 6,
-					INVISIBLE_ZONE_SPRITE = 8, MINE_SPRITE = 9;
+			private final int NOT_DISCOVERED_SPRITE = 0, EMPTY_SPRITE = 1,
+					WALL_SPRITE = 2, CHEESE_SPRITE = 3,
+					POWERUP_VISION_SPRITE = 5, POWERUP_SPEED_SPRITE = 4,
+					INVISIBLE_ZONE_SPRITE = 6, MINE_SPRITE = 7,
+					CAT_SPRITE = 8, MOUSE_SPRITE = 9;
 
 			private ArrayList<BufferedImage> sprites;
+			private ArrayList<BufferedImage> customSprites;
+
 
 			public MapPanel(Map map) {
 				this.map = map;
@@ -698,6 +711,7 @@ public class DrawEngine {
 
 				// Load Sprites
 				sprites = loadSprites();
+				customSprites = loadCustomSprites();
 
 				// draw map
 				drawMap();
@@ -723,8 +737,6 @@ public class DrawEngine {
 				ArrayList<BufferedImage> sprites = new ArrayList<>();
 
 				final String[] spritesFileNames = {
-						"cat_Sprite.png",
-						"mouse_sprite.png",
 						"not_discovered_sprite.png",
 						"empty_sprite.png",
 						"wall_sprite.png",
@@ -732,7 +744,9 @@ public class DrawEngine {
 						"powerup_speed_sprite.png",
 						"powerup_vision_sprite.png",
 						"invisible_zone_sprite.png",
-						"mine_sprite.png"
+						"mine_sprite.png",
+						"cat_Sprite.png",
+						"mouse_sprite.png"
 				};
 
 
@@ -759,6 +773,63 @@ public class DrawEngine {
 				return sprites;
 			}
 
+			/**
+			 * Load Custom Sprites, file name format : [CharName]_sprite.png
+			 * if file not found; load default from sprites
+			 * @return customSprites (ArrayList)
+			 */
+			private ArrayList<BufferedImage> loadCustomSprites()
+			{
+				ArrayList<BufferedImage> customSprites = new ArrayList<>();
+
+				for(Mouse m: GameManager.gameManager.getMouses())
+				{
+					try{
+						// Load file
+						File spriteFile = new File("res/" + m.getName()+ ".png");
+						// Read image
+						BufferedImage sprite = ImageIO.read(spriteFile);
+						// resize
+						int type = sprite.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sprite.getType();
+						sprite = resizeImage(sprite, type, TILE_SIZE, TILE_SIZE);
+						//add to customSprites
+						customSprites.add(sprite);
+
+					}catch (Exception e)
+					{
+						customSprites.add(sprites.get(MOUSE_SPRITE));
+					}
+				}
+
+				for(Cat c: GameManager.gameManager.getCats())
+				{
+					try{
+						// Load file
+						File spriteFile = new File("res/" + c.getName()+ "_sprite.png");
+						// Read image
+						BufferedImage sprite = ImageIO.read(spriteFile);
+						// resize
+						int type = sprite.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sprite.getType();
+						sprite = resizeImage(sprite, type, TILE_SIZE, TILE_SIZE);
+						//add to customSprites
+						customSprites.add(sprite);
+
+					}catch (Exception e)
+					{
+						customSprites.add(sprites.get(CAT_SPRITE));
+					}
+				}
+				return customSprites;
+			}
+
+			/**
+			 * Resize image
+			 * @param originalImage (BufferedImage) image to resize
+			 * @param type	type of image, use ARGB for tranparancy
+			 * @param IMG_WIDTH (int)
+			 * @param IMG_HEIGHT (int)
+			 * @return
+			 */
 			private BufferedImage resizeImage(BufferedImage originalImage, int type, int IMG_WIDTH, int IMG_HEIGHT) {
 				BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
 				Graphics2D g = resizedImage.createGraphics();
@@ -802,36 +873,60 @@ public class DrawEngine {
 			}
 
 
-			public void drawPath(ArrayList<Position> path, int spriteIndex)
+			public void drawCharacterPaths()
 			{
-				bufferPath((ArrayList<Position>) path.clone(), spriteIndex);
+				int index = 0;
+				for (Mouse mouse : GameManager.gameManager.getMouses())
+				{
+					mapPanel.drawPath(mouse.getDestinationPath(), customSprites.get(index));
+					index++;
+				}
+
+				for (Cat cat : GameManager.gameManager.getCats())
+				{
+					mapPanel.drawPath(cat.getDestinationPath(), customSprites.get(index));
+					index++;
+				}
+			}
+
+			public void drawPath(ArrayList<Position> path)
+			{
+				drawPath(path, sprites.get(CAT_SPRITE));
+			}
+
+			public void drawPath(ArrayList<Position> path, BufferedImage sprite)
+			{
+				bufferPath((ArrayList<Position>) path.clone(), sprite);
 				bufferObjects();
 				bufferCharacters();
 				repaint();
 			}
 
-        /*Buffer functions, don't repaint the map*/
+        /*Buffer functions don't repaint the map*/
 
-			public void bufferCharacters() {
+			private void bufferCharacters() {
 				// for each mouse
+				int index = 0;
 				for (Mouse m : GameManager.gameManager.getMouses())
 				{
-					graphic.drawImage(sprites.get(MOUSE_SPRITE),
+					graphic.drawImage(customSprites.get(index),
 							m.getPosition().getPosX() * TILE_SIZE,
 							m.getPosition().getPosY() * TILE_SIZE,
 							null);
+					index++;
 				}
 				// for each cat
 				for (Cat c : GameManager.gameManager.getCats())
 				{
-					graphic.drawImage(sprites.get(CAT_SPRITE),
+					graphic.drawImage(customSprites.get(index),
 							c.getPosition().getPosX() * TILE_SIZE,
 							c.getPosition().getPosY() * TILE_SIZE,
 							null);
+					index++;
 				}
 			}
 
-			private void bufferPath(ArrayList<Position> path, int spriteIndex) {
+			private void bufferPath(ArrayList<Position> path, BufferedImage sprite) {
 				if (path == null || path.isEmpty()) return;
 
 				graphic.setColor(Color.BLUE);
@@ -840,7 +935,7 @@ public class DrawEngine {
                 graphic.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.25f));
 				for (Position t : path)
 				{
-                    graphic.drawImage(sprites.get(spriteIndex),
+                    graphic.drawImage(sprite,
                             t.getPosX() * TILE_SIZE, t.getPosY() * TILE_SIZE,
                             null);
 
