@@ -281,21 +281,17 @@ public class LevelGenerator
             for (int i = 0; i < RANDOM_POSITION_TEST_TRIES; i++) retry:{
 
                 Position randomPos = getRespawnPosition();
-                switch (characterType)
+                if(characterType.equals("Cat"))
                 {
-                    case "Cat":
-                        for (Mouse mouse : GameManager.gameManager.getMouses())
-                            if (!isPathOkay(randomPos, mouse.getPosition(), minDist))
-                                break retry;
-
-                        break;
-
-                    case "Mouse":
-                        for (Cat cat : GameManager.gameManager.getCats())
-                            if (!isPathOkay(randomPos, cat.getPosition(), minDist))
-                                break retry;
-
-                        break;
+                    for (Mouse mouse : GameManager.gameManager.getMouses())
+                        if (!isPathOkay(randomPos, mouse.getPosition(), minDist))
+                            break retry;
+                }
+                else if(characterType.equals("Mouse"))
+                {
+                    for (Cat cat : GameManager.gameManager.getCats())
+                        if (!isPathOkay(randomPos, cat.getPosition(), minDist))
+                            break retry;
                 }
                 return randomPos;
             }
@@ -304,6 +300,7 @@ public class LevelGenerator
 
         return getRespawnPosition(); // if none, ..
     }
+
 
     private void setValidRespawnPositions()
     {
