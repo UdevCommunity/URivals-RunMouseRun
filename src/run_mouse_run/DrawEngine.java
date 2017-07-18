@@ -180,7 +180,7 @@ public class DrawEngine {
 			{
 				map = new Map("Blank map", LevelGenerator.MAP_WIDTH, LevelGenerator.MAP_HEIGHT, Tile.NOT_DISCOVERED);
 			}
-			maps.add(map); // don't use addMap() because cmBox is null
+			//maps.add(map); // don't use addMap() because cmBox is null
 
 			// Set GUI
 			initWindow();
