@@ -197,6 +197,9 @@ public abstract class CharacterController
         this.position = position;
     }
 
+    final public void setSeeBehindWalls(boolean seeBehindWalls) {
+        this.seeBehindWalls = seeBehindWalls;
+    }
 
 }
 

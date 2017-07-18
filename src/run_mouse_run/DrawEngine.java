@@ -371,6 +371,21 @@ public class DrawEngine {
 				}
 			});
 
+			JCheckBox chkBoxBehindWalls = new JCheckBox();
+            JLabel lblBehindWalls = new JLabel("See Behind Walls");
+            lblBehindWalls.setFont(defaultFont);
+
+			chkBoxBehindWalls.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    for(Mouse m : GameManager.gameManager.getMouses())
+                        m.setSeeBehindWalls(chkBoxBehindWalls.isSelected());
+
+                    for(Cat c : GameManager.gameManager.getCats())
+                        c.setSeeBehindWalls(chkBoxBehindWalls.isSelected());
+                }
+            });
+
 			// Brace Yourself .... GridBagLayout is coming
 			eastPanel.setLayout(new GridBagLayout());
 
@@ -411,7 +426,19 @@ public class DrawEngine {
 			gbc.gridwidth = 2;
 			eastPanel.add(btnNewLevel, gbc);
 
-			controlPanel.add(eastPanel, BorderLayout.CENTER);
+			// check box ( 0, 3) 1 cell
+            gbc.gridx = 0;
+            gbc.gridy = 3;
+            gbc.gridwidth = 1;
+            eastPanel.add(chkBoxBehindWalls, gbc);
+
+            // label ( 1, 3) 3 cell
+            gbc.gridx = 1;
+            gbc.gridy = 3;
+            gbc.gridwidth = GridBagConstraints.REMAINDER;
+            eastPanel.add(lblBehindWalls, gbc);
+
+            controlPanel.add(eastPanel, BorderLayout.CENTER);
 
 			/*Panels initialised, add to frame */
 			contentPane.add(gamePanel);//, BorderLayout.WEST);
