@@ -157,7 +157,7 @@ public class DrawEngine {
 		private JLabel mapName, timeLabel;
 		private JComboBox<String> mapsCmBox;
 		private JButton startGameButton, btnDrawShortest;
-		private JPanel gamePanel, controlPanel;
+		private JPanel topPanel, bottomPanel, gamePanel, controlPanel;
 
 		/* For testing path finding */
 		private Position initialPos = new Position(2, 2);
@@ -196,7 +196,7 @@ public class DrawEngine {
 		/*=========================================================================================*/
 		/*====================================== Top Panel ========================================*/
 		/*=========================================================================================*/
-			JPanel topPanel = new JPanel();
+			topPanel = new JPanel();
 			topPanel.setLayout(new BorderLayout(0, 0));
 
 			mapName = new JLabel("Level Map");
@@ -245,8 +245,8 @@ public class DrawEngine {
 		/*=========================================================================================*/
 		/*====================================== Bottom Panel =====================================*/
 		/*=========================================================================================*/
-			JPanel btnPanel = new JPanel();
-			btnPanel.setLayout(new BorderLayout(5, 5));
+			bottomPanel = new JPanel();
+			bottomPanel.setLayout(new BorderLayout(5, 5));
 
 			// Draw Shortest Button
 			btnDrawShortest = new JButton("Draw shortest");
@@ -317,7 +317,7 @@ public class DrawEngine {
                 }
             });
 
-            btnPanel.add(slide, BorderLayout.SOUTH);
+            bottomPanel.add(slide, BorderLayout.SOUTH);
 
 			// new Map button
 			JButton newMapButton = new JButton("New Window");
@@ -329,11 +329,11 @@ public class DrawEngine {
 			});
 
 			// Add to frame
-			btnPanel.add(btnDrawShortest, BorderLayout.WEST);
-			btnPanel.add(centerPanel, BorderLayout.CENTER);
-			btnPanel.add(newMapButton, BorderLayout.EAST);
+			bottomPanel.add(btnDrawShortest, BorderLayout.WEST);
+			bottomPanel.add(centerPanel, BorderLayout.CENTER);
+			bottomPanel.add(newMapButton, BorderLayout.EAST);
 
-			gamePanel.add(btnPanel, BorderLayout.SOUTH);
+			gamePanel.add(bottomPanel, BorderLayout.SOUTH);
 
 		/*=========================================================================================*/
 		/*====================================== East Panel ========================================*/
@@ -651,9 +651,8 @@ public class DrawEngine {
 
 		public void displayEndGameScreen(String result)
 		{
-			JPanel endGamePanel = new JPanel();
-
-			endGamePanel.setLayout(new BorderLayout(10,10));
+			JPanel topEndGamePanel = new JPanel();
+			JPanel bottomEndGamePanel = new JPanel();
 
 			JLabel lblResult = new JLabel(result);
 			lblResult.setFont(new Font("Cambria", Font.PLAIN, 48));
@@ -668,16 +667,18 @@ public class DrawEngine {
 				}
 			});
 
-			endGamePanel.add(playAgainButton, BorderLayout.NORTH);
-			endGamePanel.add(lblResult, BorderLayout.CENTER);
-
+			bottomEndGamePanel.add(playAgainButton);
+			topEndGamePanel.add(lblResult);
 
 			// Show and udpdate screen
-			endGamePanel.setVisible(false);
-			contentPane.add(endGamePanel);
-			gamePanel.setVisible(false);
-			contentPane.remove(gamePanel);
-			endGamePanel.setVisible(true);
+			topEndGamePanel.setVisible(false);
+			bottomEndGamePanel.setVisible(false);
+			gamePanel.add(topEndGamePanel, BorderLayout.NORTH);
+			gamePanel.add(bottomEndGamePanel, BorderLayout.SOUTH);
+			gamePanel.remove(topPanel);
+			gamePanel.remove(bottomPanel);
+			topEndGamePanel.setVisible(true);
+			bottomEndGamePanel.setVisible(true);
 		}
 
 		class MapPanel extends JPanel {
