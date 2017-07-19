@@ -22,6 +22,7 @@ public abstract class CharacterController
     private PathFinder pathFinder;
     private boolean seeBehindWalls = false;
 
+    private final int STUN_EFFECT_DELAY = 3000; // In milliseconds
     private final int CONSEQUENT_MOVE_DELAY = CustomTimer.GAME_SPEED/2; // In milliseconds, the delay between two moves
     private final int UPDATE_FREQUENCE = CustomTimer.GAME_SPEED; // In milliseconds
     private Timer timer;
@@ -152,6 +153,13 @@ public abstract class CharacterController
             if (destinationPath.isEmpty() ||
                     !canCrossByDiagonal(position, destinationPath.get(0)))
                 return;
+
+            if (GameManager.gameManager.getLevelGenerator().getMap().getTile(destinationPath.get(0).getPosX(), destinationPath.get(0).getPosY()) == Tile.WALL)
+            {
+                try {Thread.sleep(STUN_EFFECT_DELAY);} catch (InterruptedException e) {e.printStackTrace();}
+                return;
+            }
+
 
             Tile actualTile = GameManager.gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY());
             if(actualTile == Tile.CAT || actualTile == Tile.MOUSE)
