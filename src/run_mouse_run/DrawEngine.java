@@ -711,9 +711,7 @@ public class DrawEngine {
 
 			public Map map;
 
-			private BufferedImage bufferedMap;
-
-			private final int CHARACTER_LAYER = 1;
+			private final int CHARACTER_LAYER = 2;
 
 			private ArrayList<JLabel[][]> layers;
 			private GridLayout gridLayout;
@@ -723,8 +721,8 @@ public class DrawEngine {
 					POWERUP_VISION_SPRITE = 5, POWERUP_SPEED_SPRITE = 4,
 					INVISIBLE_ZONE_SPRITE = 6, MINE_SPRITE = 7,
 					CAT_SPRITE = 8, MOUSE_SPRITE = 9;
-			private ArrayList<ImageIcon> sprites;
-			private ArrayList<ImageIcon> customSprites;
+			private ArrayList<TileImage> sprites;
+			private ArrayList<TileImage> customSprites;
 
 
 			public MapPanel(Map map) {
@@ -790,10 +788,10 @@ public class DrawEngine {
 				this.map = map;
 			}
 
-			private ArrayList<ImageIcon> loadSprites()
+			private ArrayList<TileImage> loadSprites()
 			{
 				/*Load sprites files */
-				ArrayList<ImageIcon> sprites = new ArrayList<>();
+				ArrayList<TileImage> sprites = new ArrayList<>();
 
 				final String[] spritesFileNames = {
 						"not_discovered_sprite.png",
@@ -821,12 +819,12 @@ public class DrawEngine {
 						int type = sprite.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sprite.getType();
 						sprite = resizeImage(sprite, type, TILE_SIZE, TILE_SIZE);
 						//add to sprites
-						sprites.add(new ImageIcon(sprite));
+						sprites.add(new TileImage(sprite));
 					} catch (IOException e)
 					{
 						System.err.println("Error loading Sprite : " + spritesFileNames[i]);
 						// generate a black tile
-						sprites.add(new ImageIcon(
+						sprites.add(new TileImage(
 								new BufferedImage(TILE_SIZE, TILE_SIZE, BufferedImage.TYPE_BYTE_INDEXED)
 						));
 					}
@@ -840,9 +838,9 @@ public class DrawEngine {
 			 *
 			 * @return customSprites (ArrayList)
 			 */
-			private ArrayList<ImageIcon> loadCustomSprites()
+			private ArrayList<TileImage> loadCustomSprites()
 			{
-				ArrayList<ImageIcon> customSprites = new ArrayList<>();
+				ArrayList<TileImage> customSprites = new ArrayList<>();
 
 				for (Mouse m : GameManager.gameManager.getMouses())
 				{
@@ -856,7 +854,7 @@ public class DrawEngine {
 						int type = sprite.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sprite.getType();
 						sprite = resizeImage(sprite, type, TILE_SIZE, TILE_SIZE);
 						//add to customSprites
-						customSprites.add(new ImageIcon(sprite));
+						customSprites.add(new TileImage(sprite));
 
 					} catch (Exception e)
 					{
@@ -876,7 +874,7 @@ public class DrawEngine {
 						int type = sprite.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sprite.getType();
 						sprite = resizeImage(sprite, type, TILE_SIZE, TILE_SIZE);
 						//add to customSprites
-						customSprites.add(new ImageIcon(sprite));
+						customSprites.add(new TileImage(sprite));
 
 					} catch (Exception e)
 					{
@@ -1027,12 +1025,12 @@ public class DrawEngine {
 				int index = 0;
 				for (Mouse mouse : GameManager.gameManager.getMouses())
 				{
-					//mapPanel.drawPath(mouse.getDestinationPath(), customSprites.get(index));
+					drawPath(mouse.getDestinationPath(), customSprites.get(index));
 					index++;
 				}
 				for (Cat cat : GameManager.gameManager.getCats())
 				{
-					//mapPanel.drawPath(cat.getDestinationPath(), customSprites.get(index));
+					drawPath(cat.getDestinationPath(), customSprites.get(index));
 					index++;
 				}
 			}
@@ -1042,25 +1040,65 @@ public class DrawEngine {
 				drawPath(path, sprites.get(CAT_SPRITE));
 			}
 
-			public void drawPath(ArrayList<Position> path, ImageIcon sprite)
+			public void drawPath(ArrayList<Position> path, TileImage sprite)
 			{
 				if (path == null || path.isEmpty()) return;
 
 				JLabel[][] layer = layers.get(2);
 
+				TileImage img = sprite.copy();
+				img.setAlpha(0.25f);
+
+				path = (ArrayList<Position>) path.clone();
+
 				for (Position t : path)
 				{
-					setTile(layer[t.getPosY()][t.getPosX()], sprite);
+				    if(layer[t.getPosY()][t.getPosX()].getIcon() == null)
+					    setTile(layer[t.getPosY()][t.getPosX()], img);
 				}
 			}
 
-			private void setTile(JLabel tile, ImageIcon img)
+			private void setTile(JLabel tile, TileImage img)
 			{
 				if(tile.getIcon() != img)
 				{
 					tile.setIcon(img);
 				}
 			}
-		}
-	}    // End Of DrawEngine
-}
+
+			class TileImage extends ImageIcon
+            {
+                private float alpha = 1;
+
+                public TileImage(Image image) {
+                    super(image);
+                }
+
+                @Override
+                public synchronized void paintIcon(Component c, Graphics g, int x, int y)
+                {
+                    if(alpha != 1)
+                    {
+                        Graphics2D g2 = (Graphics2D) g.create();
+                        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+                        super.paintIcon(c, g2, x, y);
+                        g2.dispose();
+                    }
+                    else
+                    {
+                        super.paintIcon(c, g, x, y);
+                    }
+                }
+
+                public void setAlpha(float alpha)
+                {
+                    this.alpha = alpha;
+                }
+
+                public TileImage copy() {
+                    return new TileImage(getImage());
+                }
+            }
+		}   // End Of MapPanel
+	}    // End Of DrawEngineFrame
+}   // End Of DrawEngine
