@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
 public class DrawEngine {
@@ -1115,12 +1116,18 @@ public class DrawEngine {
 				int index = 0;
 				for (Mouse mouse : GameManager.gameManager.getMouses())
 				{
-					drawPath(mouse.getDestinationPath(), customSprites.get(index));
+				    try
+                    {
+                        drawPath(mouse.getDestinationPath(),
+                                customSprites.get(index));
+                    }catch (ConcurrentModificationException e){}
 					index++;
 				}
 				for (Cat cat : GameManager.gameManager.getCats())
 				{
+				    try{
 					drawPath(cat.getDestinationPath(), customSprites.get(index));
+                    }catch (ConcurrentModificationException e){}
 					index++;
 				}
 			}
