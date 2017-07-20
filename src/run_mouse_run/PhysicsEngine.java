@@ -35,6 +35,7 @@ public class PhysicsEngine
                     break;
                 case MINE:
                     //TODO: Explosion animation, method and sprite ready
+                    GameManager.gameManager.getDrawEngine().explodeMine(cat.getPosition().getPosX(), cat.getPosition().getPosY());
                     levelMap.setTile(cat.getPosition().getPosX(), cat.getPosition().getPosY(), Tile.EMPTY);
                     cat.die("Walk on a Mine");
                     break;
@@ -79,6 +80,7 @@ public class PhysicsEngine
                     break;
                 case MINE:
                     //TODO: Explosion animation, method and sprite ready
+                    GameManager.gameManager.getDrawEngine().explodeMine(mouse.getPosition().getPosX(), mouse.getPosition().getPosY());
                     levelMap.setTile(mouse.getPosition().getPosX(), mouse.getPosition().getPosY(), Tile.EMPTY);
                     mouse.die("Walk on a Mine");
                     break;

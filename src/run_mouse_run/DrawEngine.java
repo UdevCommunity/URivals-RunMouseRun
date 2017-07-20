@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class DrawEngine {
 
@@ -105,6 +106,12 @@ public class DrawEngine {
 			frames.get(i).dispose();
 
 		frames.get(0).displayEndGameScreen(result);
+	}
+
+	public void explodeMine(int x, int y)
+	{
+		for(int i = 0; i < frames.size(); i++)
+			frames.get(i).explodeMine(x, y);
 	}
 
 	/**
@@ -254,6 +261,8 @@ public class DrawEngine {
 					mapPanel.drawPath(
 					        pathFinder.getShortestPath(maps.get(0), initialPos, finalPos)
                     );
+
+					mapPanel.createAnimation(mapPanel.explosionFrames, 5,3);
 
 				}
 			});
@@ -707,6 +716,11 @@ public class DrawEngine {
 			bottomEndGamePanel.setVisible(true);
 		}
 
+		public void explodeMine(int x, int y)
+		{
+			mapPanel.createAnimation(mapPanel.explosionFrames, x, y);
+		}
+
 		class MapPanel extends JPanel {
 
 			public Map map;
@@ -724,6 +738,7 @@ public class DrawEngine {
 			private ArrayList<TileImage> sprites;
 			private ArrayList<TileImage> customSprites;
 
+			private ArrayList<BufferedImage> explosionFrames;
 
 			public MapPanel(Map map) {
 				this.map = map;
@@ -732,6 +747,7 @@ public class DrawEngine {
 
 				sprites = loadSprites();
 				customSprites = loadCustomSprites();
+				explosionFrames = loadExplosionFrames();
 
 				gridLayout = new GridLayout(map.getHeight(), map.getWidth(), 0, 0);
 				setLayout(gridLayout);
@@ -884,6 +900,52 @@ public class DrawEngine {
 				return customSprites;
 			}
 
+			private ArrayList<BufferedImage> loadExplosionFrames()
+			{
+				/*Load sprites files */
+				ArrayList<BufferedImage> frames = new ArrayList<>();
+				final int ROWS = 2;
+				final int COLS = 5;
+
+				try
+				{
+					// Load file
+					File spriteFile = new File("res/anim/explosion.png");
+					// Read image
+					BufferedImage frameSheet = ImageIO.read(spriteFile);
+
+					final int w = frameSheet.getWidth()/COLS;
+					final int h = frameSheet.getHeight()/ROWS;
+
+					for(int i = 0; i < ROWS; i++)
+					{
+						for(int j = 0; j < COLS; j++)
+						{
+							BufferedImage frame = frameSheet
+									.getSubimage(
+											j*w,
+											i*h,
+											w,
+											h
+									);
+							// resize
+							int type = frameSheet.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : frameSheet.getType();
+							frame = resizeImage(frame, type, TILE_SIZE, TILE_SIZE);
+
+							frames.add(frame);
+						}
+					}
+					for(int i = frames.size()-1; i >= 0 ; i--)
+						frames.add(frames.get(i));
+
+				} catch (IOException e)
+				{
+					System.err.println("Error loading Sprite");
+				}
+
+				return frames;
+			}
+
 			/**
 			 * Resize image
 			 *
@@ -922,6 +984,34 @@ public class DrawEngine {
 				for(int i = 0; i < map.getHeight(); i++)
 					for(int j = 0; j < map.getWidth(); j++)
 						setTile(layer[i][j], null);
+			}
+
+			public void createAnimation(ArrayList<BufferedImage> frames, int x, int y)
+			{
+				Animation animation = new Animation(getGraphics());
+
+				animation.setAnimation(frames,
+						x*TILE_SIZE+TILE_SIZE/2,
+						y*TILE_SIZE+TILE_SIZE/2);
+				Thread animThread = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						while (!animation.isOver())
+						{
+							animation.draw();
+							try
+							{
+								Thread.sleep(50);
+							} catch (InterruptedException e)
+							{
+								e.printStackTrace();
+							}
+							animation.nextFrame();
+							if(animation.isOver())
+								repaint();
+						}
+				}});
+				animThread.start();
 			}
 
 			public void drawMap() {
@@ -1066,6 +1156,9 @@ public class DrawEngine {
 				}
 			}
 
+			/**
+			 * an ImageIcon with an alpha attribute
+			 */
 			class TileImage extends ImageIcon
             {
                 private float alpha = 1;
@@ -1099,6 +1192,57 @@ public class DrawEngine {
                     return new TileImage(getImage());
                 }
             }
+
+            class Animation
+			{
+				Graphics2D graphic;
+				private ArrayList<BufferedImage> frames;
+				private int currentIndex;
+
+				private int centerX, centerY;
+
+				public Animation(Graphics g)
+				{
+					this.graphic = (Graphics2D) g;
+					graphic.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.75f));
+				}
+
+				public void setAnimation(ArrayList<BufferedImage> frames, int centerX, int centerY)
+				{
+					this.frames = frames;
+					if(frames != null && !frames.isEmpty())
+					{
+						currentIndex = 0;
+						this.centerX = centerX;
+						this.centerY = centerY;
+					}
+				}
+
+				private void nextFrame()
+				{
+					currentIndex++;
+					if(frames == null || currentIndex >= frames.size())
+						frames = null;
+				}
+
+				protected void draw()
+				{
+					if(frames == null)
+					{
+						return;
+					}
+
+					int x = centerX - frames.get(currentIndex).getWidth()/2;
+					int y = centerY - frames.get(currentIndex).getHeight()/2;
+
+					graphic.drawImage(frames.get(currentIndex), x, y, null);
+				}
+
+				public boolean isOver() {
+					return (frames == null);
+				}
+			}
+
 		}   // End Of MapPanel
 	}    // End Of DrawEngineFrame
 }   // End Of DrawEngine
