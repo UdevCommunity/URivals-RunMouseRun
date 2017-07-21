@@ -1,27 +1,25 @@
 package run_mouse_run;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
  *
  */
 
-public class DEAnimation
+public class DE_Animation
 {
     JLabel tile;
-    private ArrayList<DETileImage> frames;
+    private ArrayList<DE_TileImage> frames;
     private int currentIndex;
 
-    public DEAnimation(JLabel tile, ArrayList<DETileImage> frames)
+    public DE_Animation(JLabel tile, ArrayList<DE_TileImage> frames)
     {
         this.tile = tile;
         setAnimation(frames);
     }
 
-    public void setAnimation(ArrayList<DETileImage> frames)
+    public void setAnimation(ArrayList<DE_TileImage> frames)
     {
         this.frames = frames;
         if(frames != null && !frames.isEmpty())

@@ -9,11 +9,11 @@ import java.awt.*;
  * Use just like ImageIcon with a setAlpha method
 */
 
-public class DETileImage extends ImageIcon
+public class DE_TileImage extends ImageIcon
 {
     private float alpha = 1;
 
-    public DETileImage(Image image) {
+    public DE_TileImage(Image image) {
         super(image);
     }
 
@@ -38,7 +38,7 @@ public class DETileImage extends ImageIcon
         this.alpha = alpha;
     }
 
-    public DETileImage copy() {
-        return new DETileImage(getImage());
+    public DE_TileImage copy() {
+        return new DE_TileImage(getImage());
     }
 }

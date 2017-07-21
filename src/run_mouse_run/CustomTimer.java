@@ -9,7 +9,7 @@ import java.util.TimerTask;
 class CustomTimer
 {
     static final int GAME_SPEED = 700;
-    static final int UPDATE_FREQUENCE = GAME_SPEED/5;
+    static final int UPDATE_FREQUENCE = GAME_SPEED/8;
     private final long TIME_LIMIT = 300000;
 
     private Time currentTime = new Time(0);

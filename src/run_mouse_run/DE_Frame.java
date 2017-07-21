@@ -12,7 +12,7 @@ import java.awt.event.*;
 /**
  * Frame that displays one of the maps in the drawEngine's maps
  */
-public class DrawEngineFrame extends JFrame {
+public class DE_Frame extends JFrame {
 
     public int TILE_SIZE = 48; // Tiles will resize to this value
 
@@ -22,7 +22,7 @@ public class DrawEngineFrame extends JFrame {
 
     private JPanel contentPane;
     private JScrollPane mapContainerPanel;
-    private DEMapPanel mapPanel;
+    private DE_MapPanel mapPanel;
     private JLabel mapName, timeLabel;
     private JComboBox<String> mapsCmBox;
     public JButton startGameButton;
@@ -45,7 +45,7 @@ public class DrawEngineFrame extends JFrame {
      *
      * @param map initialised map from LevelGenerator
      */
-    public DrawEngineFrame(DrawEngine drawEngine, Map map) {
+    public DE_Frame(DrawEngine drawEngine, Map map) {
         this.drawEngine = drawEngine;
 
         if (map == null)
@@ -347,7 +347,7 @@ public class DrawEngineFrame extends JFrame {
      * @param map Map
      */
     private void addMapContainerPanel(Map map, int TILE_SIZE) {
-        mapPanel = new DEMapPanel(drawEngine, map, TILE_SIZE);
+        mapPanel = new DE_MapPanel(drawEngine, map, TILE_SIZE);
         mapContainerPanel = new JScrollPane(mapPanel);
 
         setMouseListener();

@@ -4,6 +4,8 @@ import run_mouse_run.Mouses.DumbJerry;
 import run_mouse_run.Cats.DumbTom;
 
 import java.awt.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -46,6 +48,17 @@ class GameManager
     // of the game but not necessarily at resume.
     void startGame()
     {
+        SecurityManager securityManager = new SecurityManager();
+        try
+        {
+            securityManager.checkForImportGameManager(getClass().getResource("Cats").getPath());
+            securityManager.checkForImportGameManager(getClass().getResource("Mouses").getPath());
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
         timer.startTimer();
     }
 
@@ -55,10 +68,6 @@ class GameManager
         {
             public void run()
             {
-                SecurityManager securityManager = new SecurityManager();
-                securityManager.checkForImportGameManager("Cats");
-                securityManager.checkForImportGameManager("Mouses");
-
                 GameManager gameManager = new GameManager();
                 gameManager.drawEngine.setVisible(true);
             }

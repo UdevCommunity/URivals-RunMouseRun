@@ -8,7 +8,7 @@ public class DrawEngine {
 
 	private PathFinder pathFinder;
 
-	private ArrayList<DrawEngineFrame> frames;	// All open frames
+	private ArrayList<DE_Frame> frames;	// All open frames
 
     private ArrayList<Map> maps;
 
@@ -18,7 +18,7 @@ public class DrawEngine {
         updateMapsList(map);
 
 		frames = new ArrayList<>();
-		frames.add(new DrawEngineFrame(this, map));
+		frames.add(new DE_Frame(this, map));
 
 		pathFinder = new PathFinder(map);
 	}
@@ -54,7 +54,7 @@ public class DrawEngine {
 	 */
 	public void setVisible(boolean visible)
 	{
-		for(DrawEngineFrame frame : frames)
+		for(DE_Frame frame : frames)
 			frame.setVisible(visible);
 	}
 
@@ -64,7 +64,7 @@ public class DrawEngine {
 	public void startGame()
 	{
 		GameManager.gameManager.startGame();
-		for(DrawEngineFrame frame : frames)
+		for(DE_Frame frame : frames)
 		{
 			frame.changeState("Start Game");
             //frame.updateCmBox();
@@ -76,7 +76,7 @@ public class DrawEngine {
 	public void pauseGame()
 	{
 		GameManager.gameManager.pauseGame();
-		for(DrawEngineFrame frame: frames)
+		for(DE_Frame frame: frames)
 		{
 			frame.changeState("Pause Game");
 		}
@@ -85,7 +85,7 @@ public class DrawEngine {
 	public void resumeGame()
 	{
 		GameManager.gameManager.resumeGame();
-		for(DrawEngineFrame frame: frames)
+		for(DE_Frame frame: frames)
 		{
 			frame.changeState("Resume Game");
 		}
@@ -116,7 +116,7 @@ public class DrawEngine {
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				DrawEngineFrame newFrame = new DrawEngineFrame(drawEngine, maps.get(0));
+				DE_Frame newFrame = new DE_Frame(drawEngine, maps.get(0));
 				newFrame.startGameButton.setText(frames.get(0).startGameButton.getText());
 
 				// We only need one control panel

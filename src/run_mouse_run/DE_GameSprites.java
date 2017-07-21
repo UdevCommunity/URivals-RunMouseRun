@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by Oussama on 21/07/2017.
  */
-public class DEGameSprites
+public class DE_GameSprites
 {
     private final DrawEngine drawEngine;
 
@@ -35,12 +35,12 @@ public class DEGameSprites
             INVISIBLE_ZONE_SPRITE = 6, MINE_SPRITE = 7,
             CAT_SPRITE = 8, MOUSE_SPRITE = 9;
 
-    private ArrayList<DETileImage> sprites, customSprites;
+    private ArrayList<DE_TileImage> sprites, customSprites;
     private ArrayList<BufferedImage> spritesOriginal, customSpritesOriginal;
 
     public static final int EXPLOSION_FRAMES = 0;
 
-    private ArrayList<ArrayList<DETileImage>> animationFrames;
+    private ArrayList<ArrayList<DE_TileImage>> animationFrames;
     private ArrayList<ArrayList<BufferedImage>> animationFramesOriginal;
 
     public DEGameSprites(DrawEngine drawEngine, int TILE_SIZE)
@@ -200,7 +200,7 @@ public class DEGameSprites
         this.TILE_SIZE = size;
 
         /* Resize sprites*/
-        ArrayList<DETileImage> sprites = new ArrayList<>();
+        ArrayList<DE_TileImage> sprites = new ArrayList<>();
 
         for(BufferedImage sprite : spritesOriginal)
         {
@@ -208,39 +208,39 @@ public class DEGameSprites
             int type = sprite.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sprite.getType();
             sprite = resizeImage(sprite, type, TILE_SIZE, TILE_SIZE);
 
-            sprites.add(new DETileImage(sprite));
+            sprites.add(new DE_TileImage(sprite));
         }
 
         this.sprites = sprites;
 
         /*Resize custom Sprites*/
-        ArrayList<DETileImage> customSprites = new ArrayList<>();
+        ArrayList<DE_TileImage> customSprites = new ArrayList<>();
         for(BufferedImage sprite : customSpritesOriginal)
         {
             // resize
             int type = sprite.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sprite.getType();
             sprite = resizeImage(sprite, type, TILE_SIZE, TILE_SIZE);
 
-            customSprites.add(new DETileImage(sprite));
+            customSprites.add(new DE_TileImage(sprite));
         }
 
         this.customSprites = customSprites;
 
         /*Resize animation frames*/
 
-        ArrayList<ArrayList<DETileImage>> animationFrames = new ArrayList<>();
+        ArrayList<ArrayList<DE_TileImage>> animationFrames = new ArrayList<>();
 
         int i = 0;
         for(ArrayList<BufferedImage> animation : animationFramesOriginal)
         {
-            animationFrames.add(new ArrayList<DETileImage>());
+            animationFrames.add(new ArrayList<DE_TileImage>());
             for(BufferedImage frame : animation)
             {
                 // resize
                 int type = frame.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : frame.getType();
                 frame = resizeImage(frame, type, TILE_SIZE, TILE_SIZE);
 
-                animationFrames.get(i).add(new DETileImage(frame));
+                animationFrames.get(i).add(new DE_TileImage(frame));
             }
             i++;
         }
@@ -253,17 +253,17 @@ public class DEGameSprites
         return (sprites != null && !sprites.isEmpty());
     }
 
-    public DETileImage getSprite(int index)
+    public DE_TileImage getSprite(int index)
     {
         return sprites.get(index);
     }
 
-    public DETileImage getCustomSprite(int index)
+    public DE_TileImage getCustomSprite(int index)
     {
         return customSprites.get(index);
     }
 
-    public ArrayList<DETileImage> getAnimationFrames(int index)
+    public ArrayList<DE_TileImage> getAnimationFrames(int index)
     {
         return animationFrames.get(index);
     }

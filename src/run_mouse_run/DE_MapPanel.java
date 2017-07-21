@@ -10,7 +10,7 @@ import java.util.ConcurrentModificationException;
 /**
  *
  */
-public class DEMapPanel extends JPanel {
+public class DE_MapPanel extends JPanel {
 
     public Map map;
     private DrawEngine drawEngine;
@@ -22,16 +22,16 @@ public class DEMapPanel extends JPanel {
     private ArrayList<JLabel[][]> layers;
     private GridLayout gridLayout;
 
-    private DEGameSprites gameSprites;
+    private DE_GameSprites gameSprites;
 
 
-    public DEMapPanel(DrawEngine drawEngine, Map map, int TILE_SIZE)
+    public DE_MapPanel(DrawEngine drawEngine, Map map, int TILE_SIZE)
     {
         this.drawEngine = drawEngine;
         this.map = map;
         this.TILE_SIZE = TILE_SIZE;
 
-        gameSprites = new DEGameSprites(drawEngine, TILE_SIZE);
+        gameSprites = new DE_GameSprites(drawEngine, TILE_SIZE);
 
         adjustPanelSize();
 
@@ -79,7 +79,6 @@ public class DEMapPanel extends JPanel {
     public void adjustPanelSize() {
         setPreferredSize(new Dimension(map.getWidth() * TILE_SIZE,
                 map.getHeight() * TILE_SIZE));
-    }
 
     public void changeTileSize(int size)
     {
@@ -128,7 +127,7 @@ public class DEMapPanel extends JPanel {
     public void createAnimation(int animationIndex, int x, int y)
     {
         JLabel[][] layer = layers.get(2);
-        DEAnimation animation = new DEAnimation(
+        DE_Animation animation = new DE_Animation(
                 layer[y][x],
                 gameSprites.getAnimationFrames(animationIndex)
         );
@@ -257,15 +256,15 @@ public class DEMapPanel extends JPanel {
     }
 
     public void drawPath(ArrayList<Position> path) {
-        drawPath(path, gameSprites.getSprite(DEGameSprites.CAT_SPRITE));
+        drawPath(path, gameSprites.getSprite(DE_GameSprites.CAT_SPRITE));
     }
 
-    public void drawPath(ArrayList<Position> path, DETileImage sprite) {
+    public void drawPath(ArrayList<Position> path, DE_TileImage sprite) {
         if (path == null || path.isEmpty()) return;
 
         JLabel[][] layer = layers.get(2);
 
-        DETileImage img = sprite.copy();
+        DE_TileImage img = sprite.copy();
         img.setAlpha(0.25f);
 
         path = (ArrayList<Position>) path.clone();
@@ -277,7 +276,7 @@ public class DEMapPanel extends JPanel {
         }
     }
 
-    private void setTile(JLabel tile, DETileImage img) {
+    private void setTile(JLabel tile, DE_TileImage img) {
         if (tile.getIcon() != img)
         {
             tile.setIcon(img);
