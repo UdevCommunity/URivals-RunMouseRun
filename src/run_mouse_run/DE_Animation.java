@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * Created by Oussama on 20/07/2017.
  */
 
-public class DEAnimation
+public class DE_Animation
 {
     Graphics2D graphic;
     private ArrayList<BufferedImage> frames;
@@ -16,7 +16,7 @@ public class DEAnimation
 
     private int centerX, centerY;
 
-    public DEAnimation(Graphics g)
+    public DE_Animation(Graphics g)
     {
         this.graphic = (Graphics2D) g;
         graphic.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.75f));

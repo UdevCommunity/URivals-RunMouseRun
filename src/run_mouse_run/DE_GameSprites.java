@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by Oussama on 21/07/2017.
  */
-public class DEGameSprites
+public class DE_GameSprites
 {
     private final DrawEngine drawEngine;
 
@@ -37,12 +37,12 @@ public class DEGameSprites
 
     public static final int EXPLOSION_FRAMES = 0;
 
-    private ArrayList<DETileImage> sprites;
-    private ArrayList<DETileImage> customSprites;
+    private ArrayList<DE_TileImage> sprites;
+    private ArrayList<DE_TileImage> customSprites;
 
     private ArrayList<BufferedImage> explosionFrames;
 
-    public DEGameSprites(DrawEngine drawEngine, int TILE_SIZE)
+    public DE_GameSprites(DrawEngine drawEngine, int TILE_SIZE)
     {
         this.drawEngine = drawEngine;
         this.TILE_SIZE = TILE_SIZE;
@@ -52,9 +52,9 @@ public class DEGameSprites
         explosionFrames = loadExplosionFrames();
     }
 
-    private ArrayList<DETileImage> loadSprites() {
+    private ArrayList<DE_TileImage> loadSprites() {
         /*Load sprites files */
-        ArrayList<DETileImage> sprites = new ArrayList<>();
+        ArrayList<DE_TileImage> sprites = new ArrayList<>();
 
         for (int i = 0; i < spritesFileNames.length; i++)
         {
@@ -68,12 +68,12 @@ public class DEGameSprites
                 int type = sprite.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sprite.getType();
                 sprite = resizeImage(sprite, type, TILE_SIZE, TILE_SIZE);
                 //add to sprites
-                sprites.add(new DETileImage(sprite));
+                sprites.add(new DE_TileImage(sprite));
             } catch (IOException e)
             {
                 System.err.println("Error loading Sprite : " + spritesFileNames[i]);
                 // generate a black tile
-                sprites.add(new DETileImage(
+                sprites.add(new DE_TileImage(
                         new BufferedImage(TILE_SIZE, TILE_SIZE, BufferedImage.TYPE_BYTE_INDEXED)
                 ));
             }
@@ -87,8 +87,8 @@ public class DEGameSprites
      *
      * @return customSprites (ArrayList)
      */
-    private ArrayList<DETileImage> loadCustomSprites() {
-        ArrayList<DETileImage> customSprites = new ArrayList<>();
+    private ArrayList<DE_TileImage> loadCustomSprites() {
+        ArrayList<DE_TileImage> customSprites = new ArrayList<>();
 
         for (Mouse m : drawEngine.getMouses())
         {
@@ -102,7 +102,7 @@ public class DEGameSprites
                 int type = sprite.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sprite.getType();
                 sprite = resizeImage(sprite, type, TILE_SIZE, TILE_SIZE);
                 //add to customSprites
-                customSprites.add(new DETileImage(sprite));
+                customSprites.add(new DE_TileImage(sprite));
 
             } catch (Exception e)
             {
@@ -122,7 +122,7 @@ public class DEGameSprites
                 int type = sprite.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sprite.getType();
                 sprite = resizeImage(sprite, type, TILE_SIZE, TILE_SIZE);
                 //add to customSprites
-                customSprites.add(new DETileImage(sprite));
+                customSprites.add(new DE_TileImage(sprite));
 
             } catch (Exception e)
             {
@@ -207,12 +207,12 @@ public class DEGameSprites
         return (sprites != null && !sprites.isEmpty());
     }
 
-    public DETileImage getSprite(int index)
+    public DE_TileImage getSprite(int index)
     {
         return sprites.get(index);
     }
 
-    public DETileImage getCustomSprite(int index)
+    public DE_TileImage getCustomSprite(int index)
     {
         return customSprites.get(index);
     }
