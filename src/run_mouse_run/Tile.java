@@ -11,5 +11,10 @@ public enum Tile
     {
         return values[(this.ordinal()+1) % values.length];
     }
+
+    public boolean isWalkable()
+    {
+        return (this != WALL);
+    }
 }
 

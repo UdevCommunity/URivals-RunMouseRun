@@ -136,10 +136,10 @@ public class PathFinder {
                 grid[i][j].setPosition(map.getPosition(j,i)); // j is x, i is y
                 grid[i][j].f = -1;          // init distance to null
 
-                if (map.getTile(j, i) == Tile.WALL)
-                    grid[i][j].setPass(false);
-                else
+                if (map.getTile(j, i).isWalkable())
                     grid[i][j].setPass(true);
+                else
+                    grid[i][j].setPass(false);
             }
         }
     }
