@@ -10,9 +10,9 @@ public abstract class Cat extends CharacterController
         super(name, initialPosition, new ArrayList<Tile>(){{add(Tile.INVISIBLE_ZONE); add(Tile.MINE);}});
     }
 
-    final void die()
+    final void respawn()
     {
-        super.die("Cat");
+        super.respawn("Cat");
     }
 
 }

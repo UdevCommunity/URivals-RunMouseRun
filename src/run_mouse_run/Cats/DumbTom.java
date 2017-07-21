@@ -23,7 +23,7 @@ public class DumbTom extends Cat
 
         if (!mousesPosition.isEmpty())
         {
-            setDestinationPath(computeDestinationPath(getViewedMap(), mousesPosition.get(0)));
+            computeDestinationPath(getViewedMap(), mousesPosition.get(0));
         }
 
         if(!getDestinationPath().isEmpty())
@@ -51,7 +51,7 @@ public class DumbTom extends Cat
             int posIndex = ThreadLocalRandom.current().nextInt(0, notDiscovredTiles.size());
             Position pos = notDiscovredTiles.remove(posIndex);
 
-            setDestinationPath(computeDestinationPath(getViewedMap(), new Position(pos.getPosX(), pos.getPosY())));
+            computeDestinationPath(getViewedMap(), new Position(pos.getPosX(), pos.getPosY()));
 
             if (!getDestinationPath().isEmpty())
                 break;
@@ -71,7 +71,7 @@ public class DumbTom extends Cat
             if(viewedTile == Tile.NOT_DISCOVERED || viewedTile == Tile.WALL)
                 continue;
 
-            setDestinationPath(computeDestinationPath(getViewedMap(), new Position(pos.getPosX(), pos.getPosY())));
+            computeDestinationPath(getViewedMap(), new Position(pos.getPosX(), pos.getPosY()));
 
             if (!getDestinationPath().isEmpty())
                 break;

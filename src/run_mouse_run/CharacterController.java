@@ -20,10 +20,12 @@ public abstract class CharacterController
     private int viewDistance;
     private long movePowerupTourLeft = 0;
     private long visionPowerupTourLeft = 0;
+    private int targetReachedCount = 0;
     private Map map;
     private Map viewedMap;
     private PathFinder pathFinder;
     private boolean seeBehindWalls = false;
+    private boolean isAlive = true;
 
     private Timer timer;
 
@@ -59,6 +61,9 @@ public abstract class CharacterController
 
     final void startTimer()
     {
+        if(!isAlive)
+            return;
+
         TimerTask task = createUpdateTask();
         timer = new Timer();
         timer.scheduleAtFixedRate(task, 0, UPDATE_FREQUENCE);
@@ -69,9 +74,10 @@ public abstract class CharacterController
         timer.cancel();
     }
 
-    void die(String characterType)
+    void respawn(String characterType)
     {
         stopTimer();
+        System.out.println("Respawn: "+ name +" " + GameManager.gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY()));
         position = GameManager.gameManager.getLevelGenerator().getValidRespawnPosition(characterType);
         destinationPath.clear();
         moveSpeed = INITIAL_MOVE_SPEED;
@@ -81,10 +87,25 @@ public abstract class CharacterController
         startTimer();
     }
 
+    final void die()
+    {
+        GameManager.gameManager.getLevelGenerator().getMap().setTile(position.getPosX(), position.getPosY(), Tile.EMPTY);
+        isAlive = false;
+        destinationPath.clear();
+        stopTimer();
+    }
+
+    final void increaseTargetReachedCount()
+    {
+        targetReachedCount += 1;
+        System.out.println(name + " Catch mouse " + targetReachedCount);
+    }
+
     final void applyVisionPowerUp()
     {
         viewDistance = INITIAL_VIEW_DISTANCE + 1;
         visionPowerupTourLeft = 10;
+        seeBehindWalls = true;
     }
 
     final void applyMoveSpeedPowerup()
@@ -96,7 +117,12 @@ public abstract class CharacterController
     private void reducePowerupsTour()
     {
         moveSpeed = (--movePowerupTourLeft > 0)? moveSpeed: INITIAL_MOVE_SPEED;
-        viewDistance = (--visionPowerupTourLeft > 0)? viewDistance: INITIAL_VIEW_DISTANCE;
+
+        if(--visionPowerupTourLeft <= 0)
+        {
+            viewDistance = INITIAL_VIEW_DISTANCE;
+            seeBehindWalls = false;
+        }
     }
 
     private void discoverMap()
@@ -119,7 +145,7 @@ public abstract class CharacterController
     {
         if (!destinationPath.isEmpty() && (((destinationPath.get(0).getPosX() - position.getPosX()) > 1) ||
                 ((destinationPath.get(0).getPosY() - position.getPosY()) > 1)))
-            GameManager.gameManager.stopGame("Cat Lose", name);
+            GameManager.gameManager.stopGame(name + " tried to cheat in move !!");
 
         for (int i = 0; i < moveSpeed; i++)
         {
@@ -152,7 +178,8 @@ public abstract class CharacterController
 
     final protected ArrayList<Position> computeDestinationPath(Map map, Position destination)
     {
-        return pathFinder.getShortestPath(map, position, destination);
+        setDestinationPath(pathFinder.getShortestPath(map, position, destination));
+        return destinationPath;
     }
 
     final protected ArrayList<Position> computePath(Map map, Position source, Position destination)
@@ -165,7 +192,7 @@ public abstract class CharacterController
         return GameManager.gameManager.getLevelGenerator().canCrossByDiagonal(position, next);
     }
 
-    final protected void setDestinationPath(ArrayList<Position> destinationPath)
+    final private void setDestinationPath(ArrayList<Position> destinationPath)
     {
         this.destinationPath = destinationPath;
     }
@@ -192,12 +219,23 @@ public abstract class CharacterController
 
     final public Map getMap() { return map; }
 
+    final int getTargetReachedCount()
+    {
+        return targetReachedCount;
+    }
+
     final void setPosition(Position position) {
         this.position = position;
     }
 
-    final void setSeeBehindWalls(boolean seeBehindWalls) {
+    final void setSeeBehindWalls(boolean seeBehindWalls)
+    {
         this.seeBehindWalls = seeBehindWalls;
+    }
+
+    final boolean isAlive()
+    {
+        return isAlive;
     }
 }
 

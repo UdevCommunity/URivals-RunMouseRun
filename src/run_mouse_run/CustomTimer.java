@@ -26,7 +26,7 @@ class CustomTimer
 
                 if (currentTime.getTime() > TIME_LIMIT)
                 {
-                    GameManager.gameManager.stopGame("Everybody Lose", "");
+                    GameManager.gameManager.stopGame("Losers .. losers everywhere ..");
                 }
 
                 GameManager.gameManager.getPhysicsEngine().update();
@@ -62,6 +62,10 @@ class CustomTimer
     Time getCurrentTime()
     {
         return currentTime;
+    }
+    Timer getTimer()
+    {
+        return timer;
     }
 }
 

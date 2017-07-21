@@ -21,7 +21,7 @@ public class DumbJerry extends Mouse
 
         if (!cheesesPosition.isEmpty())
         {
-            setDestinationPath(computeDestinationPath(getViewedMap(), cheesesPosition.get(0)));
+            computeDestinationPath(getViewedMap(), cheesesPosition.get(0));
         }
 
         if(!getDestinationPath().isEmpty())
@@ -49,7 +49,7 @@ public class DumbJerry extends Mouse
             int posIndex = ThreadLocalRandom.current().nextInt(0, notDiscovredTiles.size());
             Position pos = notDiscovredTiles.remove(posIndex);
 
-            setDestinationPath(computeDestinationPath(getViewedMap(), new Position(pos.getPosX(), pos.getPosY())));
+            computeDestinationPath(getViewedMap(), new Position(pos.getPosX(), pos.getPosY()));
 
             if (!getDestinationPath().isEmpty())
                 break;
@@ -69,7 +69,7 @@ public class DumbJerry extends Mouse
             if(viewedTile == Tile.NOT_DISCOVERED || viewedTile == Tile.WALL)
                 continue;
 
-            setDestinationPath(computeDestinationPath(getViewedMap(), new Position(pos.getPosX(), pos.getPosY())));
+            computeDestinationPath(getViewedMap(), new Position(pos.getPosX(), pos.getPosY()));
 
             if (!getDestinationPath().isEmpty())
                 break;

@@ -1,7 +1,5 @@
 package run_mouse_run;
 
-import java.util.ArrayList;
-
 class PhysicsEngine
 {
     private Map levelMap;
@@ -22,18 +20,32 @@ class PhysicsEngine
     {
         for (Cat cat: GameManager.gameManager.getCats())
         {
+            if(!cat.isAlive())
+                continue;
+
             Tile tileCatIsStandingOn = levelMap.getTile(cat.getPosition().getPosX(), cat.getPosition().getPosY());
 
             switch (tileCatIsStandingOn)
             {
                 case MOUSE:
-                    GameManager.gameManager.stopGame("Cat Win", cat.getName());
+                    cat.increaseTargetReachedCount();
+
+                    for (Mouse dyingMouse: GameManager.gameManager.getMouses())
+                    {
+                        if(Position.comparePosition(cat.getPosition(), dyingMouse.getPosition()))
+                        {
+                            dyingMouse.die();
+                            GameManager.gameManager.chekEndGameConditions("Cats Win", cat.getName());
+                            break;
+                        }
+                    }
+
                     break;
                 case MINE:
                     GameManager.gameManager.getDrawEngine().explodeMine(cat.getPosition().getPosX(), cat.getPosition().getPosY());
                     levelMap.setTile(cat.getPosition().getPosX(), cat.getPosition().getPosY(), Tile.EMPTY);
                 case WALL:
-                    cat.die();
+                    cat.respawn();
                     break;
                 case POWERUP_VISION:
                     cat.applyVisionPowerUp();
@@ -46,7 +58,7 @@ class PhysicsEngine
             }
 
             if(tileCatIsStandingOn == Tile.POWERUP_SPEED || tileCatIsStandingOn == Tile.POWERUP_VISION
-                    || tileCatIsStandingOn == Tile.EMPTY)
+                    || tileCatIsStandingOn == Tile.EMPTY || tileCatIsStandingOn == Tile.MOUSE)
                 levelMap.setTile(cat.getPosition().getPosX(), cat.getPosition().getPosY(), Tile.CAT);
         }
     }
@@ -55,27 +67,36 @@ class PhysicsEngine
     {
         for (Mouse mouse: GameManager.gameManager.getMouses())
         {
+            if (!mouse.isAlive())
+                continue;
+
             Tile tileMouseIsStandingOn = levelMap.getTile(mouse.getPosition().getPosX(), mouse.getPosition().getPosY());
 
             switch (tileMouseIsStandingOn)
             {
                 case CHEESE:
-                    GameManager.gameManager.stopGame("Mouse Win", mouse.getName());
+                    mouse.increaseTargetReachedCount();
+                    GameManager.gameManager.chekEndGameConditions("Mouses Win", mouse.getName());
                     break;
+
                 case CAT:
                     for (Cat winningCat: GameManager.gameManager.getCats())
                     {
                         if(Position.comparePosition(mouse.getPosition(), winningCat.getPosition()))
                         {
-                            GameManager.gameManager.stopGame("Cat Win", winningCat.getName());
+                            winningCat.increaseTargetReachedCount();
+                            mouse.die();
+                            GameManager.gameManager.chekEndGameConditions("Cats Win", winningCat.getName());
+                            break;
                         }
                     }
+
                     break;
                 case MINE:
                     GameManager.gameManager.getDrawEngine().explodeMine(mouse.getPosition().getPosX(), mouse.getPosition().getPosY());
                     levelMap.setTile(mouse.getPosition().getPosX(), mouse.getPosition().getPosY(), Tile.EMPTY);
                 case WALL:
-                    mouse.die();
+                    mouse.respawn();
                     break;
                 case POWERUP_VISION:
                     mouse.applyVisionPowerUp();
@@ -88,7 +109,7 @@ class PhysicsEngine
             }
 
             if(tileMouseIsStandingOn == Tile.POWERUP_SPEED || tileMouseIsStandingOn == Tile.POWERUP_VISION
-                    || tileMouseIsStandingOn == Tile.EMPTY)
+                    || tileMouseIsStandingOn == Tile.EMPTY || tileMouseIsStandingOn == Tile.CHEESE)
                 levelMap.setTile(mouse.getPosition().getPosX(), mouse.getPosition().getPosY(), Tile.MOUSE);
         }
     }
