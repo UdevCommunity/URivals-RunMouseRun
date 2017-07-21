@@ -35,26 +35,35 @@ public class DEGameSprites
             INVISIBLE_ZONE_SPRITE = 6, MINE_SPRITE = 7,
             CAT_SPRITE = 8, MOUSE_SPRITE = 9;
 
+    private ArrayList<DETileImage> sprites, customSprites;
+    private ArrayList<BufferedImage> spritesOriginal, customSpritesOriginal;
+
     public static final int EXPLOSION_FRAMES = 0;
 
-    private ArrayList<DETileImage> sprites;
-    private ArrayList<DETileImage> customSprites;
-
-    private ArrayList<BufferedImage> explosionFrames;
+    private ArrayList<ArrayList<DETileImage>> animationFrames;
+    private ArrayList<ArrayList<BufferedImage>> animationFramesOriginal;
 
     public DEGameSprites(DrawEngine drawEngine, int TILE_SIZE)
     {
         this.drawEngine = drawEngine;
         this.TILE_SIZE = TILE_SIZE;
 
-        sprites = loadSprites();
-        customSprites = loadCustomSprites();
-        explosionFrames = loadExplosionFrames();
+        spritesOriginal = loadSprites();
+        customSpritesOriginal = loadCustomSprites();
+
+        animationFramesOriginal = new ArrayList<>();
+        animationFramesOriginal.add(loadExplosionFrames());
+
+        animationFrames = new ArrayList<>();
+        sprites = new ArrayList<>();
+        customSprites = new ArrayList<>();
+
+        resizeSprites(TILE_SIZE);
     }
 
-    private ArrayList<DETileImage> loadSprites() {
+    private ArrayList<BufferedImage> loadSprites() {
         /*Load sprites files */
-        ArrayList<DETileImage> sprites = new ArrayList<>();
+        ArrayList<BufferedImage> sprites = new ArrayList<>();
 
         for (int i = 0; i < spritesFileNames.length; i++)
         {
@@ -64,18 +73,15 @@ public class DEGameSprites
                 File spriteFile = new File("res/" + spritesFileNames[i]);
                 // Read image
                 BufferedImage sprite = ImageIO.read(spriteFile);
-                // resize
-                int type = sprite.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sprite.getType();
-                sprite = resizeImage(sprite, type, TILE_SIZE, TILE_SIZE);
                 //add to sprites
-                sprites.add(new DETileImage(sprite));
+                sprites.add(sprite);
             } catch (IOException e)
             {
                 System.err.println("Error loading Sprite : " + spritesFileNames[i]);
                 // generate a black tile
-                sprites.add(new DETileImage(
+                sprites.add(
                         new BufferedImage(TILE_SIZE, TILE_SIZE, BufferedImage.TYPE_BYTE_INDEXED)
-                ));
+                );
             }
         }
         return sprites;
@@ -87,8 +93,8 @@ public class DEGameSprites
      *
      * @return customSprites (ArrayList)
      */
-    private ArrayList<DETileImage> loadCustomSprites() {
-        ArrayList<DETileImage> customSprites = new ArrayList<>();
+    private ArrayList<BufferedImage> loadCustomSprites() {
+        ArrayList<BufferedImage> customSprites = new ArrayList<>();
 
         for (Mouse m : drawEngine.getMouses())
         {
@@ -98,15 +104,11 @@ public class DEGameSprites
                 File spriteFile = new File("res/" + m.getName() + ".png");
                 // Read image
                 BufferedImage sprite = ImageIO.read(spriteFile);
-                // resize
-                int type = sprite.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sprite.getType();
-                sprite = resizeImage(sprite, type, TILE_SIZE, TILE_SIZE);
                 //add to customSprites
-                customSprites.add(new DETileImage(sprite));
-
+                customSprites.add(sprite);
             } catch (Exception e)
             {
-                customSprites.add(sprites.get(MOUSE_SPRITE));
+                customSprites.add(spritesOriginal.get(MOUSE_SPRITE));
             }
         }
 
@@ -118,15 +120,11 @@ public class DEGameSprites
                 File spriteFile = new File("res/" + c.getName() + "_sprite.png");
                 // Read image
                 BufferedImage sprite = ImageIO.read(spriteFile);
-                // resize
-                int type = sprite.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sprite.getType();
-                sprite = resizeImage(sprite, type, TILE_SIZE, TILE_SIZE);
                 //add to customSprites
-                customSprites.add(new DETileImage(sprite));
-
+                customSprites.add(sprite);
             } catch (Exception e)
             {
-                customSprites.add(sprites.get(CAT_SPRITE));
+                customSprites.add(spritesOriginal.get(CAT_SPRITE));
             }
         }
         return customSprites;
@@ -159,10 +157,6 @@ public class DEGameSprites
                                     w,
                                     h
                             );
-                    // resize
-                    int type = frameSheet.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : frameSheet.getType();
-                    frame = resizeImage(frame, type, TILE_SIZE, TILE_SIZE);
-
                     frames.add(frame);
                 }
             }
@@ -201,6 +195,58 @@ public class DEGameSprites
         return bimage;
     }
 
+    public void resizeSprites(int size)
+    {
+        this.TILE_SIZE = size;
+
+        /* Resize sprites*/
+        ArrayList<DETileImage> sprites = new ArrayList<>();
+
+        for(BufferedImage sprite : spritesOriginal)
+        {
+            // resize
+            int type = sprite.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sprite.getType();
+            sprite = resizeImage(sprite, type, TILE_SIZE, TILE_SIZE);
+
+            sprites.add(new DETileImage(sprite));
+        }
+
+        this.sprites = sprites;
+
+        /*Resize custom Sprites*/
+        ArrayList<DETileImage> customSprites = new ArrayList<>();
+        for(BufferedImage sprite : customSpritesOriginal)
+        {
+            // resize
+            int type = sprite.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sprite.getType();
+            sprite = resizeImage(sprite, type, TILE_SIZE, TILE_SIZE);
+
+            customSprites.add(new DETileImage(sprite));
+        }
+
+        this.customSprites = customSprites;
+
+        /*Resize animation frames*/
+
+        ArrayList<ArrayList<DETileImage>> animationFrames = new ArrayList<>();
+
+        int i = 0;
+        for(ArrayList<BufferedImage> animation : animationFramesOriginal)
+        {
+            animationFrames.add(new ArrayList<DETileImage>());
+            for(BufferedImage frame : animation)
+            {
+                // resize
+                int type = frame.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : frame.getType();
+                frame = resizeImage(frame, type, TILE_SIZE, TILE_SIZE);
+
+                animationFrames.get(i).add(new DETileImage(frame));
+            }
+            i++;
+        }
+
+        this.animationFrames = animationFrames;
+    }
 
     public boolean isLoaded()
     {
@@ -217,8 +263,8 @@ public class DEGameSprites
         return customSprites.get(index);
     }
 
-    public ArrayList<BufferedImage> getAnimationFrames(int index)
+    public ArrayList<DETileImage> getAnimationFrames(int index)
     {
-        return explosionFrames;
+        return animationFrames.get(index);
     }
 }
