@@ -4,8 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-import run_mouse_run.draw_engine.*;
-
 public class DrawEngine {
 
 	private PathFinder pathFinder;

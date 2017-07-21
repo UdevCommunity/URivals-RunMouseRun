@@ -1,7 +1,4 @@
-package run_mouse_run.draw_engine;
-
-/**
- */
+package run_mouse_run;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,13 +6,14 @@ import java.awt.*;
 /**
  * Created by Oussama on 20/07/2017.
  * an ImageIcon with an alpha attribute
+ * Use just like ImageIcon with a setAlpha method
 */
 
-public class TileImage extends ImageIcon
+public class DETileImage extends ImageIcon
 {
     private float alpha = 1;
 
-    public TileImage(Image image) {
+    public DETileImage(Image image) {
         super(image);
     }
 
@@ -40,7 +38,7 @@ public class TileImage extends ImageIcon
         this.alpha = alpha;
     }
 
-    public TileImage copy() {
-        return new TileImage(getImage());
+    public DETileImage copy() {
+        return new DETileImage(getImage());
     }
 }

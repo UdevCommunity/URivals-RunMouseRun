@@ -1,6 +1,4 @@
-package run_mouse_run.draw_engine;
-
-import run_mouse_run.*;
+package run_mouse_run;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -10,17 +8,19 @@ import java.awt.*;
 import java.awt.event.*;
 
 /**
- * Frame that displays one of the maps in the maps ArrayList
+ * Frame that displays one of the maps in the drawEngine's maps
  */
 public class DrawEngineFrame extends JFrame {
 
     public int TILE_SIZE = 48; // Tiles will resize to this value
 
+    public Font defaultFont;
+
     DrawEngine drawEngine;
 
     private JPanel contentPane;
     private JScrollPane mapContainerPanel;
-    private MapPanel mapPanel;
+    private DEMapPanel mapPanel;
     private JLabel mapName, timeLabel;
     private JComboBox<String> mapsCmBox;
     public JButton startGameButton;
@@ -53,7 +53,7 @@ public class DrawEngineFrame extends JFrame {
         // Set GUI
         initWindow();
 
-        Font defaultFont = new Font("Calibri", Font.PLAIN, 18);
+        defaultFont = new Font("Calibri", Font.PLAIN, 18);
 
         gamePanel = new JPanel();    // Panel containing the Map, and inGame informations
         gamePanel.setLayout(new BorderLayout(5, 5));
@@ -61,9 +61,29 @@ public class DrawEngineFrame extends JFrame {
         controlPanel = new JPanel(); // Panel containing options ( map with/height ..etc)
         controlPanel.setLayout(new BorderLayout(5, 5));
 
-		/*=========================================================================================*/
-		/*====================================== Top Panel ========================================*/
-		/*=========================================================================================*/
+		initTopPanel();
+
+        addMapContainerPanel(map, TILE_SIZE);
+
+		initBottomPanel();
+
+		initSettingPanel();
+
+        /*Panels initialised, add to frame */
+        contentPane.add(gamePanel);//, BorderLayout.WEST);
+        contentPane.add(controlPanel);//, BorderLayout.EAST);
+
+
+        /*Over, clean spaces and resize*/
+        pack();
+
+    } // End of constructor
+
+    /**
+     *
+     */
+    private void initTopPanel()
+    {
         topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout(0, 0));
 
@@ -104,104 +124,13 @@ public class DrawEngineFrame extends JFrame {
 
 
         gamePanel.add(topPanel, BorderLayout.NORTH);
+    }
 
-		/*=========================================================================================*/
-		/*====================================== Map Panel ========================================*/
-		/*=========================================================================================*/
-        addMapContainerPanel(map, TILE_SIZE);
-
-		/*=========================================================================================*/
-		/*====================================== Bottom Panel =====================================*/
-		/*=========================================================================================*/
-        bottomPanel = new JPanel();
-        bottomPanel.setLayout(new BorderLayout(5, 5));
-
-        // Draw Shortest Button
-        btnDrawShortest = new JButton("Draw shortest");
-        btnDrawShortest.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                mapPanel.createAnimation(5, 3);
-
-            }
-        });
-
-        // Center buttons ( ComboBox )
-        JPanel centerPanel = new JPanel();
-
-        mapsCmBox = new JComboBox<>();
-
-        mapsCmBox.setPreferredSize(new Dimension(120, 20));
-        mapsCmBox.setFont(defaultFont);
-
-        updateCmBox();
-
-        mapsCmBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                try
-                {
-                    int i = mapsCmBox.getSelectedIndex();
-
-                    switchToMap(drawEngine.getMaps().get(i));
-                } catch (Exception ex)
-                {
-                    // do nothing
-                }
-            }
-        });
-        centerPanel.add(mapsCmBox);
-
-        // Control Buttons
-        JButton btnCenterScroll = new JButton("Find Mouse");
-
-        btnCenterScroll.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                centerScroll(drawEngine.getMouses().get(0).getPosition());
-            }
-        });
-        centerPanel.add(btnCenterScroll);
-
-        // TILE SIZE Slider
-        JSlider slide = new JSlider();
-
-        slide.setMaximum(128);
-        slide.setMinimum(16);
-        slide.setValue(TILE_SIZE);
-        slide.setPaintTicks(true);
-        slide.setPaintLabels(true);
-        slide.setMinorTickSpacing(8);
-        slide.setMajorTickSpacing(8);
-
-        slide.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent event) {
-                int size = ((JSlider) event.getSource()).getValue();
-
-                adjustTileSize(drawEngine.getMaps().get(mapsCmBox.getSelectedIndex()), size);
-            }
-        });
-
-        bottomPanel.add(slide, BorderLayout.SOUTH);
-
-        // new Map button
-        JButton newMapButton = new JButton("New Window");
-        newMapButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                drawEngine.addNewFrame(drawEngine.getMaps());
-            }
-        });
-
-        // Add to frame
-        bottomPanel.add(btnDrawShortest, BorderLayout.WEST);
-        bottomPanel.add(centerPanel, BorderLayout.CENTER);
-        bottomPanel.add(newMapButton, BorderLayout.EAST);
-
-        gamePanel.add(bottomPanel, BorderLayout.SOUTH);
-
-		/*=========================================================================================*/
-		/*====================================== East Panel ========================================*/
-		/*=========================================================================================*/
+    /**
+     *
+     */
+    private void initSettingPanel()
+    {
         JPanel eastPanel = new JPanel();
 
         JLabel lblMapWidth = new JLabel("Map Width");
@@ -300,51 +229,124 @@ public class DrawEngineFrame extends JFrame {
         eastPanel.add(lblBehindWalls, gbc);
 
         controlPanel.add(eastPanel, BorderLayout.CENTER);
-
-        /*Panels initialised, add to frame */
-        contentPane.add(gamePanel);//, BorderLayout.WEST);
-        contentPane.add(controlPanel);//, BorderLayout.EAST);
-
-
-        /*Over, clean spaces and resize*/
-        pack();
-
-    } // End of constructor
-
-    /**
-     *
-     */
-    private void updateCmBox() {
-        if (mapsCmBox == null) return;
-
-        mapsCmBox.removeAllItems();
-        for (Map m : drawEngine.getMaps())
-        {
-            mapsCmBox.addItem(m.getName());
-        }
     }
 
     /**
-     * Adjust Tile size to fit all the screen
      *
-     * @param map  to adjust to
-     * @param size (int)
      */
-    private void adjustTileSize(Map map, int size) {
-        TILE_SIZE = size;
-        gamePanel.remove(mapContainerPanel);
-        addMapContainerPanel(map, TILE_SIZE);
+    private void initBottomPanel()
+    {
+        bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BorderLayout(5, 5));
 
-        update();
+        // Draw Shortest Button
+        btnDrawShortest = new JButton("Draw shortest");
+        btnDrawShortest.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            }
+        });
+
+        // Center buttons ( ComboBox )
+        JPanel centerPanel = new JPanel();
+
+        mapsCmBox = new JComboBox<>();
+
+        mapsCmBox.setPreferredSize(new Dimension(120, 20));
+        mapsCmBox.setFont(defaultFont);
+
+        updateCmBox();
+
+        mapsCmBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                try
+                {
+                    int i = mapsCmBox.getSelectedIndex();
+
+                    switchToMap(drawEngine.getMaps().get(i));
+                } catch (Exception ex)
+                {
+                    // do nothing
+                }
+            }
+        });
+        centerPanel.add(mapsCmBox);
+
+        // Control Buttons
+        JButton btnCenterScroll = new JButton("Find Mouse");
+
+        btnCenterScroll.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                centerScroll(drawEngine.getMouses().get(0).getPosition());
+            }
+        });
+        centerPanel.add(btnCenterScroll);
+
+        // TILE SIZE Slider
+        JSlider slide = new JSlider();
+
+        slide.setMaximum(128);
+        slide.setMinimum(16);
+        slide.setValue(TILE_SIZE);
+        slide.setPaintTicks(true);
+        slide.setPaintLabels(true);
+        slide.setMinorTickSpacing(8);
+        slide.setMajorTickSpacing(8);
+
+        slide.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent event) {
+                int size = ((JSlider) event.getSource()).getValue();
+
+                adjustTileSize(drawEngine.getMaps().get(mapsCmBox.getSelectedIndex()), size);
+            }
+        });
+
+        bottomPanel.add(slide, BorderLayout.SOUTH);
+
+        // new Map button
+        JButton newMapButton = new JButton("New Window");
+        newMapButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                drawEngine.addNewFrame(drawEngine.getMaps());
+            }
+        });
+
+        // Add to frame
+        bottomPanel.add(btnDrawShortest, BorderLayout.WEST);
+        bottomPanel.add(centerPanel, BorderLayout.CENTER);
+        bottomPanel.add(newMapButton, BorderLayout.EAST);
+
+        gamePanel.add(bottomPanel, BorderLayout.SOUTH);
+    }
+
+
+
+    /**
+     * Inits DrawEngine frame adapting to height
+     */
+    private void initWindow() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle("Run Mouse Run!");
+
+        // Set on FullScreen
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        //setResizable(false);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 10, 5, 10));
+
+        contentPane.setLayout(new GridLayout(1, 2, 5, 0));
+        setContentPane(contentPane);
     }
 
     /**
      * add a mapContainerPanel to gamePanel with MouseListener
-     *
      * @param map Map
      */
     private void addMapContainerPanel(Map map, int TILE_SIZE) {
-        mapPanel = new MapPanel(drawEngine, map, TILE_SIZE);
+        mapPanel = new DEMapPanel(drawEngine, map, TILE_SIZE);
         mapContainerPanel = new JScrollPane(mapPanel);
 
         mapPanel.addMouseListener(new MouseAdapter() {
@@ -387,23 +389,6 @@ public class DrawEngineFrame extends JFrame {
         gamePanel.add(mapContainerPanel, BorderLayout.CENTER);
     }
 
-    /**
-     * Inits DrawEngine frame adapting to height
-     */
-    private void initWindow() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setTitle("Run Mouse Run!");
-
-        // Set on FullScreen
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-
-        //setResizable(false);
-        contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 10, 5, 10));
-
-        contentPane.setLayout(new GridLayout(1, 2, 5, 0));
-        setContentPane(contentPane);
-    }
 
     /**
      * Change window state ( Before Start/Running/Paused )
@@ -429,20 +414,6 @@ public class DrawEngineFrame extends JFrame {
         update();
     }
 
-
-    /**
-     * Set map to show in mapPanel
-     *
-     * @param map map to show
-     */
-    private void switchToMap(Map map) {
-        mapPanel.setMap(map);
-        mapName.setText(map.getName());
-        update();
-        mapPanel.adjustPanelSize();
-        update();
-    }
-
     /**
      * Remove Control Panel from contentPane
      */
@@ -453,6 +424,46 @@ public class DrawEngineFrame extends JFrame {
 
         adjustTileSize(drawEngine.getMaps().get(0), TILE_SIZE);
     }
+
+    /**
+     *
+     */
+    private void updateCmBox() {
+        if (mapsCmBox == null) return;
+
+        mapsCmBox.removeAllItems();
+        for (Map m : drawEngine.getMaps())
+        {
+            mapsCmBox.addItem(m.getName());
+        }
+    }
+
+    /**
+     * Adjust Tile size to fit all the screen
+     *
+     * @param map  to adjust to
+     * @param size (int)
+     */
+    private void adjustTileSize(Map map, int size) {
+        TILE_SIZE = size;
+        gamePanel.remove(mapContainerPanel);
+        addMapContainerPanel(map, TILE_SIZE);
+
+        update();
+    }
+
+    /**
+     * Set map to show in mapPanel
+     * @param map map to show
+     */
+    private void switchToMap(Map map) {
+        mapPanel.setMap(map);
+        mapName.setText(map.getName());
+        update();
+        mapPanel.adjustPanelSize();
+        update();
+    }
+
 
     /**
      * Convert time to mm:ss format and show on timeLabel
@@ -518,7 +529,6 @@ public class DrawEngineFrame extends JFrame {
 
 
         mapContainerPanel.getViewport().setViewPosition(new Point(vx, vy));
-
     }
 
     /**

@@ -1,4 +1,4 @@
-package run_mouse_run.draw_engine;
+package run_mouse_run;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * Created by Oussama on 20/07/2017.
  */
 
-public class Animation
+public class DEAnimation
 {
     Graphics2D graphic;
     private ArrayList<BufferedImage> frames;
@@ -16,7 +16,7 @@ public class Animation
 
     private int centerX, centerY;
 
-    public Animation(Graphics g)
+    public DEAnimation(Graphics g)
     {
         this.graphic = (Graphics2D) g;
         graphic.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.75f));
