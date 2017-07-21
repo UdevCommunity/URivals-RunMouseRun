@@ -16,7 +16,8 @@ public class DEMapPanel extends JPanel {
     private DrawEngine drawEngine;
 
     public int TILE_SIZE;
-    private final int CHARACTER_LAYER = 2;
+    private final int BACKGROUND_LAYER = 0,
+            OBJECT_LAYER = 1, CHARACTER_LAYER = 2;
 
     private ArrayList<JLabel[][]> layers;
     private GridLayout gridLayout;
@@ -78,37 +79,36 @@ public class DEMapPanel extends JPanel {
     public void adjustPanelSize() {
         setPreferredSize(new Dimension(map.getWidth() * TILE_SIZE,
                 map.getHeight() * TILE_SIZE));
+    }
 
-        if (! gameSprites.isLoaded())
-            gameSprites = new DEGameSprites(drawEngine, TILE_SIZE);
+    public void changeTileSize(int size)
+    {
+        TILE_SIZE = size;
+
+        for(JLabel[][] layer : layers)
+        {
+            for(int i = 0; i < map.getHeight(); i++)
+            {
+                for(int j = 0; j < map.getWidth(); j++)
+                {
+                    layer[i][j].setPreferredSize(
+                            new Dimension(TILE_SIZE, TILE_SIZE)
+                    );
+                    layer[i][j].setSize(
+                            new Dimension(TILE_SIZE, TILE_SIZE)
+                    );
+
+                }
+            }
+        }
+
+        gameSprites.resizeSprites(TILE_SIZE);
+
+        adjustPanelSize();
     }
 
     public void setMap(Map map) {
         this.map = map;
-    }
-
-    /**
-     * Resize image
-     *
-     * @param originalImage (BufferedImage) image to resize
-     * @param type          type of image, use ARGB for tranparancy
-     * @param IMG_WIDTH     (int)
-     * @param IMG_HEIGHT    (int)
-     * @return
-     */
-    private BufferedImage resizeImage(BufferedImage originalImage, int type, int IMG_WIDTH, int IMG_HEIGHT) {
-        Image resizedImage = originalImage.getScaledInstance(IMG_WIDTH, IMG_HEIGHT, Image.SCALE_SMOOTH);
-
-        // Create a buffered image with transparency
-        BufferedImage bimage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
-
-        // Draw the image on to the buffered image
-        Graphics2D bGr = bimage.createGraphics();
-        bGr.drawImage(resizedImage, 0, 0, null);
-        bGr.dispose();
-
-        // Return the buffered image
-        return bimage;
     }
 
     public void update() {
@@ -125,36 +125,19 @@ public class DEMapPanel extends JPanel {
                 setTile(layer[i][j], null);
     }
 
-    public void createAnimation(int x, int y) {
-        DEAnimation animation = new DEAnimation(getGraphics());
+    public void createAnimation(int animationIndex, int x, int y)
+    {
+        JLabel[][] layer = layers.get(2);
+        DEAnimation animation = new DEAnimation(
+                layer[y][x],
+                gameSprites.getAnimationFrames(animationIndex)
+        );
 
-        animation.setAnimation(gameSprites.getAnimationFrames(DEGameSprites.EXPLOSION_FRAMES),
-                x * TILE_SIZE + TILE_SIZE / 2,
-                y * TILE_SIZE + TILE_SIZE / 2);
-        Thread animThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!animation.isOver())
-                {
-                    animation.draw();
-                    try
-                    {
-                        Thread.sleep(50);
-                    } catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    animation.nextFrame();
-                    if (animation.isOver())
-                        repaint();
-                }
-            }
-        });
-        animThread.start();
+        animation.play();
     }
 
     public void drawMap() {
-        JLabel[][] layer1 = layers.get(0);
+        JLabel[][] layer1 = layers.get(BACKGROUND_LAYER);
 
         for (int i = 0; i < map.getHeight(); i++)
         {
@@ -181,7 +164,7 @@ public class DEMapPanel extends JPanel {
     }
 
     public void drawObjects() {
-        JLabel[][] layer = layers.get(1);
+        JLabel[][] layer = layers.get(OBJECT_LAYER);
 
         for (int i = 0; i < map.getHeight(); i++)
         {
