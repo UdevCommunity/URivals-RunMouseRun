@@ -43,7 +43,7 @@ public class DE_GameSprites
     private ArrayList<ArrayList<DE_TileImage>> animationFrames;
     private ArrayList<ArrayList<BufferedImage>> animationFramesOriginal;
 
-    public DEGameSprites(DrawEngine drawEngine, int TILE_SIZE)
+    public DE_GameSprites(DrawEngine drawEngine, int TILE_SIZE)
     {
         this.drawEngine = drawEngine;
         this.TILE_SIZE = TILE_SIZE;

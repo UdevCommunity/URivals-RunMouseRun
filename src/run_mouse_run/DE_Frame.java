@@ -626,7 +626,7 @@ public class DE_Frame extends JFrame {
     }
 
     public void explodeMine(int x, int y) {
-        mapPanel.createAnimation(DEGameSprites.EXPLOSION_FRAMES, x, y);
+        mapPanel.createAnimation(DE_GameSprites.EXPLOSION_FRAMES, x, y);
     }
 
 }

@@ -79,6 +79,7 @@ public class DE_MapPanel extends JPanel {
     public void adjustPanelSize() {
         setPreferredSize(new Dimension(map.getWidth() * TILE_SIZE,
                 map.getHeight() * TILE_SIZE));
+    }
 
     public void changeTileSize(int size)
     {
@@ -146,16 +147,16 @@ public class DE_MapPanel extends JPanel {
                 switch (map.getTile(j, i))
                 {
                     case NOT_DISCOVERED:
-                        setTile(layer1[i][j], gameSprites.getSprite(DEGameSprites.NOT_DISCOVERED_SPRITE));
+                        setTile(layer1[i][j], gameSprites.getSprite(DE_GameSprites.NOT_DISCOVERED_SPRITE));
                         break;
                     case EMPTY:
-                        setTile(layer1[i][j], gameSprites.getSprite(DEGameSprites.EMPTY_SPRITE));
+                        setTile(layer1[i][j], gameSprites.getSprite(DE_GameSprites.EMPTY_SPRITE));
                         break;
                     case WALL:
-                        setTile(layer1[i][j], gameSprites.getSprite(DEGameSprites.WALL_SPRITE));
+                        setTile(layer1[i][j], gameSprites.getSprite(DE_GameSprites.WALL_SPRITE));
                         break;
                     default:
-                        setTile(layer1[i][j], gameSprites.getSprite(DEGameSprites.EMPTY_SPRITE));
+                        setTile(layer1[i][j], gameSprites.getSprite(DE_GameSprites.EMPTY_SPRITE));
                         break;
                 }
             }
@@ -180,19 +181,19 @@ public class DE_MapPanel extends JPanel {
                         setTile(layer[i][j], null);
                         break;
                     case CHEESE:
-                        setTile(layer[i][j], gameSprites.getSprite(DEGameSprites.CHEESE_SPRITE));
+                        setTile(layer[i][j], gameSprites.getSprite(DE_GameSprites.CHEESE_SPRITE));
                         break;
                     case POWERUP_VISION:
-                        setTile(layer[i][j], gameSprites.getSprite(DEGameSprites.POWERUP_VISION_SPRITE));
+                        setTile(layer[i][j], gameSprites.getSprite(DE_GameSprites.POWERUP_VISION_SPRITE));
                         break;
                     case POWERUP_SPEED:
-                        setTile(layer[i][j], gameSprites.getSprite(DEGameSprites.POWERUP_SPEED_SPRITE));
+                        setTile(layer[i][j], gameSprites.getSprite(DE_GameSprites.POWERUP_SPEED_SPRITE));
                         break;
                     case INVISIBLE_ZONE:
-                        setTile(layer[i][j], gameSprites.getSprite(DEGameSprites.INVISIBLE_ZONE_SPRITE));
+                        setTile(layer[i][j], gameSprites.getSprite(DE_GameSprites.INVISIBLE_ZONE_SPRITE));
                         break;
                     case MINE:
-                        setTile(layer[i][j], gameSprites.getSprite(DEGameSprites.MINE_SPRITE));
+                        setTile(layer[i][j], gameSprites.getSprite(DE_GameSprites.MINE_SPRITE));
                         break;
                     default:
                         setTile(layer[i][j], null);
