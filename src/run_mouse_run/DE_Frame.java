@@ -33,6 +33,9 @@ public class DE_Frame extends JFrame {
     private Position initialPos = new Position(2, 2);
     private Position finalPos = new Position(6, 6);
 
+    private double mousePressedAtPosX;
+    private double mousePressedAtPosY;
+
     private boolean ctrlPressed = false;
 
     /**
@@ -363,6 +366,12 @@ public class DE_Frame extends JFrame {
     private void setMouseListener()
     {
         mapPanel.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e)
+            {
+                mousePressedAtPosX = e.getPoint().getX();
+                mousePressedAtPosY = e.getPoint().getY();
+            }
+
             /**
              * On LeftClick : Set InitialPosition ( testing pathfinding )
              * On RightClick : Set finalPosition ( testing pathfinding )
@@ -424,13 +433,18 @@ public class DE_Frame extends JFrame {
         });
 
         // set Drag listener for moving scroll
-        mapPanel.addMouseMotionListener(new MouseMotionListener() {
+        mapPanel.addMouseMotionListener(new MouseMotionListener()
+        {
             @Override
-            public void mouseDragged(MouseEvent e) {
-                System.out.println("drag");
-                int x = e.getX()/TILE_SIZE;
-                int y = e.getY()/TILE_SIZE;
-                centerScroll(new Position(x,y));
+            public void mouseDragged(MouseEvent e)
+            {
+                double mapContainerPanelFocusPositionX = mapContainerPanel.getViewport().getViewPosition().getX() + mapContainerPanel.getWidth()/2;
+                double mapContainerPanelFocusPositionY = mapContainerPanel.getViewport().getViewPosition().getY() + mapContainerPanel.getHeight()/2;
+
+                int targetPositionX = (int)(mapContainerPanelFocusPositionX + (mousePressedAtPosX - e.getPoint().getX()))/TILE_SIZE;
+                int targetPositionY = (int)(mapContainerPanelFocusPositionY + (mousePressedAtPosY - e.getPoint().getY()))/TILE_SIZE;
+
+                centerScroll(new Position(targetPositionX, targetPositionY));
             }
 
             @Override
@@ -558,13 +572,14 @@ public class DE_Frame extends JFrame {
      *
      * @param p (Position)
      */
-    private void centerScroll(Position p) {
-			/*Get width (Vw) and height (Vh) of viewport*/
+    private void centerScroll(Position p)
+    {
+		/*Get width (Vw) and height (Vh) of viewport*/
         double vw = mapContainerPanel.getWidth();
         double vh = mapContainerPanel.getHeight();
 
-        int vx = (int) (p.getPosX() * TILE_SIZE - vw / 2) + TILE_SIZE / 2;
-        int vy = (int) (p.getPosY() * TILE_SIZE - vh / 2) + TILE_SIZE / 2;
+        int vx = (int) (p.getPosX() * TILE_SIZE - vw / 2);
+        int vy = (int) (p.getPosY() * TILE_SIZE - vh / 2);
 
         // check for bounds
         int maxX = (int) (drawEngine.getMaps().get(mapsCmBox.getSelectedIndex()).getWidth() * TILE_SIZE - vw);
@@ -576,7 +591,6 @@ public class DE_Frame extends JFrame {
         vy = (vy >= 0) ? vy : 0;
         vx = (vx > maxX+1) ? maxX : vx;
         vy = (vy > maxY+1) ? maxY : vy;
-
 
         mapContainerPanel.getViewport().setViewPosition(new Point(vx, vy));
     }
