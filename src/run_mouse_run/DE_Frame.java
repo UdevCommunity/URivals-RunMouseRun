@@ -1,5 +1,7 @@
 package run_mouse_run;
 
+import javafx.scene.input.KeyCode;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
@@ -31,6 +33,7 @@ public class DE_Frame extends JFrame {
     private Position initialPos = new Position(2, 2);
     private Position finalPos = new Position(6, 6);
 
+    private boolean ctrlPressed = false;
 
     /**
      * Create the frame.
@@ -76,7 +79,7 @@ public class DE_Frame extends JFrame {
 
         /*Over, clean spaces and resize*/
         pack();
-
+        setListeners();
     } // End of constructor
 
     /**
@@ -272,38 +275,6 @@ public class DE_Frame extends JFrame {
         });
         centerPanel.add(mapsCmBox);
 
-        // Control Buttons
-        JButton btnCenterScroll = new JButton("Find Mouse");
-
-        btnCenterScroll.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                centerScroll(drawEngine.getMouses().get(0).getPosition());
-            }
-        });
-        centerPanel.add(btnCenterScroll);
-
-        // TILE SIZE Slider
-        JSlider slide = new JSlider();
-
-        slide.setMaximum(128);
-        slide.setMinimum(16);
-        slide.setValue(TILE_SIZE);
-        slide.setPaintTicks(true);
-        slide.setPaintLabels(true);
-        slide.setMinorTickSpacing(8);
-        slide.setMajorTickSpacing(8);
-
-        slide.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent event) {
-                int size = ((JSlider) event.getSource()).getValue();
-
-                adjustTileSize(drawEngine.getMaps().get(mapsCmBox.getSelectedIndex()), size);
-            }
-        });
-
-        bottomPanel.add(slide, BorderLayout.SOUTH);
-
         // new Map button
         JButton newMapButton = new JButton("New Window");
         newMapButton.addActionListener(new ActionListener() {
@@ -327,7 +298,7 @@ public class DE_Frame extends JFrame {
      * Inits DrawEngine frame adapting to height
      */
     private void initWindow() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Run Mouse Run!");
 
         // Set on FullScreen
@@ -342,6 +313,36 @@ public class DE_Frame extends JFrame {
     }
 
     /**
+     *
+     */
+    private void setListeners()
+    {
+        KeyListener keyListener = new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e)
+            {
+                if(e.getKeyCode() == KeyEvent.VK_CONTROL)
+                {
+                    ctrlPressed = true;
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e)
+            {
+                if(e.getKeyCode() == KeyEvent.VK_CONTROL)
+                    ctrlPressed = false;
+            }
+        };
+        startGameButton.addKeyListener(keyListener);
+    }
+
+    /**
      * add a mapContainerPanel to gamePanel with MouseListener
      * @param map Map
      */
@@ -349,8 +350,20 @@ public class DE_Frame extends JFrame {
         mapPanel = new DE_MapPanel(drawEngine, map, TILE_SIZE);
         mapContainerPanel = new JScrollPane(mapPanel);
 
+        setMouseListener();
+
+        // Speed up scrolling
+        mapContainerPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        mapContainerPanel.getVerticalScrollBar().setUnitIncrement(TILE_SIZE / 2);
+        mapContainerPanel.getHorizontalScrollBar().setUnitIncrement(TILE_SIZE / 2);
+
+        gamePanel.add(mapContainerPanel, BorderLayout.CENTER);
+    }
+
+    private void setMouseListener()
+    {
         mapPanel.addMouseListener(new MouseAdapter() {
-            /*
+            /**
              * On LeftClick : Set InitialPosition ( testing pathfinding )
              * On RightClick : Set finalPosition ( testing pathfinding )
              * On MiddleClick : switch tile ( edit map )
@@ -360,7 +373,8 @@ public class DE_Frame extends JFrame {
                 int i = event.getY() / TILE_SIZE;
                 int j = event.getX() / TILE_SIZE;
 
-                if (!startGameButton.getText().equals("Pause Game")) // if game not running
+                // if game not running
+                if (!startGameButton.getText().equals("Pause Game"))
                 {
                     if (event.getButton() == MouseEvent.BUTTON1)
                     {
@@ -381,12 +395,49 @@ public class DE_Frame extends JFrame {
             }
         });
 
-        // Speed up scrolling
-        mapContainerPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        mapContainerPanel.getVerticalScrollBar().setUnitIncrement(TILE_SIZE / 2);
-        mapContainerPanel.getHorizontalScrollBar().setUnitIncrement(TILE_SIZE / 2);
+        // Set wheel listener for zoom in/out
+        mapContainerPanel.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                if (e.isControlDown())
+                {
+                    if(ctrlPressed)
+                    {
+                        if (e.getWheelRotation() < 0)
+                        {
+                            // ZOOM IN
+                            if (TILE_SIZE <= 120)
+                                adjustTileSize(TILE_SIZE + 8);
+                        } else
+                        {
+                            if (TILE_SIZE >= 24)
+                                adjustTileSize(TILE_SIZE - 8);
+                        }
+                    }
+                    else
+                    {
+                        dispatchEvent(e);
+                    }
+                }
 
-        gamePanel.add(mapContainerPanel, BorderLayout.CENTER);
+            }
+        });
+
+        // set Drag listener for moving scroll
+        mapPanel.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                System.out.println("drag");
+                int x = e.getX()/TILE_SIZE;
+                int y = e.getY()/TILE_SIZE;
+                centerScroll(new Position(x,y));
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+
+            }
+        });
     }
 
 
@@ -422,7 +473,7 @@ public class DE_Frame extends JFrame {
         contentPane.remove(controlPanel);
         contentPane.invalidate();
 
-        adjustTileSize(drawEngine.getMaps().get(0), TILE_SIZE);
+        adjustTileSize(TILE_SIZE);
     }
 
     /**
@@ -441,13 +492,12 @@ public class DE_Frame extends JFrame {
     /**
      * Adjust Tile size to fit all the screen
      *
-     * @param map  to adjust to
      * @param size (int)
      */
-    private void adjustTileSize(Map map, int size) {
+    private void adjustTileSize(int size) {
         TILE_SIZE = size;
-        gamePanel.remove(mapContainerPanel);
-        addMapContainerPanel(map, TILE_SIZE);
+
+        mapPanel.changeTileSize(size);
 
         update();
     }
@@ -524,8 +574,8 @@ public class DE_Frame extends JFrame {
 
         vx = (vx >= 0) ? vx : 0;
         vy = (vy >= 0) ? vy : 0;
-        vx = (vx >= maxX) ? maxX : vx;
-        vy = (vy >= maxY) ? maxY : vy;
+        vx = (vx > maxX+1) ? maxX : vx;
+        vy = (vy > maxY+1) ? maxY : vy;
 
 
         mapContainerPanel.getViewport().setViewPosition(new Point(vx, vy));
@@ -576,7 +626,7 @@ public class DE_Frame extends JFrame {
     }
 
     public void explodeMine(int x, int y) {
-        mapPanel.createAnimation(x, y);
+        mapPanel.createAnimation(DEGameSprites.EXPLOSION_FRAMES, x, y);
     }
 
 }

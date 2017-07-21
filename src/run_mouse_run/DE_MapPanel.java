@@ -16,7 +16,8 @@ public class DE_MapPanel extends JPanel {
     private DrawEngine drawEngine;
 
     public int TILE_SIZE;
-    private final int CHARACTER_LAYER = 2;
+    private final int BACKGROUND_LAYER = 0,
+            OBJECT_LAYER = 1, CHARACTER_LAYER = 2;
 
     private ArrayList<JLabel[][]> layers;
     private GridLayout gridLayout;
@@ -79,36 +80,34 @@ public class DE_MapPanel extends JPanel {
         setPreferredSize(new Dimension(map.getWidth() * TILE_SIZE,
                 map.getHeight() * TILE_SIZE));
 
-        if (! gameSprites.isLoaded())
-            gameSprites = new DE_GameSprites(drawEngine, TILE_SIZE);
+    public void changeTileSize(int size)
+    {
+        TILE_SIZE = size;
+
+        for(JLabel[][] layer : layers)
+        {
+            for(int i = 0; i < map.getHeight(); i++)
+            {
+                for(int j = 0; j < map.getWidth(); j++)
+                {
+                    layer[i][j].setPreferredSize(
+                            new Dimension(TILE_SIZE, TILE_SIZE)
+                    );
+                    layer[i][j].setSize(
+                            new Dimension(TILE_SIZE, TILE_SIZE)
+                    );
+
+                }
+            }
+        }
+
+        gameSprites.resizeSprites(TILE_SIZE);
+
+        adjustPanelSize();
     }
 
     public void setMap(Map map) {
         this.map = map;
-    }
-
-    /**
-     * Resize image
-     *
-     * @param originalImage (BufferedImage) image to resize
-     * @param type          type of image, use ARGB for tranparancy
-     * @param IMG_WIDTH     (int)
-     * @param IMG_HEIGHT    (int)
-     * @return
-     */
-    private BufferedImage resizeImage(BufferedImage originalImage, int type, int IMG_WIDTH, int IMG_HEIGHT) {
-        Image resizedImage = originalImage.getScaledInstance(IMG_WIDTH, IMG_HEIGHT, Image.SCALE_SMOOTH);
-
-        // Create a buffered image with transparency
-        BufferedImage bimage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
-
-        // Draw the image on to the buffered image
-        Graphics2D bGr = bimage.createGraphics();
-        bGr.drawImage(resizedImage, 0, 0, null);
-        bGr.dispose();
-
-        // Return the buffered image
-        return bimage;
     }
 
     public void update() {
@@ -125,36 +124,19 @@ public class DE_MapPanel extends JPanel {
                 setTile(layer[i][j], null);
     }
 
-    public void createAnimation(int x, int y) {
-        DE_Animation animation = new DE_Animation(getGraphics());
+    public void createAnimation(int animationIndex, int x, int y)
+    {
+        JLabel[][] layer = layers.get(2);
+        DE_Animation animation = new DE_Animation(
+                layer[y][x],
+                gameSprites.getAnimationFrames(animationIndex)
+        );
 
-        animation.setAnimation(gameSprites.getAnimationFrames(DE_GameSprites.EXPLOSION_FRAMES),
-                x * TILE_SIZE + TILE_SIZE / 2,
-                y * TILE_SIZE + TILE_SIZE / 2);
-        Thread animThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!animation.isOver())
-                {
-                    animation.draw();
-                    try
-                    {
-                        Thread.sleep(50);
-                    } catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    animation.nextFrame();
-                    if (animation.isOver())
-                        repaint();
-                }
-            }
-        });
-        animThread.start();
+        animation.play();
     }
 
     public void drawMap() {
-        JLabel[][] layer1 = layers.get(0);
+        JLabel[][] layer1 = layers.get(BACKGROUND_LAYER);
 
         for (int i = 0; i < map.getHeight(); i++)
         {
@@ -164,16 +146,16 @@ public class DE_MapPanel extends JPanel {
                 switch (map.getTile(j, i))
                 {
                     case NOT_DISCOVERED:
-                        setTile(layer1[i][j], gameSprites.getSprite(DE_GameSprites.NOT_DISCOVERED_SPRITE));
+                        setTile(layer1[i][j], gameSprites.getSprite(DEGameSprites.NOT_DISCOVERED_SPRITE));
                         break;
                     case EMPTY:
-                        setTile(layer1[i][j], gameSprites.getSprite(DE_GameSprites.EMPTY_SPRITE));
+                        setTile(layer1[i][j], gameSprites.getSprite(DEGameSprites.EMPTY_SPRITE));
                         break;
                     case WALL:
-                        setTile(layer1[i][j], gameSprites.getSprite(DE_GameSprites.WALL_SPRITE));
+                        setTile(layer1[i][j], gameSprites.getSprite(DEGameSprites.WALL_SPRITE));
                         break;
                     default:
-                        setTile(layer1[i][j], gameSprites.getSprite(DE_GameSprites.EMPTY_SPRITE));
+                        setTile(layer1[i][j], gameSprites.getSprite(DEGameSprites.EMPTY_SPRITE));
                         break;
                 }
             }
@@ -181,7 +163,7 @@ public class DE_MapPanel extends JPanel {
     }
 
     public void drawObjects() {
-        JLabel[][] layer = layers.get(1);
+        JLabel[][] layer = layers.get(OBJECT_LAYER);
 
         for (int i = 0; i < map.getHeight(); i++)
         {
@@ -198,19 +180,19 @@ public class DE_MapPanel extends JPanel {
                         setTile(layer[i][j], null);
                         break;
                     case CHEESE:
-                        setTile(layer[i][j], gameSprites.getSprite(DE_GameSprites.CHEESE_SPRITE));
+                        setTile(layer[i][j], gameSprites.getSprite(DEGameSprites.CHEESE_SPRITE));
                         break;
                     case POWERUP_VISION:
-                        setTile(layer[i][j], gameSprites.getSprite(DE_GameSprites.POWERUP_VISION_SPRITE));
+                        setTile(layer[i][j], gameSprites.getSprite(DEGameSprites.POWERUP_VISION_SPRITE));
                         break;
                     case POWERUP_SPEED:
-                        setTile(layer[i][j], gameSprites.getSprite(DE_GameSprites.POWERUP_SPEED_SPRITE));
+                        setTile(layer[i][j], gameSprites.getSprite(DEGameSprites.POWERUP_SPEED_SPRITE));
                         break;
                     case INVISIBLE_ZONE:
-                        setTile(layer[i][j], gameSprites.getSprite(DE_GameSprites.INVISIBLE_ZONE_SPRITE));
+                        setTile(layer[i][j], gameSprites.getSprite(DEGameSprites.INVISIBLE_ZONE_SPRITE));
                         break;
                     case MINE:
-                        setTile(layer[i][j], gameSprites.getSprite(DE_GameSprites.MINE_SPRITE));
+                        setTile(layer[i][j], gameSprites.getSprite(DEGameSprites.MINE_SPRITE));
                         break;
                     default:
                         setTile(layer[i][j], null);
