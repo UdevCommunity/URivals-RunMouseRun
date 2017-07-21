@@ -1,38 +1,58 @@
 package run_mouse_run;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
- * Created by Oussama on 20/07/2017.
+ *
  */
 
 public class DEAnimation
 {
-    Graphics2D graphic;
-    private ArrayList<BufferedImage> frames;
+    JLabel tile;
+    private ArrayList<DETileImage> frames;
     private int currentIndex;
 
-    private int centerX, centerY;
-
-    public DEAnimation(Graphics g)
+    public DEAnimation(JLabel tile, ArrayList<DETileImage> frames)
     {
-        this.graphic = (Graphics2D) g;
-        graphic.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.75f));
+        this.tile = tile;
+        setAnimation(frames);
     }
 
-    public void setAnimation(ArrayList<BufferedImage> frames, int centerX, int centerY)
+    public void setAnimation(ArrayList<DETileImage> frames)
     {
         this.frames = frames;
         if(frames != null && !frames.isEmpty())
         {
             currentIndex = 0;
-            this.centerX = centerX;
-            this.centerY = centerY;
         }
     }
 
+    public void play()
+    {
+        Thread animThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!isOver())
+                {
+                    draw();
+                    try
+                    {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                    nextFrame();
+                    if (isOver())
+                        tile.setIcon(null);
+                }
+            }
+        });
+        animThread.start();
+    }
     public void nextFrame()
     {
         currentIndex++;
@@ -46,11 +66,7 @@ public class DEAnimation
         {
             return;
         }
-
-        int x = centerX - frames.get(currentIndex).getWidth()/2;
-        int y = centerY - frames.get(currentIndex).getHeight()/2;
-
-        graphic.drawImage(frames.get(currentIndex), x, y, null);
+        tile.setIcon(frames.get(currentIndex));
     }
 
     public boolean isOver() {
