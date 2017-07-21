@@ -49,6 +49,8 @@ public class LevelGenerator
         // Set objects initial position
         setInitialPosition();
 
+        initialiseCharactersMap();
+
         setValidRespawnPositions();
     }
     public PathFinder getPathFinder()
@@ -66,6 +68,7 @@ public class LevelGenerator
         map = generateRandomMap(width, height);
 
         setInitialPosition();
+        initialiseCharactersMap();
         setValidRespawnPositions();
         for(CharacterController m : GameManager.gameManager.getMouses())
             m.setPosition(MOUSES_INITIAL_POS);
@@ -109,6 +112,11 @@ public class LevelGenerator
         map.setTile(MOUSES_INITIAL_POS.getPosX(), MOUSES_INITIAL_POS.getPosY(), Tile.MOUSE);
         map.setTile(CATS_INITIAL_POS.getPosX(), CATS_INITIAL_POS.getPosY(), Tile.CAT);
 
+        for (Mouse mouse: GameManager.gameManager.getMouses())
+            mouse.setPosition(MOUSES_INITIAL_POS);
+
+        for (Cat cat: GameManager.gameManager.getCats())
+            cat.setPosition(CATS_INITIAL_POS);
 
         /*Spawn cheese*/
         for (int i = 0; i < GameManager.gameManager.getCats().size()+1; i++)
@@ -136,6 +144,23 @@ public class LevelGenerator
         else
         {
             System.out.println("OK");
+        }
+    }
+
+    private void initialiseCharactersMap()
+    {
+        for (Mouse mouse: GameManager.gameManager.getMouses())
+        {
+            mouse.setMap(new Map(mouse.getName(), LevelGenerator.MAP_WIDTH, LevelGenerator.MAP_HEIGHT, Tile.NOT_DISCOVERED));
+            mouse.setViewedMap(mouse.getMap().copy());
+            mouse.setPathFinder(new PathFinder(mouse.getMap()));
+        }
+
+        for (Cat cat: GameManager.gameManager.getCats())
+        {
+            cat.setMap(new Map(cat.getName(), LevelGenerator.MAP_WIDTH, LevelGenerator.MAP_HEIGHT, Tile.NOT_DISCOVERED));
+            cat.setViewedMap(cat.getMap().copy());
+            cat.setPathFinder(new PathFinder(cat.getMap()));
         }
     }
 

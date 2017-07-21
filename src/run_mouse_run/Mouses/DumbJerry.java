@@ -7,9 +7,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class DumbJerry extends Mouse
 {
-    public DumbJerry(String name, Position initialPosition)
+    public DumbJerry(String name)
     {
-        super(name, initialPosition);
+        super(name);
     }
 
     @Override

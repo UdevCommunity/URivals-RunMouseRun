@@ -5,9 +5,9 @@ import java.util.ArrayList;
 
 public abstract class Cat extends CharacterController
 {
-    public Cat(String name, Position initialPosition)
+    public Cat(String name)
     {
-        super(name, initialPosition, new ArrayList<Tile>(){{add(Tile.INVISIBLE_ZONE); add(Tile.MINE);}});
+        super(name, new ArrayList<Tile>(){{add(Tile.INVISIBLE_ZONE); add(Tile.MINE);}});
     }
 
     final void respawn()

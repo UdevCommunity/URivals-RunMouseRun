@@ -5,9 +5,9 @@ import java.util.ArrayList;
 
 public abstract class Mouse extends CharacterController
 {
-    public Mouse(String name, Position initialPosition)
+    public Mouse(String name)
     {
-        super(name, initialPosition, new ArrayList<Tile>(){{add(Tile.MINE);}});
+        super(name, new ArrayList<Tile>(){{add(Tile.MINE);}});
     }
 
     final void respawn()

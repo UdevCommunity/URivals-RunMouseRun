@@ -29,20 +29,16 @@ public abstract class CharacterController
 
     private Timer timer;
 
-    CharacterController(String name, Position initialPosition, ArrayList<Tile> invisibleTiles)
+    CharacterController(String name, ArrayList<Tile> invisibleTiles)
     {
         this.name = name;
 
-        position = initialPosition;
         destinationPath = new ArrayList<>();
 
         moveSpeed = INITIAL_MOVE_SPEED;
         viewDistance = INITIAL_VIEW_DISTANCE;
 
         this.invisibleTiles = invisibleTiles;
-        map = new Map(name, LevelGenerator.MAP_WIDTH, LevelGenerator.MAP_HEIGHT, Tile.NOT_DISCOVERED);
-        viewedMap = map.copy();
-        pathFinder = new PathFinder(map);
     }
 
     private TimerTask createUpdateTask()
@@ -224,8 +220,24 @@ public abstract class CharacterController
         return targetReachedCount;
     }
 
-    final void setPosition(Position position) {
+    final void setPosition(Position position)
+    {
         this.position = position;
+    }
+
+    final void setMap(Map map)
+    {
+        this.map = map;
+    }
+
+    final void setViewedMap(Map viewedMap)
+    {
+        this.viewedMap = viewedMap;
+    }
+
+    final void setPathFinder(PathFinder pathFinder)
+    {
+        this.pathFinder = pathFinder;
     }
 
     final void setSeeBehindWalls(boolean seeBehindWalls)

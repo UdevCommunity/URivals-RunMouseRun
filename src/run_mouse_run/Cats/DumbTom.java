@@ -9,9 +9,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class DumbTom extends Cat
 {
-    public DumbTom(String name, Position initialPosition)
+    public DumbTom(String name)
     {
-        super(name, initialPosition);
+        super(name);
     }
 
     @Override

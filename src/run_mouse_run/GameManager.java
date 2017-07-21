@@ -29,16 +29,15 @@ class GameManager
         cats = new ArrayList<>();
         mouses = new ArrayList<>();
 
-        level = new LevelGenerator();
-
         // Instantiate mouses (do not use a loop, here we may instantiate mouses from different classes)
-        mouses.add(new DumbJerry("DumbJerry", LevelGenerator.MOUSES_INITIAL_POS));
-        mouses.add(new DumbJerry("Jerry2", LevelGenerator.MOUSES_INITIAL_POS));
+        mouses.add(new DumbJerry("DumbJerry"));
+        mouses.add(new DumbJerry("Jerry2"));
 
         // Instantiate cats (do not use a loop, here we may instantiate cats from different classes)
-        cats.add(new DumbTom("DumbTom", LevelGenerator.CATS_INITIAL_POS));
-        cats.add(new DumbTom("Tom2", LevelGenerator.CATS_INITIAL_POS));
+        cats.add(new DumbTom("DumbTom"));
+        cats.add(new DumbTom("Tom2"));
 
+        level = new LevelGenerator();
         physicsEngine = new PhysicsEngine();
         drawEngine = new DrawEngine(level.getMap());
         timer = new CustomTimer();
