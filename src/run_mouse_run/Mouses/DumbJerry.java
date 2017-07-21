@@ -58,7 +58,7 @@ public class DumbJerry extends Mouse
 
     void searchAtBorders()
     {
-        ArrayList<Position> borders = getViewedMap().getBorders();
+        ArrayList<Position> borders = getViewedMap().getDiscoveredBorders();
 
         do {
             int posIndex = ThreadLocalRandom.current().nextInt(0, borders.size());

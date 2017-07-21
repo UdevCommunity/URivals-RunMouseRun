@@ -6,22 +6,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class CustomTimer
+class CustomTimer
 {
-    private Time currentTime = new Time(0); // In milliseconds
-    public static final int GAME_SPEED = 700; // In milliseconds
-    public static final int UPDATE_FREQUENCE = GAME_SPEED/5; // In milliseconds
-    private final long TIME_LIMIT = 300000; // In milliseconds
+    static final int GAME_SPEED = 700;
+    static final int UPDATE_FREQUENCE = GAME_SPEED/5;
+    private final long TIME_LIMIT = 300000;
+
+    private Time currentTime = new Time(0);
     private Timer timer;
-    private TimerTask task;
 
-    public CustomTimer()
-    {
-        task = createUpdateTask();
-        timer = new Timer();
-    }
-
-    public TimerTask createUpdateTask()
+    private TimerTask createUpdateTask()
     {
         return new TimerTask()
         {
@@ -41,8 +35,10 @@ public class CustomTimer
         };
     }
 
-    public void startTimer()
+    void startTimer()
     {
+        TimerTask task = createUpdateTask();
+        timer = new Timer();
         timer.scheduleAtFixedRate(task, 0, UPDATE_FREQUENCE);
 
         for (Mouse mouse: GameManager.gameManager.getMouses())
@@ -51,7 +47,8 @@ public class CustomTimer
         for (Cat cat: GameManager.gameManager.getCats())
             cat.startTimer();
     }
-    public void stopTimer()
+
+    void stopTimer()
     {
         timer.cancel();
 
@@ -62,20 +59,7 @@ public class CustomTimer
             cat.stopTimer();
     }
 
-    public void resumeTimer()
-    {
-        task = createUpdateTask();
-        timer = new Timer();
-        timer.scheduleAtFixedRate(task, 0, UPDATE_FREQUENCE);
-
-        for (Mouse mouse: GameManager.gameManager.getMouses())
-            mouse.resumeTimer();
-
-        for (Cat cat: GameManager.gameManager.getCats())
-            cat.resumeTimer();
-    }
-
-    public Time getCurrentTime()
+    Time getCurrentTime()
     {
         return currentTime;
     }

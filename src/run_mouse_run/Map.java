@@ -93,7 +93,7 @@ public class Map
         return specialTilesPosition;
     }
 
-    public ArrayList<Tile> getAdjacentsTile(int x, int y)
+    public ArrayList<Tile> getAdjacentTiles(int x, int y)
     {
         ArrayList<Tile> adjacentsTile = new ArrayList<>();
 
@@ -105,13 +105,13 @@ public class Map
         return adjacentsTile;
     }
 
-    public ArrayList<Position> getBorders()
+    public ArrayList<Position> getDiscoveredBorders()
     {
         ArrayList<Position> borders = new ArrayList<>();
 
         for (int i = 0; i < width; i++)
             for (int j = 0; j < height; j++)
-                if (getTile(i, j) != Tile.NOT_DISCOVERED && getAdjacentsTile(i, j).contains(Tile.NOT_DISCOVERED))
+                if (getTile(i, j) != Tile.NOT_DISCOVERED && getAdjacentTiles(i, j).contains(Tile.NOT_DISCOVERED))
                     borders.add(new Position(i, j));
 
         return borders;

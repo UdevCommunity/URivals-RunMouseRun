@@ -7,12 +7,9 @@ import java.awt.*;
 import java.util.ArrayList;
 
 
-public class GameManager
+class GameManager
 {
     static GameManager gameManager;
-
-    public final int CAT_NUMBER = 2;
-    public final int MOUSE_NUMBER = 1;
 
     private ArrayList<Cat> cats;
     private ArrayList<Mouse> mouses;
@@ -22,7 +19,7 @@ public class GameManager
     private final DrawEngine drawEngine;
     private final CustomTimer timer;
 
-    private GameManager()
+    GameManager()
     {
         gameManager = this;
 
@@ -43,7 +40,7 @@ public class GameManager
         timer = new CustomTimer();
     }
 
-    public void startGame()
+    void startGame()
     {
         timer.startTimer();
     }
@@ -64,7 +61,9 @@ public class GameManager
         });
     }
 
-    public void stopGame(String result, String characterName)
+    // We made a difference between startGame and resumeGame because we may have do to some initialisations at the beginning
+    // of the game but not necessarily at resume.
+    void stopGame(String result, String characterName)
     {
         timer.stopTimer();
 
@@ -75,7 +74,9 @@ public class GameManager
                 drawEngine.displayEndGameScreen(characterName + " Win !!");
                 break;
             case "Cat Lose":
-                drawEngine.displayEndGameScreen(characterName + " Ghouchaaaach fa9oulek ..");
+            case "Mouse Lose":
+                drawEngine.displayEndGameScreen(characterName + " Lose ..");
+                break;
             case "Everybody Lose":
                 drawEngine.displayEndGameScreen("Losers .. losers everywhere ..");
                 break;
@@ -88,42 +89,42 @@ public class GameManager
         }
     }
 
-    public void pauseGame()
+    void pauseGame()
     {
         timer.stopTimer();
     }
 
-    public void resumeGame()
+    void resumeGame()
     {
-        timer.resumeTimer();
+        timer.startTimer();
     }
 
-    public ArrayList<Cat> getCats()
+    ArrayList<Cat> getCats()
     {
         return cats;
     }
 
-    public ArrayList<Mouse> getMouses()
+    ArrayList<Mouse> getMouses()
     {
         return mouses;
     }
 
-    public PhysicsEngine getPhysicsEngine()
+    PhysicsEngine getPhysicsEngine()
     {
         return physicsEngine;
     }
 
-    public LevelGenerator getLevelGenerator()
+    LevelGenerator getLevelGenerator()
     {
         return level;
     }
 
-    public DrawEngine getDrawEngine()
+    DrawEngine getDrawEngine()
     {
         return drawEngine;
     }
 
-    public CustomTimer getTimer()
+    CustomTimer getTimer()
     {
         return timer;
     }

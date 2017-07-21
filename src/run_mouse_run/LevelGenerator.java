@@ -13,11 +13,11 @@ public class LevelGenerator
     private final int MAP_HEIGHT_MIN = 30;
     private final int MAP_HEIGHT_MAX = 50;
 
-    public static int MAP_WIDTH = 0;
-    public static int MAP_HEIGHT = 0;
+    static int MAP_WIDTH = 0;
+    static int MAP_HEIGHT = 0;
 
-    public static Position MOUSES_INITIAL_POS;
-    public static Position CATS_INITIAL_POS;
+    static Position MOUSES_INITIAL_POS;
+    static Position CATS_INITIAL_POS;
     private final static int INITIAL_MINIMUM_DISTANCE = 15; // minimum eloignés de 15 cases
 
     private Map map;
@@ -38,8 +38,8 @@ public class LevelGenerator
     {
         // nextInt is normally exclusive of the top value,
         // so we add 1 to make it inclusive
-        this.MAP_WIDTH = ThreadLocalRandom.current().nextInt(MAP_WIDTH_MIN, MAP_WIDTH_MAX + 1);
-        this.MAP_HEIGHT = ThreadLocalRandom.current().nextInt(MAP_HEIGHT_MIN, MAP_HEIGHT_MAX + 1);
+        MAP_WIDTH = ThreadLocalRandom.current().nextInt(MAP_WIDTH_MIN, MAP_WIDTH_MAX + 1);
+        MAP_HEIGHT = ThreadLocalRandom.current().nextInt(MAP_HEIGHT_MIN, MAP_HEIGHT_MAX + 1);
 
         // Generate map
         map = generateRandomMap(MAP_WIDTH, MAP_HEIGHT);
@@ -111,7 +111,7 @@ public class LevelGenerator
 
 
         /*Spawn cheese*/
-        for (int i = 0; i < GameManager.gameManager.CAT_NUMBER+1; i++)
+        for (int i = 0; i < GameManager.gameManager.getCats().size()+1; i++)
         {
             Position cheesePos;
             do{

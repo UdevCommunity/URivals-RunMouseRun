@@ -60,7 +60,7 @@ public class DumbTom extends Cat
 
     void searchAtBorders()
     {
-        ArrayList<Position> borders = getViewedMap().getBorders();
+        ArrayList<Position> borders = getViewedMap().getDiscoveredBorders();
 
         do {
             int posIndex = ThreadLocalRandom.current().nextInt(0, borders.size());

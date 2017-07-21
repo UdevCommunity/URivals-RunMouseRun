@@ -21,25 +21,20 @@ public class Position
         return posY;
     }
 
-    public void setPosX(int posX)
+    void setPosX(int posX)
     {
         this.posX = posX;
     }
 
-    public void setPosY(int posY)
+    void setPosY(int posY)
     {
         this.posY = posY;
     }
 
     public static boolean comparePosition(Position positionOne, Position positionTwo)
     {
-        try
-        {
-            return positionOne.getPosX() == positionTwo.getPosX() && positionOne.getPosY() == positionTwo.getPosY();
-        }catch (NullPointerException e)
-        {
-            return false;
-        }
+        return positionOne != null && positionTwo != null &&
+                positionOne.getPosX() == positionTwo.getPosX() && positionOne.getPosY() == positionTwo.getPosY();
     }
 
     public Position copy()
@@ -49,6 +44,7 @@ public class Position
 
     public static boolean areDiagonal(Position positionOne, Position positionTwo)
     {
-        return (positionOne.getPosX() - positionTwo.getPosX() != 0) && (positionOne.getPosY() - positionTwo.getPosY() != 0);
+        return positionOne != null && positionTwo != null &&
+                (positionOne.getPosX() - positionTwo.getPosX() != 0) && (positionOne.getPosY() - positionTwo.getPosY() != 0);
     }
 }

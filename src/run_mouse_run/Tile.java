@@ -1,18 +1,15 @@
 package run_mouse_run;
 
-/**
- *
- * @author Oussama
- */
-public enum Tile {
 
+public enum Tile
+{
     NOT_DISCOVERED, EMPTY, WALL, CHEESE, POWERUP_VISION, POWERUP_SPEED, INVISIBLE_ZONE, MINE, CAT, MOUSE;
 
-    private static Tile[] vals = values();
+    private static Tile[] values = values();
 
     public Tile next()
     {
-        return vals[(this.ordinal()+1) % vals.length];
+        return values[(this.ordinal()+1) % values.length];
     }
 }
 
