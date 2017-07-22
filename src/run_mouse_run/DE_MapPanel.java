@@ -211,7 +211,7 @@ public class DE_MapPanel extends JPanel {
         {
             setTile(
                     layer[m.getPosition().getPosY()][m.getPosition().getPosX()],
-                    gameSprites.getCustomSprite(index)
+                    (m.isAlive())? gameSprites.getCustomSprite(index): gameSprites.getDeadSprite(index)
             );
             index++;
         }
@@ -220,7 +220,7 @@ public class DE_MapPanel extends JPanel {
         {
             setTile(
                     layer[c.getPosition().getPosY()][c.getPosition().getPosX()],
-                    gameSprites.getCustomSprite(index)
+                    (c.isAlive())? gameSprites.getCustomSprite(index): gameSprites.getDeadSprite(index)
             );
             index++;
         }

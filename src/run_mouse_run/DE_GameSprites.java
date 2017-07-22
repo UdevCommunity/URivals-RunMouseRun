@@ -7,9 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * Created by Oussama on 21/07/2017.
- */
+
 public class DE_GameSprites
 {
     private final DrawEngine drawEngine;
@@ -26,17 +24,18 @@ public class DE_GameSprites
             "invisible_zone_sprite.png",
             "mine_sprite.png",
             "cat_sprite.png",
-            "mouse_sprite.png"
+            "mouse_sprite.png",
+            "mouse_sprite_dead.png"
     };
 
     public static final int NOT_DISCOVERED_SPRITE = 0, EMPTY_SPRITE = 1,
             WALL_SPRITE = 2, CHEESE_SPRITE = 3,
             POWERUP_VISION_SPRITE = 5, POWERUP_SPEED_SPRITE = 4,
             INVISIBLE_ZONE_SPRITE = 6, MINE_SPRITE = 7,
-            CAT_SPRITE = 8, MOUSE_SPRITE = 9;
+            CAT_SPRITE = 8, MOUSE_SPRITE = 9, MOUSE_SPRITE_DEAD = 10;
 
-    private ArrayList<DE_TileImage> sprites, customSprites;
-    private ArrayList<BufferedImage> spritesOriginal, customSpritesOriginal;
+    private ArrayList<DE_TileImage> sprites, customSprites, spritesDead;
+    private ArrayList<BufferedImage> spritesOriginal, customSpritesOriginal, spritesDeadOriginal;
 
     public static final int EXPLOSION_FRAMES = 0;
 
@@ -50,6 +49,7 @@ public class DE_GameSprites
 
         spritesOriginal = loadSprites();
         customSpritesOriginal = loadCustomSprites();
+        spritesDeadOriginal = loadCustomDeadSprites();
 
         animationFramesOriginal = new ArrayList<>();
         animationFramesOriginal.add(loadExplosionFrames());
@@ -57,6 +57,7 @@ public class DE_GameSprites
         animationFrames = new ArrayList<>();
         sprites = new ArrayList<>();
         customSprites = new ArrayList<>();
+        spritesDead = new ArrayList<>();
 
         resizeSprites(TILE_SIZE);
     }
@@ -128,6 +129,49 @@ public class DE_GameSprites
             }
         }
         return customSprites;
+    }
+
+    /**
+     * Load Custom Sprites, file name format : [CharName]_sprite.png
+     * if file not found; load default from sprites
+     *
+     * @return customSprites (ArrayList)
+     */
+    private ArrayList<BufferedImage> loadCustomDeadSprites() {
+        ArrayList<BufferedImage> customDeadSprites = new ArrayList<>();
+
+        for (Mouse m : drawEngine.getMouses())
+        {
+            try
+            {
+                // Load file
+                File spriteFile = new File("res/" + m.getName() + "_sprite_dead.png");
+                // Read image
+                BufferedImage sprite = ImageIO.read(spriteFile);
+                //add to customSprites
+                customDeadSprites.add(sprite);
+            } catch (Exception e)
+            {
+                customDeadSprites.add(spritesOriginal.get(MOUSE_SPRITE_DEAD));
+            }
+        }
+
+        for (Cat c : drawEngine.getCats())
+        {
+            try
+            {
+                // Load file
+                File spriteFile = new File("res/" + c.getName() + "_sprite_dead.png");
+                // Read image
+                BufferedImage sprite = ImageIO.read(spriteFile);
+                //add to customSprites
+                customDeadSprites.add(sprite);
+            } catch (Exception e)
+            {
+                customDeadSprites.add(spritesOriginal.get(CAT_SPRITE));
+            }
+        }
+        return customDeadSprites;
     }
 
     private ArrayList<BufferedImage> loadExplosionFrames() {
@@ -226,6 +270,19 @@ public class DE_GameSprites
 
         this.customSprites = customSprites;
 
+        /*Resize dead Sprites*/
+        ArrayList<DE_TileImage> spritesDead = new ArrayList<>();
+        for(BufferedImage sprite : spritesDeadOriginal)
+        {
+            // resize
+            int type = sprite.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sprite.getType();
+            sprite = resizeImage(sprite, type, TILE_SIZE, TILE_SIZE);
+
+            spritesDead.add(new DE_TileImage(sprite));
+        }
+
+        this.spritesDead = spritesDead;
+
         /*Resize animation frames*/
 
         ArrayList<ArrayList<DE_TileImage>> animationFrames = new ArrayList<>();
@@ -261,6 +318,11 @@ public class DE_GameSprites
     public DE_TileImage getCustomSprite(int index)
     {
         return customSprites.get(index);
+    }
+
+    public DE_TileImage getDeadSprite(int index)
+    {
+        return spritesDead.get(index);
     }
 
     public ArrayList<DE_TileImage> getAnimationFrames(int index)
