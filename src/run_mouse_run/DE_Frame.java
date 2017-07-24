@@ -1,18 +1,14 @@
 package run_mouse_run;
 
-import javafx.scene.input.KeyCode;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 
 /**
@@ -40,10 +36,12 @@ public class DE_Frame extends JFrame {
     /* For testing path finding */
     private Position initialPos = new Position(2, 2);
     private Position finalPos = new Position(6, 6);
+    Color transColor = new Color(0, 0, 0, 0);
+
 
     private double mousePressedAtPosX;
     private double mousePressedAtPosY;
-    private ArrayList<Boolean> drawCharpath = new ArrayList<>();
+    private ArrayList<Boolean> drawCharPath = new ArrayList<>();
 
     /**
      * Create the frame.
@@ -87,9 +85,19 @@ public class DE_Frame extends JFrame {
         contentPane.add(controlPanel);//, BorderLayout.EAST);
 
 
+        SetTransparency();
         /*Over, clean spaces and resize*/
         pack();
     } // End of constructor
+
+    private void SetTransparency()
+    {
+        controlPanel.setBackground(transColor);
+        gamePanel.setBackground(transColor);
+        topPanel.setBackground(transColor);
+        bottomPanel.setBackground(transColor);
+
+    }
 
     /**
      *
@@ -123,7 +131,7 @@ public class DE_Frame extends JFrame {
 
             }
         });
-
+        startButtonPanel.setBackground(transColor);
         startButtonPanel.add(startGameButton);
 
         // Time Label
@@ -234,7 +242,7 @@ public class DE_Frame extends JFrame {
 
         for(Mouse mouse : drawEngine.getMouses())
         {
-            drawCharpath.add(false);
+            drawCharPath.add(false);
 
             JLabel lbl = new JLabel("Draw "+mouse.getName()+" path");
             lbl.setFont(defaultFont);
@@ -245,13 +253,13 @@ public class DE_Frame extends JFrame {
             chk.addItemListener(new ItemListener() {
                 @Override
                 public void itemStateChanged(ItemEvent e) {
-                    //drawCharpath.set(index, chk.isSelected());
+                    //drawCharPath.set(index, chk.isSelected());
                     int i = 0;
                     for(Mouse m : drawEngine.getMouses())
                     {
                         if (m == mouse)
                         {
-                            drawCharpath.set(i, chk.isSelected());
+                            drawCharPath.set(i, chk.isSelected());
                         }
                         i++;
                     }
@@ -263,7 +271,7 @@ public class DE_Frame extends JFrame {
 
         for(Cat cat : drawEngine.getCats())
         {
-            drawCharpath.add(false);
+            drawCharPath.add(false);
 
             JLabel lbl = new JLabel("Draw "+cat.getName()+" path");
             lbl.setFont(defaultFont);
@@ -274,13 +282,13 @@ public class DE_Frame extends JFrame {
             chk.addItemListener(new ItemListener() {
                 @Override
                 public void itemStateChanged(ItemEvent e) {
-                    //drawCharpath.set(index, chk.isSelected());
+                    //drawCharPath.set(index, chk.isSelected());
                     int i = drawEngine.getMouses().size();
                     for(Cat c : drawEngine.getCats())
                     {
                         if (c == cat)
                         {
-                            drawCharpath.set(i, chk.isSelected());
+                            drawCharPath.set(i, chk.isSelected());
                         }
                         i++;
                     }
@@ -296,6 +304,9 @@ public class DE_Frame extends JFrame {
 
         JPanel upperPanel = new JPanel();
         JPanel lowerPanel = new JPanel();
+
+        upperPanel.setBackground(transColor);
+        lowerPanel.setBackground(transColor);
 
         /*First : set upper Panel */
         upperPanel.setLayout(new GridLayout(3, 1, 0, 0));
@@ -319,6 +330,7 @@ public class DE_Frame extends JFrame {
         txtGamePanel.setSize(new Dimension(400, 400));
 
         // add how to play panel
+        txtGamePanel.setBackground(transColor);
         upperPanel.add(txtGamePanel, BorderLayout.CENTER);
 
         /*Second : set lower Panel*/
@@ -395,6 +407,7 @@ public class DE_Frame extends JFrame {
         gbc.gridx = 0;      gbc.gridy = 4;
         gbc.gridheight = GridBagConstraints.REMAINDER; gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.weightx = 100;
+        chckBoxesPanel.setBackground(transColor);
         lowerPanel.add(chckBoxesPanel, gbc);
 
         // add to controlPanel
@@ -424,6 +437,7 @@ public class DE_Frame extends JFrame {
         // Center buttons ( ComboBox )
         JPanel centerPanel = new JPanel();
 
+        centerPanel.setBackground(transColor);
         mapsCmBox = new JComboBox<>();
 
         mapsCmBox.setPreferredSize(new Dimension(120, 20));
@@ -483,9 +497,18 @@ public class DE_Frame extends JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         //setResizable(false);
-        contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 10, 5, 10));
+        try
+        {
+            File bgFile = new File("res/background.png");
+            BufferedImage backgroundImage = ImageIO.read(bgFile);
+            contentPane = new BackgroundPanel(backgroundImage);
+        } catch(Exception e)
+        {
+            System.err.println("Couldn't load background file");
+            contentPane = new JPanel();
+        }
 
+        contentPane.setBorder(new EmptyBorder(5, 10, 5, 10));
         contentPane.setLayout(new GridLayout(1, 2, 5, 0));
         setContentPane(contentPane);
     }
@@ -742,7 +765,9 @@ public class DE_Frame extends JFrame {
         updateTime(drawEngine.getTimer().getCurrentTime().toString());
         updateScroll();
 
-        mapPanel.drawCharacterPaths(drawCharpath);
+        mapPanel.drawCharacterPaths(drawCharPath);
+
+        contentPane.repaint();
     }
 
     public void printLog(String message)
@@ -784,4 +809,23 @@ public class DE_Frame extends JFrame {
         mapPanel.createAnimation(DE_GameSprites.EXPLOSION_FRAMES, x, y);
     }
 
+    private class BackgroundPanel extends JPanel{
+        Image backgroundImage;
+
+        public BackgroundPanel(Image backgroundImage)
+        {
+            super();
+            this.backgroundImage = backgroundImage;
+        }
+
+        @Override
+        protected void paintComponent(Graphics g)
+        {
+            super.paintComponent(g);
+            if(backgroundImage == null) return;
+
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), null);
+
+        }
+    }
 }

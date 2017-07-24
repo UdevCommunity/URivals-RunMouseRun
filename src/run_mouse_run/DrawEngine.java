@@ -168,6 +168,7 @@ public class DrawEngine {
 
 	public void createNewLevel(int w, int h)
 	{
+		/// TODO : Bug fix
 		maps.remove(GameManager.gameManager.getLevelGenerator().getMap()); // removeLevelMap
 		GameManager.gameManager.getLevelGenerator().setMap(w, h);
 		maps.add(0, GameManager.gameManager.getLevelGenerator().getMap()); // add new LevelMap
