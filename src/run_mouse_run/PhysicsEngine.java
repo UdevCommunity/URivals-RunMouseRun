@@ -16,6 +16,11 @@ class PhysicsEngine
         checkIsCatsOnSpecialTile();
     }
 
+    void setLevelMap(Map map)
+    {
+        this.levelMap = map;
+    }
+
     private void checkIsCatsOnSpecialTile()
     {
         for (Cat cat: GameManager.gameManager.getCats())

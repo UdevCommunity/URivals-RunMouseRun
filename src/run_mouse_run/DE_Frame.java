@@ -680,7 +680,13 @@ public class DE_Frame extends JFrame {
     {
         gamePanel.remove(mapContainerPanel);
         addMapContainerPanel(map, TILE_SIZE);
+
+        mapPanel.repaint();
+        mapContainerPanel.repaint();
+        gamePanel.repaint();
+        contentPane.repaint();
         repaint();
+        update();
     }
 
     /**

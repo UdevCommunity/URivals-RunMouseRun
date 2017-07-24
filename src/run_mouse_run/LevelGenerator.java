@@ -70,6 +70,7 @@ public class LevelGenerator
         setInitialPosition();
         initialiseCharactersMap();
         setValidRespawnPositions();
+        GameManager.gameManager.getPhysicsEngine().setLevelMap(map);
         for(CharacterController m : GameManager.gameManager.getMouses())
             m.setPosition(MOUSES_INITIAL_POS);
 
