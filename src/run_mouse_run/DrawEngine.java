@@ -23,6 +23,14 @@ public class DrawEngine {
 		pathFinder = new PathFinder(map);
 	}
 
+	public void printMessage(String message)
+	{
+		for(DE_Frame frame : frames)
+		{
+			frame.printLog(message);
+		}
+	}
+
     private synchronized void updateMapsList(Map map)
     {
         maps.clear();
@@ -123,6 +131,7 @@ public class DrawEngine {
 				newFrame.hideControlPanel();
 				newFrame.setBounds(100,100, 500,500);
 				newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				newFrame.setAlwaysOnTop(true);
 
 				// Set state to the same state of her
 				if(newFrame.startGameButton.getText().equals("Resume Game")) // if game Paused

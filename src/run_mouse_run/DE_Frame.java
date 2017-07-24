@@ -2,12 +2,18 @@ package run_mouse_run;
 
 import javafx.scene.input.KeyCode;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
 
 /**
  * Frame that displays one of the maps in the drawEngine's maps
@@ -16,7 +22,8 @@ public class DE_Frame extends JFrame {
 
     public int TILE_SIZE = 48; // Tiles will resize to this value
 
-    public Font defaultFont;
+    private Font defaultFont;
+    private Font defaultFontLarge;
 
     DrawEngine drawEngine;
 
@@ -28,6 +35,7 @@ public class DE_Frame extends JFrame {
     public JButton startGameButton;
     private JButton btnDrawShortest;
     private JPanel topPanel, bottomPanel, gamePanel, controlPanel;
+    private JLabel logLabel;
 
     /* For testing path finding */
     private Position initialPos = new Position(2, 2);
@@ -35,8 +43,7 @@ public class DE_Frame extends JFrame {
 
     private double mousePressedAtPosX;
     private double mousePressedAtPosY;
-
-    private boolean ctrlPressed = false;
+    private ArrayList<Boolean> drawCharpath = new ArrayList<>();
 
     /**
      * Create the frame.
@@ -59,13 +66,13 @@ public class DE_Frame extends JFrame {
         // Set GUI
         initWindow();
 
-        defaultFont = new Font("Calibri", Font.PLAIN, 18);
+        defaultFont = new Font("Cambria", Font.PLAIN, 18);
+        defaultFontLarge = new Font("Cambria", Font.BOLD, 32);
 
         gamePanel = new JPanel();    // Panel containing the Map, and inGame informations
         gamePanel.setLayout(new BorderLayout(5, 5));
 
         controlPanel = new JPanel(); // Panel containing options ( map with/height ..etc)
-        controlPanel.setLayout(new BorderLayout(5, 5));
 
 		initTopPanel();
 
@@ -82,7 +89,6 @@ public class DE_Frame extends JFrame {
 
         /*Over, clean spaces and resize*/
         pack();
-        setListeners();
     } // End of constructor
 
     /**
@@ -137,15 +143,69 @@ public class DE_Frame extends JFrame {
      */
     private void initSettingPanel()
     {
-        JPanel eastPanel = new JPanel();
+       // Logo
+        JLabel logoUDEv = null;
+        try
+        {
+            logoUDEv = new JLabel(
+                    new ImageIcon(ImageIO.read(new File("res/udev-logo.png")))
+            );
+        } catch (IOException e)
+        {
+            logoUDEv = new JLabel("UDev");
+            System.err.println("Couldn't load UDev Logo file");
+        }
 
+        JLabel lblGameName = new JLabel(
+                "<html>" +
+                        "<center>" +
+                            "URivals 1.0" +
+                        "</center>" +
+                    //    "<br>" +
+                        "Run Mouse Run" +
+                    "<html>"
+        );
+
+        // TextArea
+        JLabel txtAreaGame = new JLabel();
+        txtAreaGame.setText(
+                "<html><b>How To Play :</b><br>" +
+                "- Create your bot.<br>" +
+                "- Grab Popcorn.<br>" +
+                "- Click Start Game.<br>" +
+                "- Enjoy.</html>");
+
+        // GameMode setting
+        JLabel lblGameMode = new JLabel("Game Mode");
+        lblGameMode.setFont(defaultFont);
+
+        JComboBox<String> cmboxGameMode = new JComboBox<>();
+        cmboxGameMode.setFont(defaultFont);
+
+        for(GameMode mode : GameMode.values())
+            cmboxGameMode.addItem(mode.toString());
+
+        cmboxGameMode.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                GameManager.gameManager.setGameMode(
+                        GameMode.valueOf(cmboxGameMode.getSelectedItem().toString())
+                );
+            }
+        });
+
+        cmboxGameMode.setSelectedItem(GameManager.gameManager.getGameMode().toString());
+
+        // Level settings
         JLabel lblMapWidth = new JLabel("Map Width");
         lblMapWidth.setFont(defaultFont);
         JLabel lblMapHeight = new JLabel("Map Height");
         lblMapHeight.setFont(defaultFont);
 
         JTextField txtMapWidth = new JTextField("" + LevelGenerator.MAP_WIDTH);
+        txtMapWidth.setFont(defaultFont);
         JTextField txtMapHeight = new JTextField("" + LevelGenerator.MAP_HEIGHT);
+        txtMapHeight.setFont(defaultFont);
 
         JButton btnNewLevel = new JButton("New Level");
 
@@ -167,74 +227,183 @@ public class DE_Frame extends JFrame {
             }
         });
 
-        JCheckBox chkBoxBehindWalls = new JCheckBox();
-        JLabel lblBehindWalls = new JLabel("See Behind Walls");
-        lblBehindWalls.setFont(defaultFont);
+        /* A bit complicated/hacked, set each checkbox to change in the boolean list*/
 
-        chkBoxBehindWalls.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                for (Mouse m : drawEngine.getMouses())
-                    m.setSeeBehindWalls(chkBoxBehindWalls.isSelected());
+        ArrayList<JCheckBox> chkDrawPath = new ArrayList<>();
+        ArrayList<JLabel> lblchckPath = new ArrayList<>();
 
-                for (Cat c : drawEngine.getCats())
-                    c.setSeeBehindWalls(chkBoxBehindWalls.isSelected());
-            }
-        });
+        for(Mouse mouse : drawEngine.getMouses())
+        {
+            drawCharpath.add(false);
 
-        // Brace Yourself .... GridBagLayout is coming
-        eastPanel.setLayout(new GridBagLayout());
+            JLabel lbl = new JLabel("Draw "+mouse.getName()+" path");
+            lbl.setFont(defaultFont);
+            lblchckPath.add(lbl);
+
+            JCheckBox chk = new JCheckBox();
+
+            chk.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    //drawCharpath.set(index, chk.isSelected());
+                    int i = 0;
+                    for(Mouse m : drawEngine.getMouses())
+                    {
+                        if (m == mouse)
+                        {
+                            drawCharpath.set(i, chk.isSelected());
+                        }
+                        i++;
+                    }
+                }
+            });
+
+            chkDrawPath.add(chk);
+        }
+
+        for(Cat cat : drawEngine.getCats())
+        {
+            drawCharpath.add(false);
+
+            JLabel lbl = new JLabel("Draw "+cat.getName()+" path");
+            lbl.setFont(defaultFont);
+            lblchckPath.add(lbl);
+
+            JCheckBox chk = new JCheckBox();
+
+            chk.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    //drawCharpath.set(index, chk.isSelected());
+                    int i = drawEngine.getMouses().size();
+                    for(Cat c : drawEngine.getCats())
+                    {
+                        if (c == cat)
+                        {
+                            drawCharpath.set(i, chk.isSelected());
+                        }
+                        i++;
+                    }
+                }
+            });
+
+            chkDrawPath.add(chk);
+        }
+
+        /*===========================================================================*/
+        // Brace Yourself .... Crazy Layouts coming xD
+        /*===========================================================================*/
+
+        JPanel upperPanel = new JPanel();
+        JPanel lowerPanel = new JPanel();
+
+        /*First : set upper Panel */
+        upperPanel.setLayout(new GridLayout(3, 1, 0, 0));
+        upperPanel.setBorder(new EmptyBorder(20,50,5,50));
+        // add logo
+        upperPanel.add(logoUDEv, BorderLayout.NORTH);
+
+        // add game Name
+        lblGameName.setFont(defaultFontLarge);
+        lblGameName.setHorizontalAlignment(JLabel.CENTER);
+        upperPanel.add(lblGameName);
+
+        // set how to play panel
+        txtAreaGame.setFont(new Font("Cambria", Font.PLAIN, 20));
+        txtAreaGame.setBorder(new EmptyBorder(0,50,0,50));
+
+        JPanel txtGamePanel = new JPanel();
+        txtGamePanel.setBorder(new LineBorder(Color.black, 1, true));
+        txtGamePanel.setLayout(new BorderLayout());
+        txtGamePanel.add(txtAreaGame, BorderLayout.CENTER);
+        txtGamePanel.setSize(new Dimension(400, 400));
+
+        // add how to play panel
+        upperPanel.add(txtGamePanel, BorderLayout.CENTER);
+
+        /*Second : set lower Panel*/
+        // Init GridBag Layout
+        lowerPanel.setLayout(new GridBagLayout());
 
         //Objet to constraint componants
         GridBagConstraints gbc = new GridBagConstraints();
 
-        // padding
-        gbc.insets = new Insets(5, 0, 0, 5);
+        // set Panel margin
+        lowerPanel.setBorder(new EmptyBorder(20, 50, 5, 50));
 
-        // FirstLabel (0,0) , occupies 2 cells
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 2;
-        eastPanel.add(lblMapWidth, gbc);
+        // set padding
+        gbc.insets = new Insets(5, 5, 10, 5);
 
-        // SecondLabel (0, 2) occupies 2 cells
-        gbc.gridx = 2;
-        gbc.gridwidth = GridBagConstraints.REMAINDER; // indique fin de ligne
-        eastPanel.add(lblMapHeight, gbc);
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.fill = GridBagConstraints.HORIZONTAL; // stretch when componant too small
+        // GameMode setting
+        gbc.gridx = 0;      gbc.gridy = 0;
+        gbc.gridheight = 1; gbc.gridwidth = 2;
+        gbc.weightx = 50;
+        lowerPanel.add(lblGameMode, gbc);
 
-        // First TextField (1,0), 2 cells
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 2;
-        txtMapWidth.setPreferredSize(new Dimension(60, 20));
-        eastPanel.add(txtMapWidth, gbc);
+        gbc.gridx = 2;      gbc.gridy = 0;
+        gbc.gridheight = 1; gbc.gridwidth = 2;
+        gbc.weightx = 50;
+        lowerPanel.add(cmboxGameMode, gbc);
 
-        // second TextField (1,2), 2 cells
-        gbc.gridx = 2;
-        gbc.gridwidth = GridBagConstraints.REMAINDER; // indique fin de ligne
-        txtMapHeight.setPreferredSize(new Dimension(60, 20));
-        eastPanel.add(txtMapHeight, gbc);
+        // MapLabels
+        gbc.gridx = 0;      gbc.gridy = 1;
+        gbc.gridheight = 1; gbc.gridwidth = 2;
+        lowerPanel.add(lblMapWidth, gbc);
 
-        // Button (2, 1) , 2 cells ( centered )
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        eastPanel.add(btnNewLevel, gbc);
+        gbc.gridx = 2;      gbc.gridy = 1;
+        gbc.gridheight = 1; gbc.gridwidth = GridBagConstraints.REMAINDER;
+        lowerPanel.add(lblMapHeight, gbc);
 
-        // check box ( 0, 3) 1 cell
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 1;
-        eastPanel.add(chkBoxBehindWalls, gbc);
+        // Map dimensions text
+        gbc.gridx = 0;      gbc.gridy = 2;
+        gbc.gridheight = 1; gbc.gridwidth = 2;
+        lowerPanel.add(txtMapWidth, gbc);
 
-        // label ( 1, 3) 3 cell
-        gbc.gridx = 1;
-        gbc.gridy = 3;
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        eastPanel.add(lblBehindWalls, gbc);
+        gbc.gridx = 2;      gbc.gridy = 2;
+        gbc.gridheight = 1; gbc.gridwidth = GridBagConstraints.REMAINDER;
+        lowerPanel.add(txtMapHeight, gbc);
 
-        controlPanel.add(eastPanel, BorderLayout.CENTER);
+        // New Level Button
+        gbc.gridx = 0;      gbc.gridy = 3;
+        gbc.gridheight = 1; gbc.gridwidth = GridBagConstraints.REMAINDER;
+        lowerPanel.add(btnNewLevel, gbc);
+
+        // setCheckBoxes Panel
+        JPanel chckBoxesPanel = new JPanel();
+        chckBoxesPanel.setBorder(new LineBorder(Color.BLACK, 1, true));
+        chckBoxesPanel.setLayout(new GridBagLayout());
+
+        for(int i = 0; i < chkDrawPath.size(); i++)
+        {
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.gridx = 0;      gbc.gridy = i;
+            gbc.gridheight = 1; gbc.gridwidth = 1;
+            gbc.weightx = 20;
+            chckBoxesPanel.add(chkDrawPath.get(i), gbc);
+
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.gridx = 1;      gbc.gridy = i;
+            gbc.gridheight = 1; gbc.gridwidth = 3;
+            gbc.weightx = 80;
+            chckBoxesPanel.add(lblchckPath.get(i), gbc);
+        }
+
+        // add CheckBoxes Panel
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 0;      gbc.gridy = 4;
+        gbc.gridheight = GridBagConstraints.REMAINDER; gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.weightx = 100;
+        lowerPanel.add(chckBoxesPanel, gbc);
+
+        // add to controlPanel
+        controlPanel.setLayout(new GridLayout(2,1));
+        controlPanel.setBorder(new EmptyBorder(10, 75,5,75));
+        controlPanel.add(upperPanel);
+        JScrollPane lowerScrollPane = new JScrollPane(lowerPanel);
+        lowerScrollPane.setBorder(null);
+        controlPanel.add(lowerScrollPane);
     }
 
     /**
@@ -287,10 +456,16 @@ public class DE_Frame extends JFrame {
             }
         });
 
+        // log label
+        logLabel = new JLabel("Here we print current events like when a cat hits a mine");
+
+        logLabel.setFont(defaultFont);
+        logLabel.setHorizontalAlignment(JLabel.CENTER);
         // Add to frame
         bottomPanel.add(btnDrawShortest, BorderLayout.WEST);
         bottomPanel.add(centerPanel, BorderLayout.CENTER);
         bottomPanel.add(newMapButton, BorderLayout.EAST);
+        bottomPanel.add(logLabel, BorderLayout.SOUTH);
 
         gamePanel.add(bottomPanel, BorderLayout.SOUTH);
     }
@@ -313,36 +488,6 @@ public class DE_Frame extends JFrame {
 
         contentPane.setLayout(new GridLayout(1, 2, 5, 0));
         setContentPane(contentPane);
-    }
-
-    /**
-     *
-     */
-    private void setListeners()
-    {
-        KeyListener keyListener = new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e)
-            {
-                if(e.getKeyCode() == KeyEvent.VK_CONTROL)
-                {
-                    ctrlPressed = true;
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e)
-            {
-                if(e.getKeyCode() == KeyEvent.VK_CONTROL)
-                    ctrlPressed = false;
-            }
-        };
-        startGameButton.addKeyListener(keyListener);
     }
 
     /**
@@ -410,8 +555,6 @@ public class DE_Frame extends JFrame {
             public void mouseWheelMoved(MouseWheelEvent e) {
                 if (e.isControlDown())
                 {
-                    if(ctrlPressed)
-                    {
                         if (e.getWheelRotation() < 0)
                         {
                             // ZOOM IN
@@ -422,13 +565,7 @@ public class DE_Frame extends JFrame {
                             if (TILE_SIZE >= 24)
                                 adjustTileSize(TILE_SIZE - 8);
                         }
-                    }
-                    else
-                    {
-                        dispatchEvent(e);
-                    }
                 }
-
             }
         });
 
@@ -605,9 +742,13 @@ public class DE_Frame extends JFrame {
         updateTime(drawEngine.getTimer().getCurrentTime().toString());
         updateScroll();
 
-        mapPanel.drawCharacterPaths();
+        mapPanel.drawCharacterPaths(drawCharpath);
     }
 
+    public void printLog(String message)
+    {
+        logLabel.setText(message);
+    }
 
     public void displayEndGameScreen(String result) {
         JPanel topEndGamePanel = new JPanel();
