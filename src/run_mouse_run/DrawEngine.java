@@ -171,7 +171,10 @@ public class DrawEngine {
 		/// TODO : Bug fix
 		maps.remove(GameManager.gameManager.getLevelGenerator().getMap()); // removeLevelMap
 		GameManager.gameManager.getLevelGenerator().setMap(w, h);
-		maps.add(0, GameManager.gameManager.getLevelGenerator().getMap()); // add new LevelMap
+
+		updateMapsList(GameManager.gameManager.getLevelGenerator().getMap()); // add new LevelMap
+
+		update();
 	}
 
 	public CustomTimer getTimer() {
