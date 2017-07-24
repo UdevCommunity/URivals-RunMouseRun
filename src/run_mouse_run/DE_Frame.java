@@ -576,18 +576,15 @@ public class DE_Frame extends JFrame {
         mapContainerPanel.addMouseWheelListener(new MouseWheelListener() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
-                if (e.isControlDown())
+                if (e.getWheelRotation() < 0)
                 {
-                        if (e.getWheelRotation() < 0)
-                        {
-                            // ZOOM IN
-                            if (TILE_SIZE <= 120)
-                                adjustTileSize(TILE_SIZE + 8);
-                        } else
-                        {
-                            if (TILE_SIZE >= 24)
-                                adjustTileSize(TILE_SIZE - 8);
-                        }
+                    // ZOOM IN
+                    if (TILE_SIZE <= 120)
+                        adjustTileSize(TILE_SIZE + 8);
+                } else
+                {
+                    if (TILE_SIZE >= 24)
+                        adjustTileSize(TILE_SIZE - 8);
                 }
             }
         });
@@ -681,12 +678,8 @@ public class DE_Frame extends JFrame {
         gamePanel.remove(mapContainerPanel);
         addMapContainerPanel(map, TILE_SIZE);
 
-        mapPanel.repaint();
-        mapContainerPanel.repaint();
-        gamePanel.repaint();
-        contentPane.repaint();
+        revalidate();
         repaint();
-        update();
     }
 
     /**
