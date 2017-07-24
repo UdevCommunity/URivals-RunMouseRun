@@ -676,6 +676,13 @@ public class DE_Frame extends JFrame {
         update();
     }
 
+    public void changeMapSize(Map map)
+    {
+        gamePanel.remove(mapContainerPanel);
+        addMapContainerPanel(map, TILE_SIZE);
+        repaint();
+    }
+
     /**
      * Set map to show in mapPanel
      * @param map map to show

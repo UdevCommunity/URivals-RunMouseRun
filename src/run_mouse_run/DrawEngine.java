@@ -174,7 +174,8 @@ public class DrawEngine {
 
 		updateMapsList(GameManager.gameManager.getLevelGenerator().getMap()); // add new LevelMap
 
-		update();
+		for(DE_Frame frame: frames)
+			frame.changeMapSize(maps.get(0));
 	}
 
 	public CustomTimer getTimer() {
