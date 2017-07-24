@@ -41,6 +41,8 @@ class GameManager
         physicsEngine = new PhysicsEngine();
         drawEngine = new DrawEngine(level.getMap());
         timer = new CustomTimer();
+
+        drawEngine.printMessage("Setting game");
     }
 
     // We made a difference between startGame and resumeGame because we may have do to some initialisations at the beginning
@@ -58,6 +60,7 @@ class GameManager
             e.printStackTrace();
         }
 
+        drawEngine.printMessage("Game Started !");
         timer.startTimer();
     }
 
@@ -188,5 +191,9 @@ class GameManager
     GameMode getGameMode()
     {
         return GAME_MODE;
+    }
+
+    public void setGameMode(GameMode gameMode) {
+        this.GAME_MODE = gameMode;
     }
 }

@@ -73,7 +73,7 @@ public abstract class CharacterController
     void respawn(String characterType)
     {
         stopTimer();
-        System.out.println("Respawn: "+ name +" " + GameManager.gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY()));
+        GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ name +" " + GameManager.gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY()));
         position = GameManager.gameManager.getLevelGenerator().getValidRespawnPosition(characterType);
         destinationPath.clear();
         moveSpeed = INITIAL_MOVE_SPEED;
@@ -94,7 +94,7 @@ public abstract class CharacterController
     final void increaseTargetReachedCount()
     {
         targetReachedCount += 1;
-        System.out.println(name + " Catch mouse " + targetReachedCount);
+        GameManager.gameManager.getDrawEngine().printMessage(name + " Catch mouse " + targetReachedCount);
     }
 
     final void applyVisionPowerUp()
