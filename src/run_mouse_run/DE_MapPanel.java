@@ -231,15 +231,19 @@ public class DE_MapPanel extends JPanel {
     }
 
 
-    public void drawCharacterPaths() {
+    public void drawCharacterPaths(ArrayList<Boolean> chkDraw)
+    {
         int index = 0;
         for (Mouse mouse : drawEngine.getMouses())
         {
             try
             {
-                drawPath(mouse.getDestinationPath(),
-                        gameSprites.getCustomSprite(index));
-            } catch (ConcurrentModificationException e)
+                if(chkDraw.get(index))
+                {
+                    drawPath(mouse.getDestinationPath(),gameSprites.getCustomSprite(index));
+                }
+            }
+            catch (ConcurrentModificationException e)
             {
             }
             index++;
@@ -248,8 +252,12 @@ public class DE_MapPanel extends JPanel {
         {
             try
             {
-                drawPath(cat.getDestinationPath(), gameSprites.getCustomSprite(index));
-            } catch (ConcurrentModificationException e)
+                if(chkDraw.get(index))
+                {
+                    drawPath(cat.getDestinationPath(), gameSprites.getCustomSprite(index));
+                }
+            }
+            catch (ConcurrentModificationException e)
             {
             }
             index++;
