@@ -594,7 +594,7 @@ public class DE_Frame extends JFrame {
         try
         {
             File bgFile = new File("res/background.jpg");
-            BufferedImage backgroundImage = ImageIO.read(bgFile);
+            BufferedImage backgroundImage = ImageIO.read(bgFile); // TODO: Resize Background
             contentPane = new BackgroundPanel(backgroundImage);
         } catch(Exception e)
         {
