@@ -658,7 +658,12 @@ public class DE_Frame extends JFrame {
                         mapPanel.update();
                     } else if (event.getButton() == MouseEvent.BUTTON2)
                     {
-                        drawEngine.getMaps().get(0).switchTile(j, i);
+                        do
+                        {
+                            drawEngine.getMaps().get(0).switchTile(j, i);
+                        }while(drawEngine.getMaps().get(0).getTile(j, i) == Tile.CAT
+                                || drawEngine.getMaps().get(0).getTile(j, i) == Tile.MOUSE);
+
                         update();
                     }
                 }
