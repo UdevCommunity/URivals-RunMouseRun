@@ -4,6 +4,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -204,6 +206,70 @@ public class DE_Frame extends JFrame {
 
         cmboxGameMode.setSelectedItem(GameManager.gameManager.getGameMode().toString());
 
+        // Time Limit
+        JLabel lblTimeLimit = new JLabel("Time Limit (s) : ");
+        JTextField txtTimeLimit = new JTextField("180");
+
+        lblTimeLimit.setFont(defaultFont);
+        txtTimeLimit.setFont(defaultFont);
+
+        JButton btnTimeLimit = new JButton("Set");
+
+        btnTimeLimit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    int x = Integer.parseInt(txtTimeLimit.getText());
+
+                    if(x > 0)
+                    {
+                        GameManager.gameManager.getTimer().setTimeLimit(x);
+                    }
+                    else
+                    {
+                        txtTimeLimit.setText("180");
+                        GameManager.gameManager.getTimer().setTimeLimit(180);
+                    }
+                }catch (NumberFormatException ex)
+                {
+                    txtTimeLimit.setText("180");
+                    GameManager.gameManager.getTimer().setTimeLimit(180);
+                }
+            }
+        });
+
+        // Game Speed
+        JLabel lblGameSpeed = new JLabel("Game Speed (%) : ");
+        JTextField txtGameSpeed = new JTextField("100");
+
+        lblGameSpeed.setFont(defaultFont);
+        txtGameSpeed.setFont(defaultFont);
+
+        JButton btnGameSpeed = new JButton("Set");
+
+        btnGameSpeed.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    int x = Integer.parseInt(txtGameSpeed.getText());
+
+                    if(x > 0 && x < 300)
+                    {
+                        CustomTimer.setGameSpeed(x);
+                    }
+                    else
+                    {
+                        txtGameSpeed.setText("100");
+                        CustomTimer.setGameSpeed(100);
+                    }
+                }catch (NumberFormatException ex)
+                {
+                    txtGameSpeed.setText("100");
+                    CustomTimer.setGameSpeed(100);
+                }
+            }
+        });
+
         // Level settings
         JLabel lblMapWidth = new JLabel("Map Width");
         lblMapWidth.setFont(defaultFont);
@@ -348,6 +414,7 @@ public class DE_Frame extends JFrame {
 
         gbc.anchor = GridBagConstraints.LINE_START;
         gbc.fill = GridBagConstraints.HORIZONTAL; // stretch when componant too small
+
         // GameMode setting
         gbc.gridx = 0;      gbc.gridy = 0;
         gbc.gridheight = 1; gbc.gridwidth = 2;
@@ -359,26 +426,52 @@ public class DE_Frame extends JFrame {
         gbc.weightx = 50;
         lowerPanel.add(cmboxGameMode, gbc);
 
-        // MapLabels
+        // timeLimit
         gbc.gridx = 0;      gbc.gridy = 1;
+        gbc.gridheight = 1; gbc.gridwidth = 2;
+        lowerPanel.add(lblTimeLimit, gbc);
+
+        gbc.gridx = 2;      gbc.gridy = 1;
+        gbc.gridheight = 1; gbc.gridwidth = 1;
+        lowerPanel.add(txtTimeLimit, gbc);
+
+        gbc.gridx = 3;      gbc.gridy = 1;
+        gbc.gridheight = 1; gbc.gridwidth = GridBagConstraints.REMAINDER;
+        lowerPanel.add(btnTimeLimit, gbc);
+
+        // gameSpeed
+        gbc.gridx = 0;      gbc.gridy = 2;
+        gbc.gridheight = 1; gbc.gridwidth = 2;
+        lowerPanel.add(lblGameSpeed, gbc);
+
+        gbc.gridx = 2;      gbc.gridy = 2;
+        gbc.gridheight = 1; gbc.gridwidth = 1;
+        lowerPanel.add(txtGameSpeed, gbc);
+
+        gbc.gridx = 3;      gbc.gridy = 2;
+        gbc.gridheight = 1; gbc.gridwidth = GridBagConstraints.REMAINDER;
+        lowerPanel.add(btnGameSpeed, gbc);
+
+        // MapLabels
+        gbc.gridx = 0;      gbc.gridy = 3;
         gbc.gridheight = 1; gbc.gridwidth = 2;
         lowerPanel.add(lblMapWidth, gbc);
 
-        gbc.gridx = 2;      gbc.gridy = 1;
+        gbc.gridx = 2;      gbc.gridy = 3;
         gbc.gridheight = 1; gbc.gridwidth = GridBagConstraints.REMAINDER;
         lowerPanel.add(lblMapHeight, gbc);
 
         // Map dimensions text
-        gbc.gridx = 0;      gbc.gridy = 2;
+        gbc.gridx = 0;      gbc.gridy = 4;
         gbc.gridheight = 1; gbc.gridwidth = 2;
         lowerPanel.add(txtMapWidth, gbc);
 
-        gbc.gridx = 2;      gbc.gridy = 2;
+        gbc.gridx = 2;      gbc.gridy = 4;
         gbc.gridheight = 1; gbc.gridwidth = GridBagConstraints.REMAINDER;
         lowerPanel.add(txtMapHeight, gbc);
 
         // New Level Button
-        gbc.gridx = 0;      gbc.gridy = 3;
+        gbc.gridx = 0;      gbc.gridy = 5;
         gbc.gridheight = 1; gbc.gridwidth = GridBagConstraints.REMAINDER;
         lowerPanel.add(btnNewLevel, gbc);
 
@@ -404,7 +497,7 @@ public class DE_Frame extends JFrame {
 
         // add CheckBoxes Panel
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridx = 0;      gbc.gridy = 4;
+        gbc.gridx = 0;      gbc.gridy = 6;
         gbc.gridheight = GridBagConstraints.REMAINDER; gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.weightx = 100;
         chckBoxesPanel.setBackground(transColor);
@@ -792,7 +885,9 @@ public class DE_Frame extends JFrame {
 
         playAgainButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e)
+            {
+                drawEngine.startNewGame();
 
             }
         });

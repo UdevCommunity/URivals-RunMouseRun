@@ -181,4 +181,24 @@ public class DrawEngine {
 	public CustomTimer getTimer() {
 		return GameManager.gameManager.getTimer();
 	}
+
+    public void startNewGame()
+	{
+		GameManager.gameManager.stopGame("");
+		// Close Everything
+		for(DE_Frame frame: frames)
+		{
+			frame.dispose();
+		}
+
+		EventQueue.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				GameManager gameManager = new GameManager();
+				gameManager.getDrawEngine().setVisible(true);
+			}
+		});
+
+    }
 }   // End Of DrawEngine

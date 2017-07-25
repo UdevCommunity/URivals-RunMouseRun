@@ -8,9 +8,9 @@ import java.util.TimerTask;
 
 class CustomTimer
 {
-    static final int GAME_SPEED = 700;
-    static final int UPDATE_FREQUENCE = GAME_SPEED/8;
-    private final long TIME_LIMIT = 300000;
+    static int GAME_SPEED = 700;
+    static int UPDATE_FREQUENCE = GAME_SPEED/8; // should be changed in setter too
+    private long TIME_LIMIT = 300000;
 
     private Time currentTime = new Time(0);
     private Timer timer;
@@ -59,6 +59,16 @@ class CustomTimer
             cat.stopTimer();
     }
 
+    void setTimeLimit(int sec)
+    {
+        this.TIME_LIMIT = sec*1000;
+    }
+
+    static void setGameSpeed(int speed)
+    {
+        GAME_SPEED = speed;
+        UPDATE_FREQUENCE = GAME_SPEED/8;
+    }
     Time getCurrentTime()
     {
         return currentTime;
