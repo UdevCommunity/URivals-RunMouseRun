@@ -50,9 +50,9 @@ class PhysicsEngine
                 case MINE:
                     GameManager.gameManager.getDrawEngine().explodeMine(cat.getPosition().getPosX(), cat.getPosition().getPosY());
                     levelMap.setTile(cat.getPosition().getPosX(), cat.getPosition().getPosY(), Tile.EMPTY);
-                    GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ cat + " died on a Mine");
+                    GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ cat.getName() + " died on a Mine");
                 case WALL:
-                    GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ cat + " walked into a wall");
+                    GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ cat.getName() + " walked into a wall");
                     cat.respawn();
                     break;
                 case POWERUP_VISION:
@@ -105,9 +105,9 @@ class PhysicsEngine
                 case MINE:
                     GameManager.gameManager.getDrawEngine().explodeMine(mouse.getPosition().getPosX(), mouse.getPosition().getPosY());
                     levelMap.setTile(mouse.getPosition().getPosX(), mouse.getPosition().getPosY(), Tile.EMPTY);
-                    GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ mouse + " died on a Mine");
+                    GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ mouse.getName() + " died on a Mine");
                 case WALL:
-                    GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ mouse + " walked into a wall");
+                    GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ mouse.getName() + " walked into a wall");
                     mouse.respawn();
                     break;
                 case POWERUP_VISION:
