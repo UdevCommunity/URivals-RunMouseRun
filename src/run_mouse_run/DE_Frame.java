@@ -98,7 +98,6 @@ public class DE_Frame extends JFrame {
         gamePanel.setBackground(transColor);
         topPanel.setBackground(transColor);
         bottomPanel.setBackground(transColor);
-
     }
 
     /**
@@ -315,6 +314,7 @@ public class DE_Frame extends JFrame {
             lblchckPath.add(lbl);
 
             JCheckBox chk = new JCheckBox();
+            chk.setBackground(transColor);
 
             chk.addItemListener(new ItemListener() {
                 @Override
@@ -509,6 +509,7 @@ public class DE_Frame extends JFrame {
         controlPanel.add(upperPanel);
         JScrollPane lowerScrollPane = new JScrollPane(lowerPanel);
         lowerScrollPane.setBorder(null);
+        lowerScrollPane.setBackground(transColor);
         controlPanel.add(lowerScrollPane);
     }
 
@@ -592,7 +593,7 @@ public class DE_Frame extends JFrame {
         //setResizable(false);
         try
         {
-            File bgFile = new File("res/background.png");
+            File bgFile = new File("res/background.jpg");
             BufferedImage backgroundImage = ImageIO.read(bgFile);
             contentPane = new BackgroundPanel(backgroundImage);
         } catch(Exception e)
