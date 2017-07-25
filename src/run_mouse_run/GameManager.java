@@ -110,6 +110,8 @@ class GameManager
                             stopGame(String.format("Cats Win !! %s", winResult));
                         }
                         break;
+                    default:
+                        drawEngine.printMessage("Wrong end game argument passed !!");
                 }
                 break;
         }
@@ -135,19 +137,6 @@ class GameManager
     ArrayList<Cat> getCats()
     {
         return cats;
-    }
-
-    int getAliveCatsCount()
-    {
-        int aliveCatsCount = 0;
-
-        for(Cat cat: cats)
-        {
-            if (cat.isAlive())
-                aliveCatsCount++;
-        }
-
-        return aliveCatsCount;
     }
 
     int getAliveMousesCount()

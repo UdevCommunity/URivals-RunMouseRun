@@ -51,6 +51,8 @@ class PhysicsEngine
                     GameManager.gameManager.getDrawEngine().explodeMine(cat.getPosition().getPosX(), cat.getPosition().getPosY());
                     levelMap.setTile(cat.getPosition().getPosX(), cat.getPosition().getPosY(), Tile.EMPTY);
                     GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ cat.getName() + " died on a Mine");
+                    cat.respawn();
+                    break;
                 case WALL:
                     GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ cat.getName() + " walked into a wall");
                     cat.respawn();
@@ -106,6 +108,8 @@ class PhysicsEngine
                     GameManager.gameManager.getDrawEngine().explodeMine(mouse.getPosition().getPosX(), mouse.getPosition().getPosY());
                     levelMap.setTile(mouse.getPosition().getPosX(), mouse.getPosition().getPosY(), Tile.EMPTY);
                     GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ mouse.getName() + " died on a Mine");
+                    mouse.respawn();
+                    break;
                 case WALL:
                     GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ mouse.getName() + " walked into a wall");
                     mouse.respawn();
