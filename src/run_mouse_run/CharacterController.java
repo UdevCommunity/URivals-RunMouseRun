@@ -32,13 +32,10 @@ public abstract class CharacterController
     CharacterController(String name, ArrayList<Tile> invisibleTiles)
     {
         this.name = name;
-
+        this.invisibleTiles = invisibleTiles;
         destinationPath = new ArrayList<>();
-
         moveSpeed = INITIAL_MOVE_SPEED;
         viewDistance = INITIAL_VIEW_DISTANCE;
-
-        this.invisibleTiles = invisibleTiles;
     }
 
     private TimerTask createUpdateTask()
@@ -73,7 +70,6 @@ public abstract class CharacterController
     void respawn(String characterType)
     {
         stopTimer();
-        GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ name +" " + GameManager.gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY()));
         position = GameManager.gameManager.getLevelGenerator().getValidRespawnPosition(characterType);
         destinationPath.clear();
         moveSpeed = INITIAL_MOVE_SPEED;
@@ -99,7 +95,7 @@ public abstract class CharacterController
 
     final void applyVisionPowerUp()
     {
-        viewDistance = INITIAL_VIEW_DISTANCE + 1;
+        viewDistance = INITIAL_VIEW_DISTANCE - 1;
         visionPowerupTourLeft = 10;
         seeBehindWalls = true;
     }

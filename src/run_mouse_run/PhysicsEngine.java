@@ -40,6 +40,7 @@ class PhysicsEngine
                         if(Position.comparePosition(cat.getPosition(), dyingMouse.getPosition()))
                         {
                             dyingMouse.die();
+                            GameManager.gameManager.getDrawEngine().printMessage(cat.getName() + " killed " + dyingMouse.getName());
                             GameManager.gameManager.chekEndGameConditions("Cats Win", cat.getName());
                             break;
                         }
@@ -49,7 +50,9 @@ class PhysicsEngine
                 case MINE:
                     GameManager.gameManager.getDrawEngine().explodeMine(cat.getPosition().getPosX(), cat.getPosition().getPosY());
                     levelMap.setTile(cat.getPosition().getPosX(), cat.getPosition().getPosY(), Tile.EMPTY);
+                    GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ cat.getName() + " died on a Mine");
                 case WALL:
+                    GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ cat.getName() + " walked into a wall");
                     cat.respawn();
                     break;
                 case POWERUP_VISION:
@@ -81,6 +84,7 @@ class PhysicsEngine
             {
                 case CHEESE:
                     mouse.increaseTargetReachedCount();
+                    GameManager.gameManager.getDrawEngine().printMessage(mouse.getName() + " picked a cheese");
                     GameManager.gameManager.chekEndGameConditions("Mouses Win", mouse.getName());
                     break;
 
@@ -91,6 +95,7 @@ class PhysicsEngine
                         {
                             winningCat.increaseTargetReachedCount();
                             mouse.die();
+                            GameManager.gameManager.getDrawEngine().printMessage(winningCat.getName() + " killed " + mouse.getName());
                             GameManager.gameManager.chekEndGameConditions("Cats Win", winningCat.getName());
                             break;
                         }
@@ -100,7 +105,9 @@ class PhysicsEngine
                 case MINE:
                     GameManager.gameManager.getDrawEngine().explodeMine(mouse.getPosition().getPosX(), mouse.getPosition().getPosY());
                     levelMap.setTile(mouse.getPosition().getPosX(), mouse.getPosition().getPosY(), Tile.EMPTY);
+                    GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ mouse.getName() + " died on a Mine");
                 case WALL:
+                    GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ mouse.getName() + " walked into a wall");
                     mouse.respawn();
                     break;
                 case POWERUP_VISION:
