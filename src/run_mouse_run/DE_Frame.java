@@ -94,10 +94,10 @@ public class DE_Frame extends JFrame {
 
     private void SetTransparency()
     {
-        controlPanel.setBackground(transColor);
-        gamePanel.setBackground(transColor);
-        topPanel.setBackground(transColor);
-        bottomPanel.setBackground(transColor);
+        controlPanel.setOpaque(false);
+        gamePanel.setOpaque(false);
+        topPanel.setOpaque(false);
+        bottomPanel.setOpaque(false);
     }
 
     /**
@@ -132,7 +132,7 @@ public class DE_Frame extends JFrame {
 
             }
         });
-        startButtonPanel.setBackground(transColor);
+        startButtonPanel.setOpaque(false);
         startButtonPanel.add(startGameButton);
 
         // Time Label
@@ -314,7 +314,7 @@ public class DE_Frame extends JFrame {
             lblchckPath.add(lbl);
 
             JCheckBox chk = new JCheckBox();
-            chk.setBackground(transColor);
+            chk.setOpaque(false);
 
             chk.addItemListener(new ItemListener() {
                 @Override
@@ -344,6 +344,7 @@ public class DE_Frame extends JFrame {
             lblchckPath.add(lbl);
 
             JCheckBox chk = new JCheckBox();
+            chk.setOpaque(false);
 
             chk.addItemListener(new ItemListener() {
                 @Override
@@ -371,8 +372,8 @@ public class DE_Frame extends JFrame {
         JPanel upperPanel = new JPanel();
         JPanel lowerPanel = new JPanel();
 
-        upperPanel.setBackground(transColor);
-        lowerPanel.setBackground(transColor);
+        upperPanel.setOpaque(false);
+        lowerPanel.setOpaque(false);
 
         /*First : set upper Panel */
         upperPanel.setLayout(new GridLayout(3, 1, 0, 0));
@@ -389,14 +390,12 @@ public class DE_Frame extends JFrame {
         txtAreaGame.setFont(new Font("Cambria", Font.PLAIN, 20));
         txtAreaGame.setBorder(new EmptyBorder(0,50,0,50));
 
-        JPanel txtGamePanel = new JPanel();
+        JScrollPane txtGamePanel = new JScrollPane(txtAreaGame);
         txtGamePanel.setBorder(new LineBorder(Color.black, 1, true));
-        txtGamePanel.setLayout(new BorderLayout());
-        txtGamePanel.add(txtAreaGame, BorderLayout.CENTER);
         txtGamePanel.setSize(new Dimension(400, 400));
 
         // add how to play panel
-        txtGamePanel.setBackground(transColor);
+        txtGamePanel.setOpaque(false);
         upperPanel.add(txtGamePanel, BorderLayout.CENTER);
 
         /*Second : set lower Panel*/
@@ -500,7 +499,7 @@ public class DE_Frame extends JFrame {
         gbc.gridx = 0;      gbc.gridy = 6;
         gbc.gridheight = GridBagConstraints.REMAINDER; gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.weightx = 100;
-        chckBoxesPanel.setBackground(transColor);
+        chckBoxesPanel.setOpaque(false);
         lowerPanel.add(chckBoxesPanel, gbc);
 
         // add to controlPanel
@@ -509,7 +508,8 @@ public class DE_Frame extends JFrame {
         controlPanel.add(upperPanel);
         JScrollPane lowerScrollPane = new JScrollPane(lowerPanel);
         lowerScrollPane.setBorder(null);
-        lowerScrollPane.setBackground(transColor);
+        lowerScrollPane.setOpaque(false);
+        lowerScrollPane.getViewport().setOpaque(false);
         controlPanel.add(lowerScrollPane);
     }
 
@@ -531,7 +531,7 @@ public class DE_Frame extends JFrame {
         // Center buttons ( ComboBox )
         JPanel centerPanel = new JPanel();
 
-        centerPanel.setBackground(transColor);
+        centerPanel.setOpaque(false);
         mapsCmBox = new JComboBox<>();
 
         mapsCmBox.setPreferredSize(new Dimension(120, 20));
