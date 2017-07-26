@@ -1,4 +1,4 @@
-package theme;
+package run_mouse_run.draw_engine.theme;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -10,7 +10,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 /**
  *

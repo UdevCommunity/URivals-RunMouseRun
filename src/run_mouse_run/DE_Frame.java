@@ -11,7 +11,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import theme.*;
+import run_mouse_run.draw_engine.DE_GameSprites;
+import run_mouse_run.draw_engine.DE_MapPanel;
+import run_mouse_run.draw_engine.theme.*;
 
 /**
  * Frame that displays one of the maps in the drawEngine's maps
@@ -35,8 +37,6 @@ public class DE_Frame extends JFrame {
     /* For testing path finding */
     private Position initialPos = new Position(2, 2);
     private Position finalPos = new Position(6, 6);
-    Color transColor = new Color(0, 0, 0, 0);
-
 
     private double mousePressedAtPosX;
     private double mousePressedAtPosY;
@@ -538,7 +538,16 @@ public class DE_Frame extends JFrame {
         // Draw Shortest Button
         btnDrawShortest = new UButton("Draw shortest");
         btnDrawShortest.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
+            public void actionPerformed(ActionEvent arg0)
+            {
+                mapPanel.drawPath(
+                        GameManager.gameManager.getLevelGenerator().getPathFinder()
+                                .getShortestPath(
+                                        drawEngine.getMaps().get(mapsCmBox.getSelectedIndex()),
+                                        initialPos,
+                                        finalPos
+                                )
+                );
             }
         });
 
@@ -611,8 +620,8 @@ public class DE_Frame extends JFrame {
         //setResizable(false);
         try
         {
-            File bgFile = new File("res/background.jpg");
-            BufferedImage backgroundImage = ImageIO.read(bgFile); // TODO: Resize Background
+            File bgFile = FileManager.getRessourceFile("background.jpg");
+            BufferedImage backgroundImage = ImageIO.read(bgFile);
             contentPane = new BackgroundPanel(backgroundImage);
         } catch(Exception e)
         {

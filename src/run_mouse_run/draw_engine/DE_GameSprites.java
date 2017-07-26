@@ -1,4 +1,9 @@
-package run_mouse_run;
+package run_mouse_run.draw_engine;
+
+import run_mouse_run.Cat;
+import run_mouse_run.DrawEngine;
+import run_mouse_run.FileManager;
+import run_mouse_run.Mouse;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -71,7 +76,7 @@ public class DE_GameSprites
             try
             {
                 // Load file
-                File spriteFile = new File("res/" + spritesFileNames[i]);
+                File spriteFile = FileManager.getRessourceFile(spritesFileNames[i]);
                 // Read image
                 BufferedImage sprite = ImageIO.read(spriteFile);
                 //add to sprites
@@ -102,7 +107,7 @@ public class DE_GameSprites
             try
             {
                 // Load file
-                File spriteFile = new File("res/" + m.getName() + ".png");
+                File spriteFile = FileManager.getRessourceFile(m.getName() + ".png");
                 // Read image
                 BufferedImage sprite = ImageIO.read(spriteFile);
                 //add to customSprites
@@ -118,7 +123,7 @@ public class DE_GameSprites
             try
             {
                 // Load file
-                File spriteFile = new File("res/" + c.getName() + "_sprite.png");
+                File spriteFile = FileManager.getRessourceFile(c.getName() + "_sprite.png");
                 // Read image
                 BufferedImage sprite = ImageIO.read(spriteFile);
                 //add to customSprites
@@ -145,7 +150,7 @@ public class DE_GameSprites
             try
             {
                 // Load file
-                File spriteFile = new File("res/" + m.getName() + "_sprite_dead.png");
+                File spriteFile = FileManager.getRessourceFile( m.getName() + "_sprite_dead.png");
                 // Read image
                 BufferedImage sprite = ImageIO.read(spriteFile);
                 //add to customSprites
@@ -161,7 +166,7 @@ public class DE_GameSprites
             try
             {
                 // Load file
-                File spriteFile = new File("res/" + c.getName() + "_sprite_dead.png");
+                File spriteFile = FileManager.getRessourceFile(c.getName() + "_sprite_dead.png");
                 // Read image
                 BufferedImage sprite = ImageIO.read(spriteFile);
                 //add to customSprites
@@ -183,7 +188,7 @@ public class DE_GameSprites
         try
         {
             // Load file
-            File spriteFile = new File("res/anim/explosion.png");
+            File spriteFile = FileManager.getRessourceFile("/anim/explosion.png");
             // Read image
             BufferedImage frameSheet = ImageIO.read(spriteFile);
 

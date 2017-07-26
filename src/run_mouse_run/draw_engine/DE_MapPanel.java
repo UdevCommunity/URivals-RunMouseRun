@@ -1,8 +1,12 @@
-package run_mouse_run;
+package run_mouse_run.draw_engine;
+
+import run_mouse_run.*;
+import run_mouse_run.draw_engine.DE_Animation;
+import run_mouse_run.draw_engine.DE_GameSprites;
+import run_mouse_run.draw_engine.DE_TileImage;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 
@@ -276,6 +280,7 @@ public class DE_MapPanel extends JPanel {
         DE_TileImage img = sprite.copy();
         img.setAlpha(0.25f);
 
+        // Copy to avoid ConcurrentModification errors
         path = (ArrayList<Position>) path.clone();
 
         for (Position t : path)

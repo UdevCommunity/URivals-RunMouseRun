@@ -1,4 +1,4 @@
-package theme;
+package run_mouse_run.draw_engine.theme;
 
 import javax.swing.*;
 import java.awt.*;

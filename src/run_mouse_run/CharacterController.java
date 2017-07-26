@@ -241,7 +241,7 @@ public abstract class CharacterController
         this.seeBehindWalls = seeBehindWalls;
     }
 
-    final boolean isAlive()
+    public final boolean isAlive()
     {
         return isAlive;
     }

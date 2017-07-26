@@ -1,4 +1,4 @@
-package theme;
+package run_mouse_run.draw_engine.theme;
 
 import java.awt.*;
 
@@ -32,7 +32,6 @@ public class Theme {
 
 
     // LabeledTextFields
-    public static final int LABELED_LABEL_HEIGHT = 25;
     public static final int LABELED_MARGIN = 2;
 
 }

@@ -1,4 +1,4 @@
-package run_mouse_run;
+package run_mouse_run.draw_engine;
 
 import javax.swing.*;
 import java.util.ArrayList;
