@@ -16,23 +16,22 @@ import run_mouse_run.draw_engine.DE_MapPanel;
 import run_mouse_run.draw_engine.theme.*;
 
 /**
- * Frame that displays one of the maps in the drawEngine's maps
+ * DrawEngine Frame which displays one of the maps ( from the drawEngine's maps )
  */
 public class DE_Frame extends JFrame {
 
     public int TILE_SIZE = 48; // Tiles will resize to this value
 
-    DrawEngine drawEngine;
+    private DrawEngine drawEngine;
 
     private JPanel contentPane;
+    private JPanel topPanel, bottomPanel, gamePanel, controlPanel;
     private JScrollPane mapContainerPanel;
     private DE_MapPanel mapPanel;
-    private JLabel mapName, timeLabel;
+    private JLabel mapName, timeLabel, logLabel;
     private JComboBox<String> mapsCmBox;
     public UButton startGameButton;
     private UButton btnDrawShortest;
-    private JPanel topPanel, bottomPanel, gamePanel, controlPanel;
-    private JLabel logLabel;
 
     /* For testing path finding */
     private Position initialPos = new Position(2, 2);
@@ -42,29 +41,20 @@ public class DE_Frame extends JFrame {
     private double mousePressedAtPosY;
     private ArrayList<Boolean> drawCharPath = new ArrayList<>();
 
-
     /**
-     * Create the frame.
-     * adds Map
-     * create buttons with ActionListeners :
-     * ClickListener on panel ( for map editor )
-     * ActionListeners on buttons
-     * init cmCheckBox
-     *
      * @param map initialised map from LevelGenerator
      */
-    public DE_Frame(DrawEngine drawEngine, Map map) {
+    public DE_Frame(DrawEngine drawEngine, Map map)
+    {
+        super();
         this.drawEngine = drawEngine;
-
         if (map == null)
-        {
             map = new Map("Blank map", LevelGenerator.MAP_WIDTH, LevelGenerator.MAP_HEIGHT, Tile.NOT_DISCOVERED);
-        }
 
         // Set GUI
         initWindow();
 
-        gamePanel = new JPanel();    // Panel containing the Map, and inGame informations
+        gamePanel = new JPanel();  // Panel containing the Map, and gameControls
         gamePanel.setLayout(new BorderLayout(5, 5));
 
         controlPanel = new JPanel(); // Panel containing options ( map with/height ..etc)
@@ -77,16 +67,23 @@ public class DE_Frame extends JFrame {
 
 		initSettingPanel();
 
+
         /*Panels initialised, add to frame */
+        gamePanel.add(topPanel, BorderLayout.NORTH);
+        gamePanel.add(mapContainerPanel, BorderLayout.CENTER);
+        gamePanel.add(bottomPanel, BorderLayout.SOUTH);
+
         contentPane.add(gamePanel);
         contentPane.add(controlPanel);
-
 
         SetTransparency();
         /*Over, clean spaces and resize*/
         pack();
-    } // End of constructor
+    }
 
+    /**
+     * Set all panels to transparent ( non-Opaque )
+     */
     private void SetTransparency()
     {
         controlPanel.setOpaque(false);
@@ -96,7 +93,7 @@ public class DE_Frame extends JFrame {
     }
 
     /**
-     *
+     * Top panel contains MapName, StartGameButton and TimeLabel
      */
     private void initTopPanel()
     {
@@ -104,15 +101,13 @@ public class DE_Frame extends JFrame {
         topPanel.setLayout(new BorderLayout(0, 0));
         topPanel.setPreferredSize(new Dimension(topPanel.getWidth(), Theme.TOP_BAR_HEIGHT));
 
+        // MapName label
         mapName = new JLabel("Level Map");
         mapName.setFont(Theme.FONT_DEFAULT);
-
         mapName.setForeground(Theme.FONT_DEFAULT_COLOR);
+
         // Start game button
-        JPanel startButtonPanel = new JPanel();
-
         startGameButton = new UButton("Start Game");
-
         startGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -130,6 +125,7 @@ public class DE_Frame extends JFrame {
 
             }
         });
+        JPanel startButtonPanel = new JPanel(); // to center button
         startButtonPanel.setOpaque(false);
         startButtonPanel.add(startGameButton);
 
@@ -138,12 +134,10 @@ public class DE_Frame extends JFrame {
         timeLabel.setFont(Theme.FONT_DEFAULT);
         timeLabel.setForeground(Theme.FONT_DEFAULT_COLOR);
 
+        // add to top Panel
         topPanel.add(mapName, BorderLayout.WEST);
         topPanel.add(startButtonPanel, BorderLayout.CENTER);
         topPanel.add(timeLabel, BorderLayout.EAST);
-
-
-        gamePanel.add(topPanel, BorderLayout.NORTH);
     }
 
     /**
@@ -152,11 +146,11 @@ public class DE_Frame extends JFrame {
     private void initSettingPanel()
     {
        // Logo
-        JLabel logoUDEv = null;
+        JLabel logoUDEv;
         try
         {
             logoUDEv = new JLabel(
-                    new ImageIcon(ImageIO.read(new File("res/udev-logo.png")))
+                    new ImageIcon(ImageIO.read(FileManager.getRessourceFile("udev-logo.png")))
             );
         } catch (IOException e)
         {
@@ -164,6 +158,7 @@ public class DE_Frame extends JFrame {
             System.err.println("Couldn't load UDev Logo file");
         }
 
+        // GameName label
         JLabel lblGameName = new JLabel(
                 "<html>" +
                         "<center>" +
@@ -174,9 +169,9 @@ public class DE_Frame extends JFrame {
                     "<html>"
         );
 
-        // TextArea
-        JLabel txtAreaGame = new JLabel();
-        txtAreaGame.setText(
+        // Game Description Label
+        JLabel txtGameDescription = new JLabel();
+        txtGameDescription.setText(
                 "<html><b>How To Play :</b><br>" +
                 "- Create your bot.<br>" +
                 "- Grab Popcorn.<br>" +
@@ -190,7 +185,7 @@ public class DE_Frame extends JFrame {
 
         JComboBox<String> cmboxGameMode = new JComboBox<>();
         cmboxGameMode.setFont(Theme.FONT_DEFAULT);
-        cmboxGameMode.setForeground(Theme.FONT_DEFAULT_COLOR);
+        cmboxGameMode.setForeground(Theme.FONT_INPUT_COLOR);
 
         for(GameMode mode : GameMode.values())
             cmboxGameMode.addItem(mode.toString());
@@ -203,21 +198,20 @@ public class DE_Frame extends JFrame {
                 );
             }
         });
-
+        // make sure correct mode is shown at start
         cmboxGameMode.setSelectedItem(GameManager.gameManager.getGameMode().toString());
 
         // Time Limit
         JLabel lblTimeLimit = new JLabel("Time Limit (s) : ");
-        JTextField txtTimeLimit = new JTextField("180");
-
         lblTimeLimit.setFont(Theme.FONT_DEFAULT);
         lblTimeLimit.setForeground(Theme.FONT_DEFAULT_COLOR);
+
+        JTextField txtTimeLimit = new JTextField("180");
         txtTimeLimit.setFont(Theme.FONT_DEFAULT);
-        txtTimeLimit.setForeground(Theme.FONT_DEFAULT_COLOR);
+        txtTimeLimit.setForeground(Theme.FONT_INPUT_COLOR);
 
-        UButton btnTimeLimit = new UButton("Set");
-
-        btnTimeLimit.addActionListener(new ActionListener() {
+        UButton btnSetTimeLimit = new UButton("Set");
+        btnSetTimeLimit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try{
@@ -247,11 +241,10 @@ public class DE_Frame extends JFrame {
         lblGameSpeed.setFont(Theme.FONT_DEFAULT);
         lblGameSpeed.setForeground(Theme.FONT_DEFAULT_COLOR);
         txtGameSpeed.setFont(Theme.FONT_DEFAULT);
-        txtGameSpeed.setForeground(Theme.FONT_DEFAULT_COLOR);
+        txtGameSpeed.setForeground(Theme.FONT_INPUT_COLOR);
 
-        UButton btnGameSpeed = new UButton("Set");
-
-        btnGameSpeed.addActionListener(new ActionListener() {
+        UButton btnSetGameSpeed = new UButton("Set");
+        btnSetGameSpeed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try{
@@ -278,19 +271,20 @@ public class DE_Frame extends JFrame {
         JLabel lblMapWidth = new JLabel("Map Width");
         lblMapWidth.setFont(Theme.FONT_DEFAULT);
         lblMapWidth.setForeground(Theme.FONT_DEFAULT_COLOR);
+
         JLabel lblMapHeight = new JLabel("Map Height");
         lblMapHeight.setFont(Theme.FONT_DEFAULT);
         lblMapHeight.setForeground(Theme.FONT_DEFAULT_COLOR);
 
         JTextField txtMapWidth = new JTextField("" + LevelGenerator.MAP_WIDTH);
         txtMapWidth.setFont(Theme.FONT_DEFAULT);
-        txtMapWidth.setForeground(Theme.FONT_DEFAULT_COLOR);
+        txtMapWidth.setForeground(Theme.FONT_INPUT_COLOR);
+
         JTextField txtMapHeight = new JTextField("" + LevelGenerator.MAP_HEIGHT);
         txtMapHeight.setFont(Theme.FONT_DEFAULT);
-        txtMapHeight.setForeground(Theme.FONT_DEFAULT_COLOR);
+        txtMapHeight.setForeground(Theme.FONT_INPUT_COLOR);
 
         UButton btnNewLevel = new UButton("New Level");
-
         btnNewLevel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -310,14 +304,12 @@ public class DE_Frame extends JFrame {
         });
 
         /* A bit complicated/hacked, set each checkbox to change in the boolean list*/
-
         ArrayList<JCheckBox> chkDrawPath = new ArrayList<>();
         ArrayList<JLabel> lblchckPath = new ArrayList<>();
 
         for(Mouse mouse : drawEngine.getMouses())
         {
             drawCharPath.add(false);
-
             JLabel lbl = new JLabel("Draw "+mouse.getName()+" path");
             lbl.setFont(Theme.FONT_DEFAULT);
             lbl.setForeground(Theme.FONT_DEFAULT_COLOR);
@@ -325,7 +317,6 @@ public class DE_Frame extends JFrame {
 
             JCheckBox chk = new JCheckBox();
             chk.setOpaque(false);
-
             chk.addItemListener(new ItemListener() {
                 @Override
                 public void itemStateChanged(ItemEvent e) {
@@ -341,7 +332,6 @@ public class DE_Frame extends JFrame {
                     }
                 }
             });
-
             chkDrawPath.add(chk);
         }
 
@@ -356,7 +346,6 @@ public class DE_Frame extends JFrame {
 
             JCheckBox chk = new JCheckBox();
             chk.setOpaque(false);
-
             chk.addItemListener(new ItemListener() {
                 @Override
                 public void itemStateChanged(ItemEvent e) {
@@ -372,7 +361,6 @@ public class DE_Frame extends JFrame {
                     }
                 }
             });
-
             chkDrawPath.add(chk);
         }
 
@@ -389,6 +377,7 @@ public class DE_Frame extends JFrame {
         /*First : set upper Panel */
         upperPanel.setLayout(new GridLayout(3, 1, 0, 0));
         upperPanel.setBorder(new EmptyBorder(20,50,5,50));
+
         // add logo
         upperPanel.add(logoUDEv, BorderLayout.NORTH);
 
@@ -398,24 +387,23 @@ public class DE_Frame extends JFrame {
         lblGameName.setHorizontalAlignment(JLabel.CENTER);
         upperPanel.add(lblGameName);
 
-        // set how to play panel
-        txtAreaGame.setFont(Theme.FONT_DEFAULT_MEDIUM);
-        txtAreaGame.setForeground(Theme.FONT_DEFAULT_COLOR);
-        txtAreaGame.setBorder(new EmptyBorder(0,50,0,50));
+        // set GameDescription panel
+        txtGameDescription.setFont(Theme.FONT_DEFAULT_MEDIUM);
+        txtGameDescription.setForeground(Theme.FONT_INPUT_COLOR);
+        txtGameDescription.setBorder(new EmptyBorder(0,50,0,50));
 
-        JScrollPane txtGamePanel = new JScrollPane(txtAreaGame);
-        txtGamePanel.setBorder(new LineBorder(Color.black, 1, true));
-        txtGamePanel.setSize(new Dimension(400, 400));
+        JScrollPane gameDescriptionPanel = new JScrollPane(txtGameDescription);
+        gameDescriptionPanel.setBorder(new LineBorder(Color.black, 1, true));
+        gameDescriptionPanel.setSize(new Dimension(400, 400));
 
-        // add how to play panel
-        txtGamePanel.setOpaque(false);
-        upperPanel.add(txtGamePanel, BorderLayout.CENTER);
+        // add GameDescription panel
+        gameDescriptionPanel.setOpaque(false);
+        upperPanel.add(gameDescriptionPanel, BorderLayout.CENTER);
 
         /*Second : set lower Panel*/
+
         // Init GridBag Layout
         lowerPanel.setLayout(new GridBagLayout());
-
-        //Objet to constraint componants
         GridBagConstraints gbc = new GridBagConstraints();
 
         // set Panel margin
@@ -449,7 +437,7 @@ public class DE_Frame extends JFrame {
 
         gbc.gridx = 3;      gbc.gridy = 1;
         gbc.gridheight = 1; gbc.gridwidth = GridBagConstraints.REMAINDER;
-        lowerPanel.add(btnTimeLimit, gbc);
+        lowerPanel.add(btnSetTimeLimit, gbc);
 
         // gameSpeed
         gbc.gridx = 0;      gbc.gridy = 2;
@@ -462,7 +450,7 @@ public class DE_Frame extends JFrame {
 
         gbc.gridx = 3;      gbc.gridy = 2;
         gbc.gridheight = 1; gbc.gridwidth = GridBagConstraints.REMAINDER;
-        lowerPanel.add(btnGameSpeed, gbc);
+        lowerPanel.add(btnSetGameSpeed, gbc);
 
         // MapLabels
         gbc.gridx = 0;      gbc.gridy = 3;
@@ -553,23 +541,19 @@ public class DE_Frame extends JFrame {
 
         // Center buttons ( ComboBox )
         JPanel centerPanel = new JPanel();
-
         centerPanel.setOpaque(false);
-        mapsCmBox = new JComboBox<>();
 
+        mapsCmBox = new JComboBox<>();
         mapsCmBox.setPreferredSize(new Dimension(120, 20));
         mapsCmBox.setFont(Theme.FONT_DEFAULT);
-        mapsCmBox.setForeground(Theme.FONT_DEFAULT_COLOR);
-
+        mapsCmBox.setForeground(Theme.FONT_INPUT_COLOR);
         updateCmBox();
-
         mapsCmBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 try
                 {
                     int i = mapsCmBox.getSelectedIndex();
-
                     switchToMap(drawEngine.getMaps().get(i));
                 } catch (Exception ex)
                 {
@@ -577,6 +561,7 @@ public class DE_Frame extends JFrame {
                 }
             }
         });
+
         centerPanel.add(mapsCmBox);
 
         // new Map button
@@ -590,25 +575,20 @@ public class DE_Frame extends JFrame {
 
         // log label
         logLabel = new JLabel("Here we print current events like when a cat hits a mine");
-
         logLabel.setFont(Theme.FONT_DEFAULT);
         logLabel.setForeground(Theme.FONT_DEFAULT_COLOR);
         logLabel.setHorizontalAlignment(JLabel.CENTER);
         logLabel.setPreferredSize(new Dimension(logLabel.getWidth(), Theme.LOG_BAR_HEIGHT));
 
-        // Add to frame
+        // Add to panel
         bottomPanel.add(btnDrawShortest, BorderLayout.WEST);
         bottomPanel.add(centerPanel, BorderLayout.CENTER);
         bottomPanel.add(newMapButton, BorderLayout.EAST);
         bottomPanel.add(logLabel, BorderLayout.SOUTH);
-
-        gamePanel.add(bottomPanel, BorderLayout.SOUTH);
     }
 
-
-
     /**
-     * Inits DrawEngine frame adapting to height
+     * Inits DrawEngine in extended state
      */
     private void initWindow() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -617,7 +597,6 @@ public class DE_Frame extends JFrame {
         // Set on FullScreen
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        //setResizable(false);
         try
         {
             File bgFile = FileManager.getRessourceFile("background.jpg");
@@ -638,7 +617,8 @@ public class DE_Frame extends JFrame {
      * add a mapContainerPanel to gamePanel with MouseListener
      * @param map Map
      */
-    private void addMapContainerPanel(Map map, int TILE_SIZE) {
+    private void addMapContainerPanel(Map map, int TILE_SIZE)
+    {
         mapPanel = new DE_MapPanel(drawEngine, map, TILE_SIZE);
         mapContainerPanel = new JScrollPane(mapPanel);
         mapContainerPanel.setWheelScrollingEnabled(false);
@@ -649,8 +629,6 @@ public class DE_Frame extends JFrame {
         mapContainerPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         mapContainerPanel.getVerticalScrollBar().setUnitIncrement(TILE_SIZE / 2);
         mapContainerPanel.getHorizontalScrollBar().setUnitIncrement(TILE_SIZE / 2);
-
-        gamePanel.add(mapContainerPanel, BorderLayout.CENTER);
     }
 
     private void setMouseListener()
@@ -740,12 +718,12 @@ public class DE_Frame extends JFrame {
 
 
     /**
-     * Change window state ( Before Start/Running/Paused )
+     * Change window state ( Before_tart/Running/Paused )
      * State given from button text
-     *
      * @param buttonText (String) Current Button Text
      */
-    public void changeState(String buttonText) {
+    public void changeState(String buttonText)
+    {
         if (buttonText.equals("Start Game"))// RUN GAME FROM START
         {
             startGameButton.setText("Pause Game");
@@ -769,34 +747,29 @@ public class DE_Frame extends JFrame {
     public void hideControlPanel() {
         controlPanel.setVisible(false);
         contentPane.remove(controlPanel);
-        contentPane.invalidate();
-
+        contentPane.revalidate();
         adjustTileSize(TILE_SIZE);
     }
 
     /**
-     *
+     * Update ComboBox items ( maps list )
      */
-    private void updateCmBox() {
+    private void updateCmBox()
+    {
         if (mapsCmBox == null) return;
-
         mapsCmBox.removeAllItems();
         for (Map m : drawEngine.getMaps())
-        {
             mapsCmBox.addItem(m.getName());
-        }
     }
 
     /**
-     * Adjust Tile size to fit all the screen
-     *
+     * Adjust Tile size to given param
      * @param size (int)
      */
-    private void adjustTileSize(int size) {
+    private void adjustTileSize(int size)
+    {
         TILE_SIZE = size;
-
         mapPanel.changeTileSize(size);
-
         update();
     }
 
@@ -804,16 +777,16 @@ public class DE_Frame extends JFrame {
     {
         gamePanel.remove(mapContainerPanel);
         addMapContainerPanel(map, TILE_SIZE);
-
         revalidate();
         repaint();
     }
 
     /**
-     * Set map to show in mapPanel
-     * @param map map to show
+     * Set the map to show in mapPanel
+     * @param map (Map)
      */
-    private void switchToMap(Map map) {
+    private void switchToMap(Map map)
+    {
         mapPanel.setMap(map);
         mapName.setText(map.getName());
         update();
@@ -821,21 +794,20 @@ public class DE_Frame extends JFrame {
         update();
     }
 
-
     /**
      * Convert time to mm:ss format and show on timeLabel
-     *
-     * @param currentTime (float) current time in miliseconds
+     * @param currentTime (String) current time in hh:mm:ss format
      */
-    private void updateTime(String currentTime) {
+    private void updateTime(String currentTime)
+    {
         timeLabel.setText("Time : " + currentTime.substring(3));
     }
 
     /**
      * A little hard coded, know which character to follow depending on map
      */
-    private void updateScroll() {
-
+    private void updateScroll()
+    {
         int index = mapsCmBox.getSelectedIndex();
         if (index > 0) // if not levelMap
         {
@@ -860,9 +832,8 @@ public class DE_Frame extends JFrame {
     }
 
     /**
-     * Calculate and set position of scrol View port (mapContainerPanel)
+     * Calculate and set position of scroll View port (mapContainerPanel)
      * se that the given p is in center
-     *
      * @param p (Position)
      */
     private void centerScroll(Position p)
@@ -891,8 +862,10 @@ public class DE_Frame extends JFrame {
     /**
      * Refresh map ( draw level, characters and objects )
      * Draw Cat and mouse DestinationPath
+     * Update scroll and time
      */
-    public void update() {
+    void update()
+    {
         mapPanel.setMap(drawEngine.getMaps().get(mapsCmBox.getSelectedIndex()));
         mapPanel.update();
         updateTime(drawEngine.getTimer().getCurrentTime().toString());
@@ -903,21 +876,32 @@ public class DE_Frame extends JFrame {
         contentPane.repaint();
     }
 
+    /**
+     * Show message in log Panel
+     * @param message (String)
+     */
     public void printLog(String message)
     {
         logLabel.setText(message);
     }
 
-    public void displayEndGameScreen(String result) {
+    /**
+     *
+     * @param result (String) game result to print on top Panel
+     */
+    void displayEndGameScreen(String result)
+    {
         JPanel topEndGamePanel = new JPanel();
         JPanel bottomEndGamePanel = new JPanel();
 
+        topEndGamePanel.setPreferredSize(new Dimension(topPanel.getWidth(), Theme.TOP_BAR_HEIGHT));
+        bottomEndGamePanel.setPreferredSize(new Dimension(bottomPanel.getWidth(), Theme.BOTTOM_BAR_HEIGHT));
+
         JLabel lblResult = new JLabel(result);
-        lblResult.setFont(new Font("Cambria", Font.PLAIN, 48));
+        lblResult.setFont(Theme.FONT_DEFAULT_BIG);
         lblResult.setForeground(Theme.FONT_DEFAULT_COLOR);
 
         UButton playAgainButton = new UButton("PlayAgain");
-
         playAgainButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e)
@@ -927,10 +911,11 @@ public class DE_Frame extends JFrame {
             }
         });
 
+        // add to panel
         bottomEndGamePanel.add(playAgainButton);
         topEndGamePanel.add(lblResult);
 
-        // Show and udpdate screen
+        // Show and update screen
         topEndGamePanel.setVisible(false);
         bottomEndGamePanel.setVisible(false);
         gamePanel.add(topEndGamePanel, BorderLayout.NORTH);
@@ -941,8 +926,13 @@ public class DE_Frame extends JFrame {
         bottomEndGamePanel.setVisible(true);
     }
 
-    public void explodeMine(int x, int y) {
+    /**
+     * Trigger explosion animation on given tile coordinates
+     * @param x (int) X-ccordinate of tile
+     * @param y (int) Y-ccordinate of tile
+     */
+    void explodeMine(int x, int y)
+    {
         mapPanel.createAnimation(DE_GameSprites.EXPLOSION_FRAMES, x, y);
     }
-
 }
