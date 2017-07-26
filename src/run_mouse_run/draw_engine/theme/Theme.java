@@ -16,7 +16,7 @@ public class Theme {
     public static final Color FONT_INPUT_COLOR = Color.BLACK;
 
     // Layout
-    public static final int TOP_BAR_HEIGHT = 30;
+    public static final int TOP_BAR_HEIGHT = 35;
     public static final int LOG_BAR_HEIGHT = 30;
     public static final int BOTTOM_BAR_HEIGHT = 35 + LOG_BAR_HEIGHT;
     public static final int SETTING_PANE_MARGIN = 75;
@@ -43,4 +43,11 @@ public class Theme {
     public static final Font INPUT_TEXT_FONT = FONT_DEFAULT_MEDIUM;
     public static final int LABELED_MARGIN = 2;
 
+
+    // Custom settings
+    public static final boolean GAME_DESCRIPTION_IS_OPAQUE = false;
+    public static final Color GAME_DESCRIPTION_BG = Color.WHITE;    // only if opaque
+    public static final Font GAME_DESCRIPTION_FONT = FONT_DEFAULT_MEDIUM;
+    public static final Color GAME_DESCRIPTION_FONT_COLOR = Color.WHITE;
+    public static final Color GAME_DESCRIPTION_BORDER_COLOR = Color.WHITE;
 }

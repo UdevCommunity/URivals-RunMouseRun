@@ -42,7 +42,7 @@ class GameManager
         drawEngine = new DrawEngine(level.getMap());
         timer = new CustomTimer();
 
-        drawEngine.printMessage("Setting game");
+        drawEngine.printMessage("Game Settings");
     }
 
     // We made a difference between startGame and resumeGame because we may have do to some initialisations at the beginning

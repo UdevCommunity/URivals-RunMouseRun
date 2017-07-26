@@ -387,16 +387,18 @@ public class DE_Frame extends JFrame {
         upperPanel.add(lblGameName);
 
         // set GameDescription panel
-        txtGameDescription.setFont(Theme.FONT_DEFAULT_MEDIUM);
-        txtGameDescription.setForeground(Theme.FONT_INPUT_COLOR);
+        txtGameDescription.setFont(Theme.GAME_DESCRIPTION_FONT);
+        txtGameDescription.setForeground(Theme.GAME_DESCRIPTION_FONT_COLOR);
         txtGameDescription.setBorder(new EmptyBorder(0,50,0,50));
 
         JScrollPane gameDescriptionPanel = new JScrollPane(txtGameDescription);
-        gameDescriptionPanel.setBorder(new LineBorder(Color.black, 1, true));
+        gameDescriptionPanel.setBorder(new LineBorder(Theme.GAME_DESCRIPTION_BORDER_COLOR, 1, true));
         gameDescriptionPanel.setSize(new Dimension(400, 400));
 
         // add GameDescription panel
         gameDescriptionPanel.setOpaque(false);
+        gameDescriptionPanel.setBackground(Theme.GAME_DESCRIPTION_BG);
+        gameDescriptionPanel.getViewport().setOpaque(Theme.GAME_DESCRIPTION_IS_OPAQUE);
         upperPanel.add(gameDescriptionPanel, BorderLayout.CENTER);
 
         /*Second : set lower Panel*/
@@ -523,7 +525,7 @@ public class DE_Frame extends JFrame {
         bottomPanel.setPreferredSize(new Dimension(bottomPanel.getWidth(), Theme.BOTTOM_BAR_HEIGHT));
 
         // Draw Shortest Button
-        btnDrawShortest = new UButton("Draw shortest");
+        btnDrawShortest = new UButton("Draw Shortest");
         btnDrawShortest.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0)
             {
