@@ -30,14 +30,17 @@ public class DE_GameSprites
             "mine_sprite.png",
             "cat_sprite.png",
             "mouse_sprite.png",
-            "mouse_sprite_dead.png"
+            "mouse_sprite_dead.png",
+            "flag.png"
     };
 
     public static final int NOT_DISCOVERED_SPRITE = 0, EMPTY_SPRITE = 1,
             WALL_SPRITE = 2, CHEESE_SPRITE = 3,
             POWERUP_VISION_SPRITE = 5, POWERUP_SPEED_SPRITE = 4,
             INVISIBLE_ZONE_SPRITE = 6, MINE_SPRITE = 7,
-            CAT_SPRITE = 8, MOUSE_SPRITE = 9, MOUSE_SPRITE_DEAD = 10;
+            CAT_SPRITE = 8, MOUSE_SPRITE = 9, MOUSE_SPRITE_DEAD = 10,
+            FLAG_SPRITE = 11;
+    ;
 
     private ArrayList<DE_TileImage> sprites, customSprites, spritesDead;
     private ArrayList<BufferedImage> spritesOriginal, customSpritesOriginal, spritesDeadOriginal;

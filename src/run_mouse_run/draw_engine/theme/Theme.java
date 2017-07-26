@@ -12,7 +12,7 @@ public class Theme {
     public static final Font FONT_DEFAULT_BIG = new Font("Cambria", Font.BOLD, 48);
 
     // Font Color
-    public static final Color FONT_DEFAULT_COLOR = Color.BLACK;
+    public static final Color FONT_DEFAULT_COLOR = Color.WHITE;
     public static final Color FONT_INPUT_COLOR = Color.BLACK;
 
     // Layout
@@ -22,8 +22,8 @@ public class Theme {
     public static final int SETTING_PANE_MARGIN = 75;
 
     // Color
-    public static final Color BG_COLOR = new Color(242, 242, 242);
-    public static final Color DEFAULT = new Color(95, 179, 203);
+    public static final Color BG_COLOR = new Color(34, 37, 46);
+    public static final Color DEFAULT = new Color(34, 37, 46);
     public static final Color COLOR_UDEV_YELLOW = new Color(241,196,15);
     public static final Color COLOR_UDEV_BLUE = new Color(52, 152, 219);
     public static final Color COLOR_UDEV_RED = new Color(231, 76, 60);

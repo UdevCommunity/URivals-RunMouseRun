@@ -230,8 +230,9 @@ public class DE_MapPanel extends JPanel {
         }
     }
 
-    public void drawPoint(int x, int y, Color color)
+    public void drawPoint(int x, int y)
     {
+        setTile(layers.get(CHARACTER_LAYER)[y][x], gameSprites.getSprite(DE_GameSprites.FLAG_SPRITE));
     }
 
 
@@ -269,7 +270,7 @@ public class DE_MapPanel extends JPanel {
     }
 
     public void drawPath(ArrayList<Position> path) {
-        drawPath(path, gameSprites.getSprite(DE_GameSprites.CAT_SPRITE));
+        drawPath(path, gameSprites.getSprite(DE_GameSprites.FLAG_SPRITE));
     }
 
     public void drawPath(ArrayList<Position> path, DE_TileImage sprite) {

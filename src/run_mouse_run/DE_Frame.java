@@ -654,14 +654,12 @@ public class DE_Frame extends JFrame {
                 {
                     if (event.getButton() == MouseEvent.BUTTON1)
                     {
-                        initialPos.setPosX(j);
-                        initialPos.setPosY(i);
-                        mapPanel.update();
+                        initialPos = new Position(j,i);
+                        update();
                     } else if (event.getButton() == MouseEvent.BUTTON3)
                     {
-                        finalPos.setPosX(j);
-                        finalPos.setPosY(i);
-                        mapPanel.update();
+                        finalPos = new Position(j,i);
+                        update();
                     } else if (event.getButton() == MouseEvent.BUTTON2)
                     {
                         do
@@ -871,6 +869,11 @@ public class DE_Frame extends JFrame {
         updateScroll();
 
         mapPanel.drawCharacterPaths(drawCharPath);
+        if(!startGameButton.getText().equals("Pause Game")) // when game not running
+        {
+            mapPanel.drawPoint(initialPos.getPosX(), initialPos.getPosY());
+            mapPanel.drawPoint(finalPos.getPosX(), finalPos.getPosY());
+        }
 
         contentPane.repaint();
     }
