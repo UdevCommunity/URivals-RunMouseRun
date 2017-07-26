@@ -17,9 +17,9 @@ import javax.swing.border.EmptyBorder;
  */
 public class UButton extends JButton{
 
-    public Color bg = Theme.DEFAULT;
+    public Color bg = Theme.BTN_DEFAULT_COLOR;
     public Color hoverBg = null;
-    public Color borderColor = Color.BLACK;
+    public Color borderColor = null;
     public ArrayList<Component> validationComponents = new ArrayList<Component>();
 
     public UButton(String text) {
@@ -27,6 +27,7 @@ public class UButton extends JButton{
 
         this.setText(text);
         this.setBgColor(this.bg);
+        setFont(Theme.BTN_DEFAULT_FONT);
         this.setBorder(new CompoundBorder(BorderFactory.createLineBorder(borderColor),
                 new EmptyBorder(Theme.LABELED_MARGIN, 0, Theme.LABELED_MARGIN, 0)));
 
@@ -37,8 +38,9 @@ public class UButton extends JButton{
                 Theme.BTN_DEFAULT_WIDTH, Theme.BTN_DEFAULT_HEIGHT)
         );
         this.setMaximumSize(new Dimension(
-                120, Theme.BTN_DEFAULT_HEIGHT)
+                Theme.BTN_DEFAULT_WIDTH*2, Theme.BTN_DEFAULT_HEIGHT)
         );
+
         this.setForeground(Theme.BTN_DEFAULT_TEXT_COLOR);
 
         UButton self = this;
