@@ -4,14 +4,14 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import theme.*;
 
 /**
  * Frame that displays one of the maps in the drawEngine's maps
@@ -20,9 +20,6 @@ public class DE_Frame extends JFrame {
 
     public int TILE_SIZE = 48; // Tiles will resize to this value
 
-    private Font defaultFont;
-    private Font defaultFontLarge;
-
     DrawEngine drawEngine;
 
     private JPanel contentPane;
@@ -30,8 +27,8 @@ public class DE_Frame extends JFrame {
     private DE_MapPanel mapPanel;
     private JLabel mapName, timeLabel;
     private JComboBox<String> mapsCmBox;
-    public JButton startGameButton;
-    private JButton btnDrawShortest;
+    public UButton startGameButton;
+    private UButton btnDrawShortest;
     private JPanel topPanel, bottomPanel, gamePanel, controlPanel;
     private JLabel logLabel;
 
@@ -44,6 +41,7 @@ public class DE_Frame extends JFrame {
     private double mousePressedAtPosX;
     private double mousePressedAtPosY;
     private ArrayList<Boolean> drawCharPath = new ArrayList<>();
+
 
     /**
      * Create the frame.
@@ -66,9 +64,6 @@ public class DE_Frame extends JFrame {
         // Set GUI
         initWindow();
 
-        defaultFont = new Font("Cambria", Font.PLAIN, 18);
-        defaultFontLarge = new Font("Cambria", Font.BOLD, 32);
-
         gamePanel = new JPanel();    // Panel containing the Map, and inGame informations
         gamePanel.setLayout(new BorderLayout(5, 5));
 
@@ -83,8 +78,8 @@ public class DE_Frame extends JFrame {
 		initSettingPanel();
 
         /*Panels initialised, add to frame */
-        contentPane.add(gamePanel);//, BorderLayout.WEST);
-        contentPane.add(controlPanel);//, BorderLayout.EAST);
+        contentPane.add(gamePanel);
+        contentPane.add(controlPanel);
 
 
         SetTransparency();
@@ -107,13 +102,16 @@ public class DE_Frame extends JFrame {
     {
         topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout(0, 0));
+        topPanel.setPreferredSize(new Dimension(topPanel.getWidth(), Theme.TOP_BAR_HEIGHT));
 
         mapName = new JLabel("Level Map");
-        mapName.setFont(defaultFont);
+        mapName.setFont(Theme.FONT_DEFAULT);
 
+        mapName.setForeground(Theme.FONT_DEFAULT_COLOR);
         // Start game button
         JPanel startButtonPanel = new JPanel();
-        startGameButton = new JButton("Start Game");
+
+        startGameButton = new UButton("Start Game");
 
         startGameButton.addActionListener(new ActionListener() {
             @Override
@@ -137,7 +135,8 @@ public class DE_Frame extends JFrame {
 
         // Time Label
         timeLabel = new JLabel("Time : 00:00");
-        timeLabel.setFont(defaultFont);
+        timeLabel.setFont(Theme.FONT_DEFAULT);
+        timeLabel.setForeground(Theme.FONT_DEFAULT_COLOR);
 
         topPanel.add(mapName, BorderLayout.WEST);
         topPanel.add(startButtonPanel, BorderLayout.CENTER);
@@ -186,10 +185,12 @@ public class DE_Frame extends JFrame {
 
         // GameMode setting
         JLabel lblGameMode = new JLabel("Game Mode");
-        lblGameMode.setFont(defaultFont);
+        lblGameMode.setFont(Theme.FONT_DEFAULT);
+        lblGameMode.setForeground(Theme.FONT_DEFAULT_COLOR);
 
         JComboBox<String> cmboxGameMode = new JComboBox<>();
-        cmboxGameMode.setFont(defaultFont);
+        cmboxGameMode.setFont(Theme.FONT_DEFAULT);
+        cmboxGameMode.setForeground(Theme.FONT_DEFAULT_COLOR);
 
         for(GameMode mode : GameMode.values())
             cmboxGameMode.addItem(mode.toString());
@@ -209,10 +210,12 @@ public class DE_Frame extends JFrame {
         JLabel lblTimeLimit = new JLabel("Time Limit (s) : ");
         JTextField txtTimeLimit = new JTextField("180");
 
-        lblTimeLimit.setFont(defaultFont);
-        txtTimeLimit.setFont(defaultFont);
+        lblTimeLimit.setFont(Theme.FONT_DEFAULT);
+        lblTimeLimit.setForeground(Theme.FONT_DEFAULT_COLOR);
+        txtTimeLimit.setFont(Theme.FONT_DEFAULT);
+        txtTimeLimit.setForeground(Theme.FONT_DEFAULT_COLOR);
 
-        JButton btnTimeLimit = new JButton("Set");
+        UButton btnTimeLimit = new UButton("Set");
 
         btnTimeLimit.addActionListener(new ActionListener() {
             @Override
@@ -241,10 +244,12 @@ public class DE_Frame extends JFrame {
         JLabel lblGameSpeed = new JLabel("Game Speed (%) : ");
         JTextField txtGameSpeed = new JTextField("100");
 
-        lblGameSpeed.setFont(defaultFont);
-        txtGameSpeed.setFont(defaultFont);
+        lblGameSpeed.setFont(Theme.FONT_DEFAULT);
+        lblGameSpeed.setForeground(Theme.FONT_DEFAULT_COLOR);
+        txtGameSpeed.setFont(Theme.FONT_DEFAULT);
+        txtGameSpeed.setForeground(Theme.FONT_DEFAULT_COLOR);
 
-        JButton btnGameSpeed = new JButton("Set");
+        UButton btnGameSpeed = new UButton("Set");
 
         btnGameSpeed.addActionListener(new ActionListener() {
             @Override
@@ -271,16 +276,20 @@ public class DE_Frame extends JFrame {
 
         // Level settings
         JLabel lblMapWidth = new JLabel("Map Width");
-        lblMapWidth.setFont(defaultFont);
+        lblMapWidth.setFont(Theme.FONT_DEFAULT);
+        lblMapWidth.setForeground(Theme.FONT_DEFAULT_COLOR);
         JLabel lblMapHeight = new JLabel("Map Height");
-        lblMapHeight.setFont(defaultFont);
+        lblMapHeight.setFont(Theme.FONT_DEFAULT);
+        lblMapHeight.setForeground(Theme.FONT_DEFAULT_COLOR);
 
         JTextField txtMapWidth = new JTextField("" + LevelGenerator.MAP_WIDTH);
-        txtMapWidth.setFont(defaultFont);
+        txtMapWidth.setFont(Theme.FONT_DEFAULT);
+        txtMapWidth.setForeground(Theme.FONT_DEFAULT_COLOR);
         JTextField txtMapHeight = new JTextField("" + LevelGenerator.MAP_HEIGHT);
-        txtMapHeight.setFont(defaultFont);
+        txtMapHeight.setFont(Theme.FONT_DEFAULT);
+        txtMapHeight.setForeground(Theme.FONT_DEFAULT_COLOR);
 
-        JButton btnNewLevel = new JButton("New Level");
+        UButton btnNewLevel = new UButton("New Level");
 
         btnNewLevel.addActionListener(new ActionListener() {
             @Override
@@ -310,7 +319,8 @@ public class DE_Frame extends JFrame {
             drawCharPath.add(false);
 
             JLabel lbl = new JLabel("Draw "+mouse.getName()+" path");
-            lbl.setFont(defaultFont);
+            lbl.setFont(Theme.FONT_DEFAULT);
+            lbl.setForeground(Theme.FONT_DEFAULT_COLOR);
             lblchckPath.add(lbl);
 
             JCheckBox chk = new JCheckBox();
@@ -340,7 +350,8 @@ public class DE_Frame extends JFrame {
             drawCharPath.add(false);
 
             JLabel lbl = new JLabel("Draw "+cat.getName()+" path");
-            lbl.setFont(defaultFont);
+            lbl.setFont(Theme.FONT_DEFAULT);
+            lbl.setForeground(Theme.FONT_DEFAULT_COLOR);
             lblchckPath.add(lbl);
 
             JCheckBox chk = new JCheckBox();
@@ -382,12 +393,14 @@ public class DE_Frame extends JFrame {
         upperPanel.add(logoUDEv, BorderLayout.NORTH);
 
         // add game Name
-        lblGameName.setFont(defaultFontLarge);
+        lblGameName.setFont(Theme.FONT_DEFAULT_LARGE);
+        lblGameName.setForeground(Theme.FONT_DEFAULT_COLOR);
         lblGameName.setHorizontalAlignment(JLabel.CENTER);
         upperPanel.add(lblGameName);
 
         // set how to play panel
-        txtAreaGame.setFont(new Font("Cambria", Font.PLAIN, 20));
+        txtAreaGame.setFont(Theme.FONT_DEFAULT_MEDIUM);
+        txtAreaGame.setForeground(Theme.FONT_DEFAULT_COLOR);
         txtAreaGame.setBorder(new EmptyBorder(0,50,0,50));
 
         JScrollPane txtGamePanel = new JScrollPane(txtAreaGame);
@@ -504,7 +517,7 @@ public class DE_Frame extends JFrame {
 
         // add to controlPanel
         controlPanel.setLayout(new GridLayout(2,1));
-        controlPanel.setBorder(new EmptyBorder(10, 75,5,75));
+        controlPanel.setBorder(new EmptyBorder(10, Theme.SETTING_PANE_MARGIN,5,Theme.SETTING_PANE_MARGIN));
         controlPanel.add(upperPanel);
         JScrollPane lowerScrollPane = new JScrollPane(lowerPanel);
         lowerScrollPane.setBorder(null);
@@ -520,9 +533,10 @@ public class DE_Frame extends JFrame {
     {
         bottomPanel = new JPanel();
         bottomPanel.setLayout(new BorderLayout(5, 5));
+        bottomPanel.setPreferredSize(new Dimension(bottomPanel.getWidth(), Theme.BOTTOM_BAR_HEIGHT));
 
         // Draw Shortest Button
-        btnDrawShortest = new JButton("Draw shortest");
+        btnDrawShortest = new UButton("Draw shortest");
         btnDrawShortest.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
             }
@@ -535,7 +549,8 @@ public class DE_Frame extends JFrame {
         mapsCmBox = new JComboBox<>();
 
         mapsCmBox.setPreferredSize(new Dimension(120, 20));
-        mapsCmBox.setFont(defaultFont);
+        mapsCmBox.setFont(Theme.FONT_DEFAULT);
+        mapsCmBox.setForeground(Theme.FONT_DEFAULT_COLOR);
 
         updateCmBox();
 
@@ -556,7 +571,7 @@ public class DE_Frame extends JFrame {
         centerPanel.add(mapsCmBox);
 
         // new Map button
-        JButton newMapButton = new JButton("New Window");
+        UButton newMapButton = new UButton("New Window");
         newMapButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -567,8 +582,11 @@ public class DE_Frame extends JFrame {
         // log label
         logLabel = new JLabel("Here we print current events like when a cat hits a mine");
 
-        logLabel.setFont(defaultFont);
+        logLabel.setFont(Theme.FONT_DEFAULT);
+        logLabel.setForeground(Theme.FONT_DEFAULT_COLOR);
         logLabel.setHorizontalAlignment(JLabel.CENTER);
+        logLabel.setPreferredSize(new Dimension(logLabel.getWidth(), Theme.LOG_BAR_HEIGHT));
+
         // Add to frame
         bottomPanel.add(btnDrawShortest, BorderLayout.WEST);
         bottomPanel.add(centerPanel, BorderLayout.CENTER);
@@ -599,7 +617,7 @@ public class DE_Frame extends JFrame {
         } catch(Exception e)
         {
             System.err.println("Couldn't load background file");
-            contentPane = new JPanel();
+            contentPane = new BackgroundPanel(Theme.BG_COLOR);
         }
 
         contentPane.setBorder(new EmptyBorder(5, 10, 5, 10));
@@ -614,6 +632,7 @@ public class DE_Frame extends JFrame {
     private void addMapContainerPanel(Map map, int TILE_SIZE) {
         mapPanel = new DE_MapPanel(drawEngine, map, TILE_SIZE);
         mapContainerPanel = new JScrollPane(mapPanel);
+        mapContainerPanel.setWheelScrollingEnabled(false);
 
         setMouseListener();
 
@@ -886,8 +905,9 @@ public class DE_Frame extends JFrame {
 
         JLabel lblResult = new JLabel(result);
         lblResult.setFont(new Font("Cambria", Font.PLAIN, 48));
+        lblResult.setForeground(Theme.FONT_DEFAULT_COLOR);
 
-        JButton playAgainButton = new JButton("PlayAgain");
+        UButton playAgainButton = new UButton("PlayAgain");
 
         playAgainButton.addActionListener(new ActionListener() {
             @Override
@@ -916,23 +936,4 @@ public class DE_Frame extends JFrame {
         mapPanel.createAnimation(DE_GameSprites.EXPLOSION_FRAMES, x, y);
     }
 
-    private class BackgroundPanel extends JPanel{
-        Image backgroundImage;
-
-        public BackgroundPanel(Image backgroundImage)
-        {
-            super();
-            this.backgroundImage = backgroundImage;
-        }
-
-        @Override
-        protected void paintComponent(Graphics g)
-        {
-            super.paintComponent(g);
-            if(backgroundImage == null) return;
-
-            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), null);
-
-        }
-    }
 }
