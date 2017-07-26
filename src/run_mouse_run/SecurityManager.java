@@ -29,6 +29,8 @@ public class SecurityManager
 
     public void checkForImportGameManager(String directoryPath) throws IOException
     {
+        directoryPath = directoryPath.replace("%20", " ");
+
         File[] files = new File(directoryPath).listFiles();
 
         for (File file : files)
