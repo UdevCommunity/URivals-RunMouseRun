@@ -63,7 +63,10 @@ public class DrawEngine {
 	public void setVisible(boolean visible)
 	{
 		for(DE_Frame frame : frames)
+		{
 			frame.setVisible(visible);
+			frame.update();
+		}
 	}
 
 	/**
@@ -168,7 +171,6 @@ public class DrawEngine {
 
 	public void createNewLevel(int w, int h)
 	{
-		/// TODO : Bug fix
 		maps.remove(GameManager.gameManager.getLevelGenerator().getMap()); // removeLevelMap
 		GameManager.gameManager.getLevelGenerator().setMap(w, h);
 
