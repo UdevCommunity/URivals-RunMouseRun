@@ -4,7 +4,6 @@ import run_mouse_run.Mouses.DumbJerry;
 import run_mouse_run.Cats.DumbTom;
 
 import java.awt.*;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -49,6 +48,9 @@ class GameManager
     // of the game but not necessarily at resume.
     void startGame()
     {
+        drawEngine.printMessage("Game Started !");
+        timer.startTimer();
+
         SecurityManager securityManager = new SecurityManager();
         try
         {
@@ -59,9 +61,6 @@ class GameManager
         {
             e.printStackTrace();
         }
-
-        drawEngine.printMessage("Game Started !");
-        timer.startTimer();
     }
 
     public static void main(String[] args)

@@ -149,7 +149,7 @@ public class DE_Frame extends JFrame {
         try
         {
             logoUDEv = new JLabel(
-                    new ImageIcon(ImageIO.read(FileManager.getRessourceFile("udev-logo.png")))
+                    new ImageIcon(ImageIO.read(FileManager.getResourceFile("udev-logo.png")))
             );
         } catch (IOException e)
         {
@@ -600,7 +600,7 @@ public class DE_Frame extends JFrame {
 
         try
         {
-            File bgFile = FileManager.getRessourceFile(Theme.BG_FILE_NAME);
+            File bgFile = FileManager.getResourceFile(Theme.BG_FILE_NAME);
             BufferedImage backgroundImage = ImageIO.read(bgFile);
             contentPane = new BackgroundPanel(backgroundImage);
         } catch(Exception e)

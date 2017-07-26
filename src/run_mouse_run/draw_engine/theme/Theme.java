@@ -2,12 +2,13 @@ package run_mouse_run.draw_engine.theme;
 
 import java.awt.*;
 
-public class Theme {
+public class Theme
+{
 
     // Font
     public static final Font FONT_DEFAULT  = new Font("Cambria", Font.PLAIN, 18);
-    public static final Font FONT_DEFAULT_BOLD  = new Font("Cambria", Font.BOLD, 18);
-    public static final Font FONT_DEFAULT_MEDIUM = new Font("Cambria", Font.BOLD, 20);
+    public static final Font FONT_DEFAULT_BOLD  = new Font("Cambria", Font.BOLD, 16);
+    public static final Font FONT_DEFAULT_MEDIUM = new Font("Cambria", Font.BOLD, 18);
     public static final Font FONT_DEFAULT_LARGE = new Font("Cambria", Font.BOLD, 32);
     public static final Font FONT_DEFAULT_BIG = new Font("Cambria", Font.BOLD, 48);
 
@@ -29,6 +30,15 @@ public class Theme {
     public static final Color COLOR_UDEV_BLUE = new Color(52, 152, 219);
     public static final Color COLOR_UDEV_RED = new Color(231, 76, 60);
     public static final Color COLOR_UDEV_GREEN = new Color(46, 204, 113);
+    public static final Color COLOR_CLOUD = new Color(236, 240, 241);
+    public static final Color COLOR_POMEGRANATE = new Color(192, 57, 43);
+    public static final Color COLOR_BELIZE_HOLE = new Color(41, 128, 185);
+    public static final Color COLOR_CARROT = new Color(230, 126, 34);
+    public static final Color COLOR_WISTERIA = new Color(142, 68, 173);
+    public static final Color COLOR_GREEN_SEA = new Color(22, 160, 133);
+    public static final Color COLOR_EMERALD = new Color(46, 204, 113);
+    public static final Color COLOR_TURQUOISE = new Color(26, 188, 156);
+    public static final Color COLOR_PUMPKIN = new Color(211, 84, 10);
 
     // Buttons
     public static final Font BTN_DEFAULT_FONT = FONT_DEFAULT_BOLD;
