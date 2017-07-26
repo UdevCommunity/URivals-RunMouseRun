@@ -67,7 +67,6 @@ public class DE_Frame extends JFrame {
 
 		initSettingPanel();
 
-
         /*Panels initialised, add to frame */
         gamePanel.add(topPanel, BorderLayout.NORTH);
         gamePanel.add(mapContainerPanel, BorderLayout.CENTER);
@@ -207,7 +206,7 @@ public class DE_Frame extends JFrame {
         lblTimeLimit.setForeground(Theme.FONT_DEFAULT_COLOR);
 
         JTextField txtTimeLimit = new JTextField("180");
-        txtTimeLimit.setFont(Theme.FONT_DEFAULT);
+        txtTimeLimit.setFont(Theme.INPUT_TEXT_FONT);
         txtTimeLimit.setForeground(Theme.FONT_INPUT_COLOR);
 
         UButton btnSetTimeLimit = new UButton("Set");
@@ -240,7 +239,7 @@ public class DE_Frame extends JFrame {
 
         lblGameSpeed.setFont(Theme.FONT_DEFAULT);
         lblGameSpeed.setForeground(Theme.FONT_DEFAULT_COLOR);
-        txtGameSpeed.setFont(Theme.FONT_DEFAULT);
+        txtGameSpeed.setFont(Theme.INPUT_TEXT_FONT);
         txtGameSpeed.setForeground(Theme.FONT_INPUT_COLOR);
 
         UButton btnSetGameSpeed = new UButton("Set");
@@ -277,11 +276,11 @@ public class DE_Frame extends JFrame {
         lblMapHeight.setForeground(Theme.FONT_DEFAULT_COLOR);
 
         JTextField txtMapWidth = new JTextField("" + LevelGenerator.MAP_WIDTH);
-        txtMapWidth.setFont(Theme.FONT_DEFAULT);
+        txtMapWidth.setFont(Theme.INPUT_TEXT_FONT);
         txtMapWidth.setForeground(Theme.FONT_INPUT_COLOR);
 
         JTextField txtMapHeight = new JTextField("" + LevelGenerator.MAP_HEIGHT);
-        txtMapHeight.setFont(Theme.FONT_DEFAULT);
+        txtMapHeight.setFont(Theme.INPUT_TEXT_FONT);
         txtMapHeight.setForeground(Theme.FONT_INPUT_COLOR);
 
         UButton btnNewLevel = new UButton("New Level");
@@ -381,7 +380,7 @@ public class DE_Frame extends JFrame {
         // add logo
         upperPanel.add(logoUDEv, BorderLayout.NORTH);
 
-        // add game Name
+        // add gameName
         lblGameName.setFont(Theme.FONT_DEFAULT_LARGE);
         lblGameName.setForeground(Theme.FONT_DEFAULT_COLOR);
         lblGameName.setHorizontalAlignment(JLabel.CENTER);
@@ -608,7 +607,7 @@ public class DE_Frame extends JFrame {
             contentPane = new BackgroundPanel(Theme.BG_COLOR);
         }
 
-        contentPane.setBorder(new EmptyBorder(5, 10, 5, 10));
+        contentPane.setBorder(new EmptyBorder(0, 10, 0, 10));
         contentPane.setLayout(new GridLayout(1, 2, 5, 0));
         setContentPane(contentPane);
     }

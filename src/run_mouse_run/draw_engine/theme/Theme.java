@@ -6,6 +6,7 @@ public class Theme {
 
     // Font
     public static final Font FONT_DEFAULT  = new Font("Cambria", Font.PLAIN, 18);
+    public static final Font FONT_DEFAULT_BOLD  = new Font("Cambria", Font.BOLD, 18);
     public static final Font FONT_DEFAULT_MEDIUM = new Font("Cambria", Font.BOLD, 20);
     public static final Font FONT_DEFAULT_LARGE = new Font("Cambria", Font.BOLD, 32);
     public static final Font FONT_DEFAULT_BIG = new Font("Cambria", Font.BOLD, 48);
@@ -29,7 +30,7 @@ public class Theme {
     public static final Color COLOR_UDEV_GREEN = new Color(46, 204, 113);
 
     // Buttons
-    public static final Font BTN_DEFAULT_FONT = FONT_DEFAULT;
+    public static final Font BTN_DEFAULT_FONT = FONT_DEFAULT_BOLD;
     public static final Color BTN_DEFAULT_COLOR = COLOR_UDEV_GREEN;
     public static final Color BTN_DEFAULT_TEXT_COLOR = Color.WHITE;
     public static final int BTN_DEFAULT_HEIGHT = 28;
@@ -38,6 +39,7 @@ public class Theme {
     public static final int HOVER_PLUS = 8;
 
     // TextInputs
+    public static final Font INPUT_TEXT_FONT = FONT_DEFAULT_MEDIUM;
     public static final int LABELED_MARGIN = 2;
 
 }
