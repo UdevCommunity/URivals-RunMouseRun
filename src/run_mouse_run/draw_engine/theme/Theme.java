@@ -22,6 +22,7 @@ public class Theme {
     public static final int SETTING_PANE_MARGIN = 75;
 
     // Color
+    public static final String BG_FILE_NAME = null; //"background.jpg"; set to null to use BG_COLOR
     public static final Color BG_COLOR = new Color(34, 37, 46);
     public static final Color DEFAULT = new Color(34, 37, 46);
     public static final Color COLOR_UDEV_YELLOW = new Color(241,196,15);
@@ -34,7 +35,7 @@ public class Theme {
     public static final Color BTN_DEFAULT_COLOR = COLOR_UDEV_GREEN;
     public static final Color BTN_DEFAULT_TEXT_COLOR = Color.WHITE;
     public static final int BTN_DEFAULT_HEIGHT = 28;
-    public static final int BTN_DEFAULT_WIDTH = 120;
+    public static final int BTN_DEFAULT_WIDTH = 150;
     public static final int BORDER_PLUS = 4;
     public static final int HOVER_PLUS = 8;
 

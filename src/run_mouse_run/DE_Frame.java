@@ -598,7 +598,7 @@ public class DE_Frame extends JFrame {
 
         try
         {
-            File bgFile = FileManager.getRessourceFile("background.jpg");
+            File bgFile = FileManager.getRessourceFile(Theme.BG_FILE_NAME);
             BufferedImage backgroundImage = ImageIO.read(bgFile);
             contentPane = new BackgroundPanel(backgroundImage);
         } catch(Exception e)
