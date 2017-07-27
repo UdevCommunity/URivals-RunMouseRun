@@ -359,33 +359,41 @@ public class LevelGenerator
         for (int i = startPoint.getPosX(); i <= position.getPosX()+ viewDistance && i < LevelGenerator.MAP_WIDTH; i++)
             for (int j = startPoint.getPosY(); j <= position.getPosY() + viewDistance && j < LevelGenerator.MAP_HEIGHT; j++)
             {
-                if(!seeBehindWalls && isSegmentCutByWall(new Position(i, j), position))
+                if(viewedMap.getTile(i, j) != Tile.NOT_DISCOVERED)
                     continue;
 
-                viewedMap.setTile(i, j, (tilesToIgnore.contains(map.getTile(i, j)))? Tile.EMPTY: map.getTile(i, j));
+                if(!seeBehindWalls)
+                {
+                    Position currentPos = position.copy();
+                    Position destination = new Position(i, j);
+
+                    while (!Position.comparePosition(currentPos, destination))
+                    {
+                        int currentPosX = currentPos.getPosX();
+                        int currentPosY = currentPos.getPosY();
+
+                        if(viewedMap.getTile(currentPosX, currentPosY) == Tile.NOT_DISCOVERED)
+                            viewedMap.setTile(currentPosX, currentPosY,
+                                (tilesToIgnore.contains(map.getTile(currentPosX, currentPosY)))? Tile.EMPTY: map.getTile(currentPosX, currentPosY));
+
+                        // Normalized direction vector
+                        int dx = (destination.getPosX() - currentPosX >= 0)? ((destination.getPosX() - currentPosX == 0)?0:1): -1;
+                        int dy = (destination.getPosY() - currentPosY >= 0)? ((destination.getPosY() - currentPosY == 0)?0:1): -1;
+
+
+                        if (!canCrossByDiagonal(currentPos, new Position(currentPosX + dx, currentPosY + dy))
+                                || map.getTile(currentPosX, currentPosY) == Tile.WALL)
+                            break;
+
+                        currentPos.setPosX(currentPosX + dx);
+                        currentPos.setPosY(currentPosY + dy);
+                    }
+                }
+                else
+                    viewedMap.setTile(i, j, (tilesToIgnore.contains(map.getTile(i, j)))? Tile.EMPTY: map.getTile(i, j));
             }
 
         return viewedMap;
-    }
-
-    private boolean isSegmentCutByWall(Position source, Position destination)
-    {
-        Position currentPos = source.copy();
-        while (!Position.comparePosition(currentPos, destination))
-        {
-            // Normalized direction vector
-            int dx = (destination.getPosX() - currentPos.getPosX() >= 0)? ((destination.getPosX() - currentPos.getPosX() == 0)?0:1): -1;
-            int dy = (destination.getPosY() - currentPos.getPosY() >= 0)? ((destination.getPosY() - currentPos.getPosY() == 0)?0:1): -1;
-
-            if (!Position.comparePosition(currentPos, source) && !canCrossByDiagonal(currentPos, new Position(currentPos.getPosX() + dx, currentPos.getPosY() + dy))
-                    || map.getTile(currentPos.getPosX() + dx, currentPos.getPosY() + dy) == Tile.WALL)
-                return true;
-
-            currentPos.setPosX(currentPos.getPosX() + dx);
-            currentPos.setPosY(currentPos.getPosY() + dy);
-        }
-
-        return false;
     }
 
     public boolean canCrossByDiagonal(Position current, Position next)
