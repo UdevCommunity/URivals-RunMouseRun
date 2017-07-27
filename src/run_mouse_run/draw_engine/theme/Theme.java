@@ -21,6 +21,8 @@ public class Theme
     public static final int LOG_BAR_HEIGHT = 30;
     public static final int BOTTOM_BAR_HEIGHT = 35 + LOG_BAR_HEIGHT;
     public static final int SETTING_PANE_MARGIN = 75;
+    public static final int END_TOP_BAR_HEIGHT = 70;
+    public static final int END_BOTTOM_BAR_HEIGHT = 40;
 
     // Color
     public static final String BG_FILE_NAME = null; //"background.jpg"; set to null to use BG_COLOR

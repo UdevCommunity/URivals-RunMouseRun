@@ -308,13 +308,14 @@ public class DE_Frame extends JFrame {
 
         for(Mouse mouse : drawEngine.getMouses())
         {
-            drawCharPath.add(false);
+            drawCharPath.add(true);
             JLabel lbl = new JLabel("Draw "+mouse.getName()+" path");
             lbl.setFont(Theme.FONT_DEFAULT);
             lbl.setForeground(Theme.FONT_DEFAULT_COLOR);
             lblchckPath.add(lbl);
 
             JCheckBox chk = new JCheckBox();
+            chk.setSelected(true);
             chk.setOpaque(false);
             chk.addItemListener(new ItemListener() {
                 @Override
@@ -336,7 +337,7 @@ public class DE_Frame extends JFrame {
 
         for(Cat cat : drawEngine.getCats())
         {
-            drawCharPath.add(false);
+            drawCharPath.add(true);
 
             JLabel lbl = new JLabel("Draw "+cat.getName()+" path");
             lbl.setFont(Theme.FONT_DEFAULT);
@@ -344,6 +345,7 @@ public class DE_Frame extends JFrame {
             lblchckPath.add(lbl);
 
             JCheckBox chk = new JCheckBox();
+            chk.setSelected(true);
             chk.setOpaque(false);
             chk.addItemListener(new ItemListener() {
                 @Override
@@ -412,6 +414,7 @@ public class DE_Frame extends JFrame {
 
         // set padding
         gbc.insets = new Insets(5, 5, 10, 5);
+        Insets insets = new Insets(5, 5, 10, 5);
 
         gbc.anchor = GridBagConstraints.LINE_START;
         gbc.fill = GridBagConstraints.HORIZONTAL; // stretch when componant too small
@@ -898,8 +901,11 @@ public class DE_Frame extends JFrame {
         JPanel topEndGamePanel = new JPanel();
         JPanel bottomEndGamePanel = new JPanel();
 
-        topEndGamePanel.setPreferredSize(new Dimension(topPanel.getWidth(), Theme.TOP_BAR_HEIGHT));
-        bottomEndGamePanel.setPreferredSize(new Dimension(bottomPanel.getWidth(), Theme.BOTTOM_BAR_HEIGHT));
+        topEndGamePanel.setPreferredSize(new Dimension(topPanel.getWidth(), Theme.END_TOP_BAR_HEIGHT));
+        bottomEndGamePanel.setPreferredSize(new Dimension(bottomPanel.getWidth(), Theme.END_BOTTOM_BAR_HEIGHT));
+
+        topEndGamePanel.setOpaque(false);
+        bottomEndGamePanel.setOpaque(false);
 
         JLabel lblResult = new JLabel(result);
         lblResult.setFont(Theme.FONT_DEFAULT_BIG);
