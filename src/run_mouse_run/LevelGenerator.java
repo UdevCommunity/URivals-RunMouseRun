@@ -377,7 +377,7 @@ public class LevelGenerator
             int dx = (destination.getPosX() - currentPos.getPosX() >= 0)? ((destination.getPosX() - currentPos.getPosX() == 0)?0:1): -1;
             int dy = (destination.getPosY() - currentPos.getPosY() >= 0)? ((destination.getPosY() - currentPos.getPosY() == 0)?0:1): -1;
 
-            if (!canCrossByDiagonal(currentPos, new Position(currentPos.getPosX() + dx, currentPos.getPosY() + dy))
+            if (!Position.comparePosition(currentPos, source) && !canCrossByDiagonal(currentPos, new Position(currentPos.getPosX() + dx, currentPos.getPosY() + dy))
                     || map.getTile(currentPos.getPosX() + dx, currentPos.getPosY() + dy) == Tile.WALL)
                 return true;
 
