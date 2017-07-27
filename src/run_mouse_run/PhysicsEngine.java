@@ -41,7 +41,7 @@ class PhysicsEngine
                         {
                             dyingMouse.die();
                             GameManager.gameManager.getDrawEngine().printMessage(cat.getName() + " killed " + dyingMouse.getName());
-                            GameManager.gameManager.chekEndGameConditions("Cats Win", cat.getName());
+                            GameManager.gameManager.checkEndGameConditions("Cats Win", cat.getName());
                             break;
                         }
                     }
@@ -87,7 +87,7 @@ class PhysicsEngine
                 case CHEESE:
                     mouse.increaseTargetReachedCount();
                     GameManager.gameManager.getDrawEngine().printMessage(mouse.getName() + " picked a cheese");
-                    GameManager.gameManager.chekEndGameConditions("Mouses Win", mouse.getName());
+                    GameManager.gameManager.checkEndGameConditions("Mouses Win", mouse.getName());
                     break;
 
                 case CAT:
@@ -98,7 +98,7 @@ class PhysicsEngine
                             winningCat.increaseTargetReachedCount();
                             mouse.die();
                             GameManager.gameManager.getDrawEngine().printMessage(winningCat.getName() + " killed " + mouse.getName());
-                            GameManager.gameManager.chekEndGameConditions("Cats Win", winningCat.getName());
+                            GameManager.gameManager.checkEndGameConditions("Cats Win", winningCat.getName());
                             break;
                         }
                     }

@@ -75,7 +75,7 @@ class GameManager
         });
     }
 
-    void chekEndGameConditions(String result, String characterName)
+    void checkEndGameConditions(String result, String characterName)
     {
         switch (getGameMode())
         {
