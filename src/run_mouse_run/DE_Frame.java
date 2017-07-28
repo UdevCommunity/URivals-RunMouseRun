@@ -578,7 +578,7 @@ public class DE_Frame extends JFrame {
         });
 
         // log label
-        logLabel = new JLabel("Here we print current events like when a cat hits a mine");
+        logLabel = new JLabel("");
         logLabel.setFont(Theme.FONT_DEFAULT);
         logLabel.setForeground(Theme.FONT_DEFAULT_COLOR);
         logLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -779,6 +779,8 @@ public class DE_Frame extends JFrame {
     {
         gamePanel.remove(mapContainerPanel);
         addMapContainerPanel(map, TILE_SIZE);
+        gamePanel.add(mapContainerPanel, BorderLayout.CENTER);
+        updateCmBox();
         revalidate();
         repaint();
     }
@@ -797,12 +799,16 @@ public class DE_Frame extends JFrame {
     }
 
     /**
-     * Convert time to mm:ss format and show on timeLabel
-     * @param currentTime (String) current time in hh:mm:ss format
+     * Update time label with current time from game's CustomTimer
+     * @param timer ( CustomTimer ) game's timer, if null, show 00:00
      */
-    private void updateTime(String currentTime)
+    private void updateTime(CustomTimer timer)
     {
-        timeLabel.setText("Time : " + currentTime.substring(3));
+        if(timer != null)
+        {
+            String currentTime = timer.getCurrentTime().toString();
+            timeLabel.setText("Time : " + currentTime.substring(3));
+        }
     }
 
     /**
@@ -870,7 +876,7 @@ public class DE_Frame extends JFrame {
     {
         mapPanel.setMap(drawEngine.getMaps().get(mapsCmBox.getSelectedIndex()));
         mapPanel.update();
-        updateTime(drawEngine.getTimer().getCurrentTime().toString());
+        updateTime(drawEngine.getTimer());
         updateScroll();
 
         mapPanel.drawCharacterPaths(drawCharPath);
