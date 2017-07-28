@@ -847,8 +847,8 @@ public class DE_Frame extends JFrame {
     private void centerScroll(Position p)
     {
 		/*Get width (Vw) and height (Vh) of viewport*/
-        double vw = mapContainerPanel.getWidth();
-        double vh = mapContainerPanel.getHeight();
+        double vw = mapContainerPanel.getViewport().getWidth();
+        double vh = mapContainerPanel.getViewport().getHeight();
 
         int vx = (int) (p.getPosX() * TILE_SIZE - vw / 2);
         int vy = (int) (p.getPosY() * TILE_SIZE - vh / 2);
@@ -861,8 +861,8 @@ public class DE_Frame extends JFrame {
 
         vx = (vx >= 0) ? vx : 0;
         vy = (vy >= 0) ? vy : 0;
-        vx = (vx > maxX+1) ? maxX : vx;
-        vy = (vy > maxY+1) ? maxY : vy;
+        vx = (vx > maxX+5) ? maxX : vx;  // 5 is the vgap/hgap
+        vy = (vy > maxY+5) ? maxY : vy;
 
         mapContainerPanel.getViewport().setViewPosition(new Point(vx, vy));
     }
