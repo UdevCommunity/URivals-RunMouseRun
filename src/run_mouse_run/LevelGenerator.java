@@ -5,10 +5,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 class LevelGenerator
 {
-    private final int MAP_WIDTH_MIN = 30;
+    private final int MAP_WIDTH_MIN = 40;
     private final int MAP_WIDTH_MAX = 120;
 
-    private final int MAP_HEIGHT_MIN = 30;
+    private final int MAP_HEIGHT_MIN = 40;
     private final int MAP_HEIGHT_MAX = 120;
 
     static int MAP_WIDTH = 0;
@@ -16,7 +16,7 @@ class LevelGenerator
 
     private static Position MOUSES_INITIAL_POS;
     private static Position CATS_INITIAL_POS;
-    private final static int INITIAL_MINIMUM_DISTANCE = 15; // minimum eloignés de 15 cases
+    private static int INITIAL_MINIMUM_DISTANCE = 20;
 
     private Map map;
     private ArrayList<Position> validRespawnPositions;
