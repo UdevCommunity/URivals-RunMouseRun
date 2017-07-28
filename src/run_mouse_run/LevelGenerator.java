@@ -1,23 +1,21 @@
 package run_mouse_run;
 
-import javafx.geometry.Pos;
-
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class LevelGenerator
+class LevelGenerator
 {
     private final int MAP_WIDTH_MIN = 30;
-    private final int MAP_WIDTH_MAX = 70;
+    private final int MAP_WIDTH_MAX = 120;
 
     private final int MAP_HEIGHT_MIN = 30;
-    private final int MAP_HEIGHT_MAX = 50;
+    private final int MAP_HEIGHT_MAX = 120;
 
     static int MAP_WIDTH = 0;
     static int MAP_HEIGHT = 0;
 
-    static Position MOUSES_INITIAL_POS;
-    static Position CATS_INITIAL_POS;
+    private static Position MOUSES_INITIAL_POS;
+    private static Position CATS_INITIAL_POS;
     private final static int INITIAL_MINIMUM_DISTANCE = 15; // minimum eloignés de 15 cases
 
     private Map map;
@@ -26,7 +24,7 @@ public class LevelGenerator
     private final float WALL_PROBABILITY_THRESHOLD = 35;
     private final float POWERUP_VISION_PROBABILITY_THRESHOLD = WALL_PROBABILITY_THRESHOLD + 0.75f;    // 1%
     private final float POWERUP_SPEED_PROBABILITY_THRESHOLD = POWERUP_VISION_PROBABILITY_THRESHOLD + 0.75f; // 1%
-    private final float INVISIBLE_ZONE_PROBABILITY_THRESHOLD = POWERUP_SPEED_PROBABILITY_THRESHOLD + 0.5f; // 1%
+    private final float INVISIBLE_ZONE_PROBABILITY_THRESHOLD = POWERUP_SPEED_PROBABILITY_THRESHOLD + 0.75f; // 1%
     private final float MINE_PROBABILITY_THRESHOLD = INVISIBLE_ZONE_PROBABILITY_THRESHOLD + 1;  // 1%
     private final int EMPTY_PATH_PROBABILITY_THRESHOLD = 100;
 
@@ -34,38 +32,35 @@ public class LevelGenerator
 
     private PathFinder pathFinder;
 
-    public LevelGenerator()
+    LevelGenerator()
     {
-        // nextInt is normally exclusive of the top value,
-        // so we add 1 to make it inclusive
-        MAP_WIDTH = ThreadLocalRandom.current().nextInt(MAP_WIDTH_MIN, MAP_WIDTH_MAX + 1);
-        MAP_HEIGHT = ThreadLocalRandom.current().nextInt(MAP_HEIGHT_MIN, MAP_HEIGHT_MAX + 1);
+        MAP_WIDTH = (MAP_WIDTH_MIN + MAP_WIDTH_MAX) / 2;
+        MAP_HEIGHT = (MAP_HEIGHT_MIN + MAP_HEIGHT_MAX) / 2;
 
         // Generate map
         map = generateRandomMap(MAP_WIDTH, MAP_HEIGHT);
 
         pathFinder = new PathFinder(map);
 
-        // Set objects initial position
         setInitialPosition();
-
         initialiseCharactersMap();
-
         setValidRespawnPositions();
     }
-    public PathFinder getPathFinder()
+    PathFinder getPathFinder()
     {
         return pathFinder;
     }
 
-    public Map getMap()
+    Map getMap()
     {
         return map;
     }
 
-    public void setMap(int width, int height)
+    void setMap(int width, int height)
     {
-        map = generateRandomMap(width, height);
+
+        map = generateRandomMap(Math.min(Math.max(width, MAP_WIDTH_MIN), MAP_WIDTH_MAX),
+                                Math.min(Math.max(height, MAP_HEIGHT_MIN), MAP_HEIGHT_MAX));
 
         setInitialPosition();
         initialiseCharactersMap();
@@ -79,14 +74,14 @@ public class LevelGenerator
 
 
     }
-    public void spawnVisionPowerup()
+    void spawnVisionPowerup()
     {
         Position spawnPosition = getRespawnPosition();
         validRespawnPositions.remove(spawnPosition);
         map.setTile(spawnPosition.getPosX(), spawnPosition.getPosY(), Tile.POWERUP_VISION);
     }
 
-    public void spawnSpeedPowerup()
+    void spawnSpeedPowerup()
     {
         Position spawnPosition = getRespawnPosition();
         validRespawnPositions.remove(spawnPosition);
@@ -132,7 +127,7 @@ public class LevelGenerator
             map.setTile(cheesePos.getPosX(), cheesePos.getPosY(), Tile.CHEESE);
         }
 
-        int cellCount = getEmptyCellCount(MOUSES_INITIAL_POS, new ArrayList<Position>());
+        int cellCount = getEmptyCellCount(MOUSES_INITIAL_POS, new ArrayList<>());
 
         if(cellCount < MAP_HEIGHT*MAP_WIDTH*WALL_PROBABILITY_THRESHOLD/100*2/3) // 2/3
         {
@@ -141,10 +136,6 @@ public class LevelGenerator
             // Set objects initial position
             setInitialPosition();
             pathFinder = new PathFinder(map);
-        }
-        else
-        {
-            System.out.println("OK");
         }
     }
 
@@ -172,25 +163,7 @@ public class LevelGenerator
     {
         ArrayList<Position> path = pathFinder.getShortestPath(map, src, dst);
 
-        if(path.isEmpty() || path.size() < dist)
-            return false;
-        else
-            return true;
-    }
-
-    /**
-     * compute path using run_mouse_run.PathFinder
-     * @return true if path exists
-     */
-    public boolean existPath(Position source, Position destination)
-    {
-        if(Position.comparePosition(source, destination))
-            return true;
-
-        if(pathFinder.getShortestPath(map, source, destination).isEmpty())
-            return false;
-        else
-            return true;
+        return !(path.isEmpty() || path.size() < dist);
     }
 
     /**
@@ -347,7 +320,7 @@ public class LevelGenerator
         }
     }
 
-    public Map getViewedMap(Map viewedMap, Position position, int viewDistance, boolean seeBehindWalls, ArrayList<Tile> tilesToIgnore)
+    Map getViewedMap(Map viewedMap, Position position, int viewDistance, boolean seeBehindWalls, ArrayList<Tile> tilesToIgnore)
     {
         viewedMap.clear(Tile.NOT_DISCOVERED);
 
@@ -431,7 +404,7 @@ public class LevelGenerator
         return pseudoLinearPath;
     }
 
-    public boolean canCrossByDiagonal(Position current, Position next)
+    boolean canCrossByDiagonal(Position current, Position next)
     {
         int dx = next.getPosX() - current.getPosX();
         int dy = next.getPosY() - current.getPosY();

@@ -10,7 +10,7 @@ public abstract class CharacterController
     private final int INITIAL_VIEW_DISTANCE = 5;
     private final int STUN_EFFECT_DELAY = 3000;
     private final int CONSEQUENT_MOVE_DELAY = CustomTimer.GAME_SPEED/2;
-    private final int UPDATE_FREQUENCE = CustomTimer.GAME_SPEED;
+    private final int UPDATE_FREQUENCY = CustomTimer.GAME_SPEED;
 
     private String name;
     private Position position;
@@ -59,7 +59,7 @@ public abstract class CharacterController
 
         TimerTask task = createUpdateTask();
         timer = new Timer();
-        timer.scheduleAtFixedRate(task, 0, UPDATE_FREQUENCE);
+        timer.scheduleAtFixedRate(task, 0, UPDATE_FREQUENCY);
     }
 
     final void stopTimer()
@@ -133,10 +133,16 @@ public abstract class CharacterController
             }
     }
 
+    private void applyStunEffect()
+    {
+        GameManager.gameManager.getDrawEngine().showStun(getPosition().getPosX(), getPosition().getPosY());
+        try {Thread.sleep(STUN_EFFECT_DELAY);} catch (InterruptedException e) {e.printStackTrace();}
+    }
+
     private void move()
     {
-        if (!destinationPath.isEmpty() && (((destinationPath.get(0).getPosX() - position.getPosX()) > 1) ||
-                ((destinationPath.get(0).getPosY() - position.getPosY()) > 1)))
+        if (!destinationPath.isEmpty() && ((Math.abs(destinationPath.get(0).getPosX() - position.getPosX()) > 1) ||
+                (Math.abs(destinationPath.get(0).getPosY() - position.getPosY()) > 1)))
             GameManager.gameManager.stopGame(name + " tried to cheat in move !!");
 
         for (int i = 0; i < moveSpeed; i++)
@@ -149,8 +155,7 @@ public abstract class CharacterController
 
             if (GameManager.gameManager.getLevelGenerator().getMap().getTile(destinationPath.get(0).getPosX(), destinationPath.get(0).getPosY()) == Tile.WALL)
             {
-                GameManager.gameManager.getDrawEngine().showStun(getPosition().getPosX(), getPosition().getPosY());
-                try {Thread.sleep(STUN_EFFECT_DELAY);} catch (InterruptedException e) {e.printStackTrace();}
+                applyStunEffect();
                 return;
             }
 
@@ -185,7 +190,7 @@ public abstract class CharacterController
         return GameManager.gameManager.getLevelGenerator().canCrossByDiagonal(position, next);
     }
 
-    final private void setDestinationPath(ArrayList<Position> destinationPath)
+    private void setDestinationPath(ArrayList<Position> destinationPath)
     {
         this.destinationPath = destinationPath;
     }
@@ -235,11 +240,6 @@ public abstract class CharacterController
     final void setPathFinder(PathFinder pathFinder)
     {
         this.pathFinder = pathFinder;
-    }
-
-    final void setSeeBehindWalls(boolean seeBehindWalls)
-    {
-        this.seeBehindWalls = seeBehindWalls;
     }
 
     public final boolean isAlive()

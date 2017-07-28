@@ -4,26 +4,23 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class DrawEngine {
-
-	private PathFinder pathFinder;
+public class DrawEngine
+{
 
 	private ArrayList<DE_Frame> frames;	// All open frames
 
     private ArrayList<Map> maps;
 
-    public DrawEngine(Map map)
+    DrawEngine(Map map)
 	{
         maps = new ArrayList<>();
         updateMapsList(map);
 
 		frames = new ArrayList<>();
 		frames.add(new DE_Frame(this, map));
-
-		pathFinder = new PathFinder(map);
 	}
 
-	public void printMessage(String message)
+	void printMessage(String message)
 	{
 		for(DE_Frame frame : frames)
 		{
@@ -46,21 +43,21 @@ public class DrawEngine {
     /**
 	 * Update all frames
 	 */
-	public void update()
+	void update()
 	{
         //updateMapsList(maps.get(0));
 
-        for(int i = 0; i < frames.size(); i++)
-		{
-			frames.get(i).update();
-		}
+        for (DE_Frame frame : frames)
+        {
+            frame.update();
+        }
 	}
 
 	/**
 	 * Set visibility of all frames
 	 * @param visible (boolean)
 	 */
-	public void setVisible(boolean visible)
+	void setVisible(boolean visible)
 	{
 		for(DE_Frame frame : frames)
 		{
@@ -72,7 +69,7 @@ public class DrawEngine {
 	/**
 	 * Functions for button Action, call gameManager method and change all frames
 	 */
-	public void startGame()
+	void startGame()
 	{
 		GameManager.gameManager.startGame();
 		for(DE_Frame frame : frames)
@@ -84,7 +81,7 @@ public class DrawEngine {
 		update();
 	}
 
-	public void pauseGame()
+	void pauseGame()
 	{
 		GameManager.gameManager.pauseGame();
 		for(DE_Frame frame: frames)
@@ -93,7 +90,7 @@ public class DrawEngine {
 		}
 	}
 
-	public void resumeGame()
+	void resumeGame()
 	{
 		GameManager.gameManager.resumeGame();
 		for(DE_Frame frame: frames)
@@ -102,7 +99,7 @@ public class DrawEngine {
 		}
 	}
 
-	public void displayEndGameScreen(String result)
+	void displayEndGameScreen(String result)
 	{
 		for(int i = 1; i < frames.size(); i++)
 			frames.get(i).dispose();
@@ -110,16 +107,14 @@ public class DrawEngine {
 		frames.get(0).displayEndGameScreen(result);
 	}
 
-	public void explodeMine(int x, int y)
+	void explodeMine(int x, int y)
 	{
-		for(int i = 0; i < frames.size(); i++)
-			frames.get(i).explodeMine(x, y);
+		for (DE_Frame frame : frames) frame.explodeMine(x, y);
 	}
 
-	public void showStun(int x, int y)
+	void showStun(int x, int y)
 	{
-		for(int i = 0; i < frames.size(); i++)
-			frames.get(i).showStun(x, y);
+		for (DE_Frame frame : frames) frame.showStun(x, y);
 	}
 
 	/**
@@ -127,37 +122,35 @@ public class DrawEngine {
 	 * apply changes depending on state
 	 * @param maps
 	 */
-	public void addNewFrame(ArrayList<Map> maps)
+	void addNewFrame(ArrayList<Map> maps)
 	{
 		DrawEngine drawEngine = this;
-		EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				DE_Frame newFrame = new DE_Frame(drawEngine, maps.get(0));
-				newFrame.startGameButton.setText(frames.get(0).startGameButton.getText());
+		EventQueue.invokeLater(() ->
+		{
+            DE_Frame newFrame = new DE_Frame(drawEngine, maps.get(0));
+            newFrame.startGameButton.setText(frames.get(0).startGameButton.getText());
 
-				// We only need one control panel
-				newFrame.hideControlPanel();
-				newFrame.setBounds(100,100, 500,500);
-				newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-				newFrame.setAlwaysOnTop(true);
+            // We only need one control panel
+            newFrame.hideControlPanel();
+            newFrame.setBounds(100,100, 500,500);
+            newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            newFrame.setAlwaysOnTop(true);
 
-				// Set state to the same state of her
-				if(newFrame.startGameButton.getText().equals("Resume Game")) // if game Paused
-				{
-					newFrame.changeState("Pause Game");
-					newFrame.hideControlPanel();
-				}
-				else if(newFrame.startGameButton.getText().equals("Pause Game")) // if game running
-				{
-					newFrame.changeState("Resume Game");
-					newFrame.hideControlPanel();
-				}
+            // Set state to the same state of her
+            if(newFrame.startGameButton.getText().equals("Resume Game")) // if game Paused
+            {
+                newFrame.changeState("Pause Game");
+                newFrame.hideControlPanel();
+            }
+            else if(newFrame.startGameButton.getText().equals("Pause Game")) // if game running
+            {
+                newFrame.changeState("Resume Game");
+                newFrame.hideControlPanel();
+            }
 
-				newFrame.setVisible(true);
-				frames.add(newFrame);
-			}
-		});
+            newFrame.setVisible(true);
+            frames.add(newFrame);
+        });
 
 	}
 
@@ -171,11 +164,11 @@ public class DrawEngine {
 		return GameManager.gameManager.getCats();
 	}
 
-	public ArrayList<Map> getMaps() {
+	ArrayList<Map> getMaps() {
 		return maps;
 	}
 
-	public void createNewLevel(int w, int h)
+	void createNewLevel(int w, int h)
 	{
 		maps.remove(GameManager.gameManager.getLevelGenerator().getMap()); // removeLevelMap
 		GameManager.gameManager.getLevelGenerator().setMap(w, h);
@@ -186,11 +179,11 @@ public class DrawEngine {
 			frame.changeMapSize(maps.get(0));
 	}
 
-	public CustomTimer getTimer() {
+	CustomTimer getTimer() {
 		return GameManager.gameManager.getTimer();
 	}
 
-    public void startNewGame()
+    void startNewGame()
 	{
 		GameManager.gameManager.stopGame("");
 		// Close Everything
@@ -199,14 +192,11 @@ public class DrawEngine {
 			frame.dispose();
 		}
 
-		EventQueue.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				GameManager gameManager = new GameManager();
-				gameManager.getDrawEngine().setVisible(true);
-			}
-		});
+		EventQueue.invokeLater(() ->
+        {
+            GameManager gameManager = new GameManager();
+            gameManager.getDrawEngine().setVisible(true);
+        });
 
     }
 }   // End Of DrawEngine

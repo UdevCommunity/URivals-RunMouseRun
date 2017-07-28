@@ -17,7 +17,7 @@ public class DE_GameSprites
 {
     private final DrawEngine drawEngine;
 
-    public int TILE_SIZE;
+    private int TILE_SIZE;
 
     private final String[] spritesFileNames = {
             "not_discovered_sprite.png",
@@ -34,13 +34,13 @@ public class DE_GameSprites
             "flag.png"
     };
 
-    public static final int NOT_DISCOVERED_SPRITE = 0, EMPTY_SPRITE = 1,
+    static final int NOT_DISCOVERED_SPRITE = 0, EMPTY_SPRITE = 1,
             WALL_SPRITE = 2, CHEESE_SPRITE = 3,
             POWERUP_VISION_SPRITE = 5, POWERUP_SPEED_SPRITE = 4,
             INVISIBLE_ZONE_SPRITE = 6, MINE_SPRITE = 7,
             CAT_SPRITE = 8, MOUSE_SPRITE = 9, MOUSE_SPRITE_DEAD = 10,
             FLAG_SPRITE = 11;
-    ;
+
 
     private ArrayList<DE_TileImage> sprites, customSprites, spritesDead;
     private ArrayList<BufferedImage> spritesOriginal, customSpritesOriginal, spritesDeadOriginal;
@@ -55,7 +55,7 @@ public class DE_GameSprites
     private ArrayList<ArrayList<DE_TileImage>> animationFrames;
     private ArrayList<ArrayList<BufferedImage>> animationFramesOriginal;
 
-    public DE_GameSprites(DrawEngine drawEngine, int TILE_SIZE)
+    DE_GameSprites(DrawEngine drawEngine, int TILE_SIZE)
     {
         this.drawEngine = drawEngine;
         this.TILE_SIZE = TILE_SIZE;
@@ -80,19 +80,17 @@ public class DE_GameSprites
         /*Load sprites files */
         ArrayList<BufferedImage> sprites = new ArrayList<>();
 
-        for (int i = 0; i < spritesFileNames.length; i++)
+        for (String spritesFileName : spritesFileNames)
         {
-            try
-            {
+            try {
                 // Load file
-                File spriteFile = FileManager.getResourceFile(spritesFileNames[i]);
+                File spriteFile = FileManager.getResourceFile(spritesFileName);
                 // Read image
                 BufferedImage sprite = ImageIO.read(spriteFile);
                 //add to sprites
                 sprites.add(sprite);
-            } catch (IOException e)
-            {
-                System.err.println("Error loading Sprite : " + spritesFileNames[i]);
+            } catch (IOException e) {
+                System.err.println("Error loading Sprite : " + spritesFileName);
                 // generate a black tile
                 sprites.add(
                         new BufferedImage(TILE_SIZE, TILE_SIZE, BufferedImage.TYPE_BYTE_INDEXED)
@@ -210,8 +208,6 @@ public class DE_GameSprites
     private ArrayList<BufferedImage> loadAnimation(int frameIndex, int rows, int cols, int repeat, boolean reverse)
     {
         ArrayList<BufferedImage> frames = new ArrayList<>();
-        final int ROWS = rows;
-        final int COLS = cols;
 
         try
         {
@@ -220,14 +216,14 @@ public class DE_GameSprites
             // Read image
             BufferedImage frameSheet = ImageIO.read(spriteFile);
 
-            final int w = frameSheet.getWidth() / COLS;
-            final int h = frameSheet.getHeight() / ROWS;
+            final int w = frameSheet.getWidth() / cols;
+            final int h = frameSheet.getHeight() / rows;
 
             for(int k = 0; k < repeat; k++)
             {
-                for (int i = 0; i < ROWS; i++)
+                for (int i = 0; i < rows; i++)
                 {
-                    for (int j = 0; j < COLS; j++)
+                    for (int j = 0; j < cols; j++)
                     {
                         BufferedImage frame = frameSheet
                                 .getSubimage(
@@ -264,7 +260,8 @@ public class DE_GameSprites
      * @param IMG_HEIGHT    (int)
      * @return
      */
-    static BufferedImage resizeImage(BufferedImage originalImage, int type, int IMG_WIDTH, int IMG_HEIGHT) {
+    static BufferedImage resizeImage(BufferedImage originalImage, int type, int IMG_WIDTH, int IMG_HEIGHT)
+    {
         Image resizedImage = originalImage.getScaledInstance(IMG_WIDTH, IMG_HEIGHT, Image.SCALE_SMOOTH);
 
         // Create a buffered image with transparency
@@ -279,7 +276,7 @@ public class DE_GameSprites
         return bimage;
     }
 
-    public void resizeSprites(int size)
+    void resizeSprites(int size)
     {
         this.TILE_SIZE = size;
 
@@ -350,22 +347,22 @@ public class DE_GameSprites
         return (sprites != null && !sprites.isEmpty());
     }
 
-    public DE_TileImage getSprite(int index)
+    DE_TileImage getSprite(int index)
     {
         return sprites.get(index);
     }
 
-    public DE_TileImage getCustomSprite(int index)
+    DE_TileImage getCustomSprite(int index)
     {
         return customSprites.get(index);
     }
 
-    public DE_TileImage getDeadSprite(int index)
+    DE_TileImage getDeadSprite(int index)
     {
         return spritesDead.get(index);
     }
 
-    public ArrayList<DE_TileImage> getAnimationFrames(int index)
+    ArrayList<DE_TileImage> getAnimationFrames(int index)
     {
         return animationFrames.get(index);
     }

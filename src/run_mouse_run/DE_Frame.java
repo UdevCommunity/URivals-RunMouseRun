@@ -18,9 +18,9 @@ import run_mouse_run.draw_engine.theme.*;
 /**
  * DrawEngine Frame which displays one of the maps ( from the drawEngine's maps )
  */
-public class DE_Frame extends JFrame {
+class DE_Frame extends JFrame {
 
-    public int TILE_SIZE = 48; // Tiles will resize to this value
+    private int TILE_SIZE = 48; // Tiles will resize to this value
 
     private DrawEngine drawEngine;
 
@@ -30,7 +30,7 @@ public class DE_Frame extends JFrame {
     private DE_MapPanel mapPanel;
     private JLabel mapName, timeLabel, logLabel;
     private JComboBox<String> mapsCmBox;
-    public UButton startGameButton;
+    UButton startGameButton;
     private UButton btnDrawShortest;
 
     /* For testing path finding */
@@ -44,7 +44,7 @@ public class DE_Frame extends JFrame {
     /**
      * @param map initialised map from LevelGenerator
      */
-    public DE_Frame(DrawEngine drawEngine, Map map)
+    DE_Frame(DrawEngine drawEngine, Map map)
     {
         super();
         this.drawEngine = drawEngine;
@@ -107,22 +107,20 @@ public class DE_Frame extends JFrame {
 
         // Start game button
         startGameButton = new UButton("Start Game");
-        startGameButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (startGameButton.getText().equals("Start Game"))
-                {
-                    drawEngine.startGame();
+        startGameButton.addActionListener(e ->
+        {
+            if (startGameButton.getText().equals("Start Game"))
+            {
+                drawEngine.startGame();
 
-                } else if (startGameButton.getText().equals("Pause Game"))
-                {
-                    drawEngine.pauseGame();
-                } else
-                {
-                    drawEngine.resumeGame();
-                }
-
+            } else if (startGameButton.getText().equals("Pause Game"))
+            {
+                drawEngine.pauseGame();
+            } else
+            {
+                drawEngine.resumeGame();
             }
+
         });
         JPanel startButtonPanel = new JPanel(); // to center button
         startButtonPanel.setOpaque(false);
@@ -189,14 +187,7 @@ public class DE_Frame extends JFrame {
         for(GameMode mode : GameMode.values())
             cmboxGameMode.addItem(mode.toString());
 
-        cmboxGameMode.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                GameManager.gameManager.setGameMode(
-                        GameMode.valueOf(cmboxGameMode.getSelectedItem().toString())
-                );
-            }
-        });
+        cmboxGameMode.addItemListener(e -> GameManager.gameManager.setGameMode(GameMode.valueOf(cmboxGameMode.getSelectedItem().toString())));
         // make sure correct mode is shown at start
         cmboxGameMode.setSelectedItem(GameManager.gameManager.getGameMode().toString());
 
@@ -210,26 +201,24 @@ public class DE_Frame extends JFrame {
         txtTimeLimit.setForeground(Theme.FONT_INPUT_COLOR);
 
         UButton btnSetTimeLimit = new UButton("Set");
-        btnSetTimeLimit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try{
-                    int x = Integer.parseInt(txtTimeLimit.getText());
+        btnSetTimeLimit.addActionListener(e ->
+        {
+            try{
+                int x = Integer.parseInt(txtTimeLimit.getText());
 
-                    if(x > 0)
-                    {
-                        GameManager.gameManager.getTimer().setTimeLimit(x);
-                    }
-                    else
-                    {
-                        txtTimeLimit.setText("180");
-                        GameManager.gameManager.getTimer().setTimeLimit(180);
-                    }
-                }catch (NumberFormatException ex)
+                if(x > 0)
+                {
+                    GameManager.gameManager.getTimer().setTimeLimit(x);
+                }
+                else
                 {
                     txtTimeLimit.setText("180");
                     GameManager.gameManager.getTimer().setTimeLimit(180);
                 }
+            }catch (NumberFormatException ex)
+            {
+                txtTimeLimit.setText("180");
+                GameManager.gameManager.getTimer().setTimeLimit(180);
             }
         });
 
@@ -243,26 +232,24 @@ public class DE_Frame extends JFrame {
         txtGameSpeed.setForeground(Theme.FONT_INPUT_COLOR);
 
         UButton btnSetGameSpeed = new UButton("Set");
-        btnSetGameSpeed.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try{
-                    int x = Integer.parseInt(txtGameSpeed.getText());
+        btnSetGameSpeed.addActionListener(e ->
+        {
+            try{
+                int x = Integer.parseInt(txtGameSpeed.getText());
 
-                    if(x > 0 && x < 300)
-                    {
-                        CustomTimer.setGameSpeed(x);
-                    }
-                    else
-                    {
-                        txtGameSpeed.setText("100");
-                        CustomTimer.setGameSpeed(100);
-                    }
-                }catch (NumberFormatException ex)
+                if(x > 0 && x < 300)
+                {
+                    CustomTimer.setGameSpeed(x);
+                }
+                else
                 {
                     txtGameSpeed.setText("100");
                     CustomTimer.setGameSpeed(100);
                 }
+            }catch (NumberFormatException ex)
+            {
+                txtGameSpeed.setText("100");
+                CustomTimer.setGameSpeed(100);
             }
         });
 
@@ -284,21 +271,19 @@ public class DE_Frame extends JFrame {
         txtMapHeight.setForeground(Theme.FONT_INPUT_COLOR);
 
         UButton btnNewLevel = new UButton("New Level");
-        btnNewLevel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try
-                {
-                    int w = Integer.parseInt(txtMapWidth.getText());
-                    int h = Integer.parseInt(txtMapHeight.getText());
+        btnNewLevel.addActionListener(e ->
+        {
+            try
+            {
+                int w = Integer.parseInt(txtMapWidth.getText());
+                int h = Integer.parseInt(txtMapHeight.getText());
 
-                    drawEngine.createNewLevel(w, h);
+                drawEngine.createNewLevel(w, h);
 
-                    update();
-                } catch (Exception ex)
-                {
-                    System.err.println("Error " + ex.getMessage());
-                }
+                update();
+            } catch (Exception ex)
+            {
+                System.err.println("Error " + ex.getMessage());
             }
         });
 
@@ -317,19 +302,17 @@ public class DE_Frame extends JFrame {
             JCheckBox chk = new JCheckBox();
             chk.setSelected(true);
             chk.setOpaque(false);
-            chk.addItemListener(new ItemListener() {
-                @Override
-                public void itemStateChanged(ItemEvent e) {
-                    //drawCharPath.set(index, chk.isSelected());
-                    int i = 0;
-                    for(Mouse m : drawEngine.getMouses())
+            chk.addItemListener(e ->
+            {
+                //drawCharPath.set(index, chk.isSelected());
+                int i = 0;
+                for(Mouse m : drawEngine.getMouses())
+                {
+                    if (m == mouse)
                     {
-                        if (m == mouse)
-                        {
-                            drawCharPath.set(i, chk.isSelected());
-                        }
-                        i++;
+                        drawCharPath.set(i, chk.isSelected());
                     }
+                    i++;
                 }
             });
             chkDrawPath.add(chk);
@@ -347,19 +330,17 @@ public class DE_Frame extends JFrame {
             JCheckBox chk = new JCheckBox();
             chk.setSelected(true);
             chk.setOpaque(false);
-            chk.addItemListener(new ItemListener() {
-                @Override
-                public void itemStateChanged(ItemEvent e) {
-                    //drawCharPath.set(index, chk.isSelected());
-                    int i = drawEngine.getMouses().size();
-                    for(Cat c : drawEngine.getCats())
+            chk.addItemListener(e ->
+            {
+                //drawCharPath.set(index, chk.isSelected());
+                int i = drawEngine.getMouses().size();
+                for(Cat c : drawEngine.getCats())
+                {
+                    if (c == cat)
                     {
-                        if (c == cat)
-                        {
-                            drawCharPath.set(i, chk.isSelected());
-                        }
-                        i++;
+                        drawCharPath.set(i, chk.isSelected());
                     }
+                    i++;
                 }
             });
             chkDrawPath.add(chk);
@@ -414,7 +395,6 @@ public class DE_Frame extends JFrame {
 
         // set padding
         gbc.insets = new Insets(5, 5, 10, 5);
-        Insets insets = new Insets(5, 5, 10, 5);
 
         gbc.anchor = GridBagConstraints.LINE_START;
         gbc.fill = GridBagConstraints.HORIZONTAL; // stretch when componant too small
@@ -540,19 +520,8 @@ public class DE_Frame extends JFrame {
 
         // Draw Shortest Button
         btnDrawShortest = new UButton("Draw Shortest");
-        btnDrawShortest.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0)
-            {
-                mapPanel.drawPath(
-                        GameManager.gameManager.getLevelGenerator().getPathFinder()
-                                .getShortestPath(
-                                        drawEngine.getMaps().get(mapsCmBox.getSelectedIndex()),
-                                        initialPos,
-                                        finalPos
-                                )
-                );
-            }
-        });
+        btnDrawShortest.addActionListener(arg0 -> mapPanel.drawPath(GameManager.gameManager.getLevelGenerator().getPathFinder()
+                        .getShortestPath(drawEngine.getMaps().get(mapsCmBox.getSelectedIndex()), initialPos, finalPos)));
 
         // Center buttons ( ComboBox )
         JPanel centerPanel = new JPanel();
@@ -563,17 +532,15 @@ public class DE_Frame extends JFrame {
         mapsCmBox.setFont(Theme.FONT_DEFAULT);
         mapsCmBox.setForeground(Theme.FONT_INPUT_COLOR);
         updateCmBox();
-        mapsCmBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                try
-                {
-                    int i = mapsCmBox.getSelectedIndex();
-                    switchToMap(drawEngine.getMaps().get(i));
-                } catch (Exception ex)
-                {
-                    // do nothing
-                }
+        mapsCmBox.addItemListener(e ->
+        {
+            try
+            {
+                int i = mapsCmBox.getSelectedIndex();
+                switchToMap(drawEngine.getMaps().get(i));
+            } catch (Exception ex)
+            {
+                // do nothing
             }
         });
 
@@ -581,12 +548,7 @@ public class DE_Frame extends JFrame {
 
         // new Map button
         UButton newMapButton = new UButton("New Window");
-        newMapButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                drawEngine.addNewFrame(drawEngine.getMaps());
-            }
-        });
+        newMapButton.addActionListener(e -> drawEngine.addNewFrame(drawEngine.getMaps()));
 
         // log label
         logLabel = new JLabel("");
@@ -692,19 +654,17 @@ public class DE_Frame extends JFrame {
         });
 
         // Set wheel listener for zoom in/out
-        mapContainerPanel.addMouseWheelListener(new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                if (e.getWheelRotation() < 0)
-                {
-                    // ZOOM IN
-                    if (TILE_SIZE <= 120)
-                        adjustTileSize(TILE_SIZE + 8);
-                } else
-                {
-                    if (TILE_SIZE >= 24)
-                        adjustTileSize(TILE_SIZE - 8);
-                }
+        mapContainerPanel.addMouseWheelListener(e ->
+        {
+            if (e.getWheelRotation() < 0)
+            {
+                // ZOOM IN
+                if (TILE_SIZE <= 120)
+                    adjustTileSize(TILE_SIZE + 8);
+            } else
+            {
+                if (TILE_SIZE >= 24)
+                    adjustTileSize(TILE_SIZE - 8);
             }
         });
 
@@ -736,21 +696,26 @@ public class DE_Frame extends JFrame {
      * State given from button text
      * @param buttonText (String) Current Button Text
      */
-    public void changeState(String buttonText)
+    void changeState(String buttonText)
     {
-        if (buttonText.equals("Start Game"))// RUN GAME FROM START
+        switch (buttonText)
         {
-            startGameButton.setText("Pause Game");
-            btnDrawShortest.setEnabled(false);
-            hideControlPanel();
-        } else if (buttonText.equals("Pause Game"))// PAUSE GAME
-        {
-            startGameButton.setText("Resume Game");
-            btnDrawShortest.setEnabled(true);
-        } else // RUN GAME FROM PAUSED
-        {
-            startGameButton.setText("Pause Game");
-            btnDrawShortest.setEnabled(false);
+            case "Start Game":
+
+                startGameButton.setText("Pause Game");
+                btnDrawShortest.setEnabled(false);
+                hideControlPanel();
+                break;
+            case "Pause Game":
+
+                startGameButton.setText("Resume Game");
+                btnDrawShortest.setEnabled(true);
+                break;
+            case "Resume Game":
+
+                startGameButton.setText("Pause Game");
+                btnDrawShortest.setEnabled(false);
+                break;
         }
         update();
     }
@@ -758,7 +723,8 @@ public class DE_Frame extends JFrame {
     /**
      * Remove Control Panel from contentPane
      */
-    public void hideControlPanel() {
+    void hideControlPanel()
+    {
         controlPanel.setVisible(false);
         contentPane.remove(controlPanel);
         contentPane.revalidate();
@@ -787,7 +753,7 @@ public class DE_Frame extends JFrame {
         update();
     }
 
-    public void changeMapSize(Map map)
+    void changeMapSize(Map map)
     {
         gamePanel.remove(mapContainerPanel);
         addMapContainerPanel(map, TILE_SIZE);
@@ -905,7 +871,7 @@ public class DE_Frame extends JFrame {
      * Show message in log Panel
      * @param message (String)
      */
-    public void printLog(String message)
+    void printLog(String message)
     {
         logLabel.setText(message);
     }
@@ -930,14 +896,7 @@ public class DE_Frame extends JFrame {
         lblResult.setForeground(Theme.FONT_DEFAULT_COLOR);
 
         UButton playAgainButton = new UButton("PlayAgain");
-        playAgainButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                drawEngine.startNewGame();
-
-            }
-        });
+        playAgainButton.addActionListener(e -> drawEngine.startNewGame());
 
         // add to panel
         bottomEndGamePanel.add(playAgainButton);

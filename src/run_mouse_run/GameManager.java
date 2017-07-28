@@ -65,13 +65,10 @@ class GameManager
 
     public static void main(String[] args)
     {
-        EventQueue.invokeLater(new Runnable()
+        EventQueue.invokeLater(() ->
         {
-            public void run()
-            {
-                GameManager gameManager = new GameManager();
-                gameManager.drawEngine.setVisible(true);
-            }
+            GameManager gameManager = new GameManager();
+            gameManager.drawEngine.setVisible(true);
         });
     }
 
@@ -89,24 +86,24 @@ class GameManager
                     case "Mouses Win":
                         if(level.getMap().getSpecialTilesPosition(Tile.CHEESE).isEmpty())
                         {
-                            String winResult = "";
+                            StringBuilder winResult = new StringBuilder();
                             for (Mouse mouse: getMouses())
                             {
-                                winResult += (String.format(" {%s: %d}", mouse.getName(), mouse.getTargetReachedCount()));
+                                winResult.append(String.format(" {%s: %d}", mouse.getName(), mouse.getTargetReachedCount()));
                             }
-                            stopGame(String.format("Mouses Win !! %s", winResult));
+                            stopGame(String.format("Mouses Win !! %s", winResult.toString()));
                         }
                         break;
 
                     case "Cats Win":
                         if(getAliveMousesCount() == 0)
                         {
-                            String winResult = "";
+                            StringBuilder winResult = new StringBuilder();
                             for (Cat cat: getCats())
                             {
-                                winResult += (String.format(" {%s: %d}", cat.getName(), cat.getTargetReachedCount()));
+                                winResult.append(String.format(" {%s: %d}", cat.getName(), cat.getTargetReachedCount()));
                             }
-                            stopGame(String.format("Cats Win !! %s", winResult));
+                            stopGame(String.format("Cats Win !! %s", winResult.toString()));
                         }
                         break;
                     default:
@@ -118,7 +115,7 @@ class GameManager
 
     void stopGame(String result)
     {
-        try{timer.stopTimer();}catch (Exception e){}
+        try{timer.stopTimer();}catch (Exception ignored){}
         drawEngine.displayEndGameScreen(result);
     }
 
@@ -138,7 +135,7 @@ class GameManager
         return cats;
     }
 
-    int getAliveMousesCount()
+    private int getAliveMousesCount()
     {
         int aliveMousesCount = 0;
 
@@ -181,7 +178,7 @@ class GameManager
         return GAME_MODE;
     }
 
-    public void setGameMode(GameMode gameMode) {
+    void setGameMode(GameMode gameMode) {
         this.GAME_MODE = gameMode;
     }
 }

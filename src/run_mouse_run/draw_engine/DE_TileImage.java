@@ -13,7 +13,8 @@ public class DE_TileImage extends ImageIcon
 {
     private float alpha = 1;
 
-    public DE_TileImage(Image image) {
+    DE_TileImage(Image image)
+    {
         super(image);
     }
 
@@ -33,12 +34,12 @@ public class DE_TileImage extends ImageIcon
         }
     }
 
-    public void setAlpha(float alpha)
+    void setAlpha(float alpha)
     {
         this.alpha = alpha;
     }
 
-    public DE_TileImage copy() {
+    DE_TileImage copy() {
         return new DE_TileImage(getImage());
     }
 }

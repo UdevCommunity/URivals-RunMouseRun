@@ -1,7 +1,6 @@
 package run_mouse_run;
 
 import java.sql.Time;
-import java.time.LocalTime;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -9,7 +8,7 @@ import java.util.TimerTask;
 class CustomTimer
 {
     static int GAME_SPEED = 700;
-    static int UPDATE_FREQUENCE = GAME_SPEED/8; // should be changed in setter too
+    private static int UPDATE_FREQUENCE = GAME_SPEED/8; // should be changed in setter too
     private long TIME_LIMIT = 300000;
 
     private Time currentTime = new Time(0);
@@ -72,10 +71,6 @@ class CustomTimer
     Time getCurrentTime()
     {
         return currentTime;
-    }
-    Timer getTimer()
-    {
-        return timer;
     }
 }
 

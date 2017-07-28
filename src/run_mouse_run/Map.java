@@ -28,17 +28,12 @@ public class Map
             }
     }
 
-    public Position getPosition(int x, int y)
+    Position getPosition(int x, int y)
     {
         if (x < 0 || y < 0 || x >= width || y >= height)
             return nullPosition;
 
         return positionsMap[y][x];
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
     }
 
     public Tile getTile(int x, int y)
@@ -49,12 +44,12 @@ public class Map
         return map[y][x];
     }
 
-    public void setTile(int x, int y, Tile tile)
+    void setTile(int x, int y, Tile tile)
     {
         map[y][x] = tile;
     }
 
-    public void switchTile(int x, int y)
+    void switchTile(int x, int y)
     {
         map[y][x] = map[y][x].next();
     }
@@ -69,7 +64,7 @@ public class Map
         return width;
     }
 
-    public String getName()
+    String getName()
     {
         return name;
     }
@@ -93,7 +88,7 @@ public class Map
         return specialTilesPosition;
     }
 
-    public ArrayList<Tile> getAdjacentTiles(int x, int y)
+    private ArrayList<Tile> getAdjacentTiles(int x, int y)
     {
         ArrayList<Tile> adjacentsTile = new ArrayList<>();
 

@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 
-public class SecurityManager
+class SecurityManager
 {
     private ArrayList<String> classNotToUse = new ArrayList<String>()
     {{
@@ -27,7 +27,7 @@ public class SecurityManager
         add("DrawEngine");
     }};
 
-    public void checkForImportGameManager(String directoryPath) throws IOException
+    void checkForImportGameManager(String directoryPath) throws IOException
     {
         directoryPath = directoryPath.replace("%20", " ");
 

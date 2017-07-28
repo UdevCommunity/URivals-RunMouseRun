@@ -14,19 +14,19 @@ import java.util.ConcurrentModificationException;
 /**
  *
  */
-public class DE_MapPanel extends JPanel {
+public class DE_MapPanel extends JPanel
+{
 
-    public Map map;
+    private Map map;
     private DrawEngine drawEngine;
 
-    public int TILE_SIZE;
-    private final int BACKGROUND_LAYER = 0, // True programmers count from 0
+    private int TILE_SIZE;
+    private final int BACKGROUND_LAYER = 0, // True programmers count from 0 .. Obvious
             OBJECT_LAYER = 1, CHARACTER_LAYER = 2, ANIMATION_LAYER = 3;
 
     private static final int LAYERS_NUMBER = 4;
 
     private ArrayList<JLabel[][]> layers;
-    private GridLayout gridLayout;
 
     private DE_GameSprites gameSprites;
 
@@ -41,7 +41,7 @@ public class DE_MapPanel extends JPanel {
 
         adjustPanelSize();
 
-        gridLayout = new GridLayout(map.getHeight(), map.getWidth(), 0, 0);
+        GridLayout gridLayout = new GridLayout(map.getHeight(), map.getWidth(), 0, 0);
         setLayout(gridLayout);
 
         /*Init Tiles layers */
@@ -58,7 +58,7 @@ public class DE_MapPanel extends JPanel {
         update();
     }
 
-    public JLabel[][] initLayer(JLabel[][] bgLayer) {
+    private JLabel[][] initLayer(JLabel[][] bgLayer) {
         JLabel[][] layer = new JLabel[map.getHeight()][map.getWidth()];
 
         for (int i = 0; i < map.getHeight(); i++)
@@ -130,7 +130,7 @@ public class DE_MapPanel extends JPanel {
         repaint();
     }
 
-    public void clearLayer(JLabel[][] layer) {
+    private void clearLayer(JLabel[][] layer) {
         for (int i = 0; i < map.getHeight(); i++)
             for (int j = 0; j < map.getWidth(); j++)
                 setTile(layer[i][j], null);
@@ -147,7 +147,8 @@ public class DE_MapPanel extends JPanel {
         animation.play();
     }
 
-    public void drawMap() {
+    private void drawMap()
+    {
         JLabel[][] layer1 = layers.get(BACKGROUND_LAYER);
 
         for (int i = 0; i < map.getHeight(); i++)
@@ -174,7 +175,8 @@ public class DE_MapPanel extends JPanel {
         }
     }
 
-    public void drawObjects() {
+    private void drawObjects()
+    {
         JLabel[][] layer = layers.get(OBJECT_LAYER);
 
         for (int i = 0; i < map.getHeight(); i++)
@@ -214,7 +216,8 @@ public class DE_MapPanel extends JPanel {
         }
     }
 
-    public void drawCharacters() {
+    private void drawCharacters()
+    {
         // for each mouse
         int index = 0;
         JLabel[][] layer = layers.get(CHARACTER_LAYER);
@@ -255,9 +258,7 @@ public class DE_MapPanel extends JPanel {
                     drawPath(mouse.getDestinationPath(),gameSprites.getCustomSprite(index));
                 }
             }
-            catch (ConcurrentModificationException e)
-            {
-            }
+            catch (ConcurrentModificationException ignored) {}
             index++;
         }
         for (Cat cat : drawEngine.getCats())
@@ -269,9 +270,7 @@ public class DE_MapPanel extends JPanel {
                     drawPath(cat.getDestinationPath(), gameSprites.getCustomSprite(index));
                 }
             }
-            catch (ConcurrentModificationException e)
-            {
-            }
+            catch (ConcurrentModificationException ignored) {}
             index++;
         }
     }
@@ -280,7 +279,8 @@ public class DE_MapPanel extends JPanel {
         drawPath(path, gameSprites.getSprite(DE_GameSprites.FLAG_SPRITE));
     }
 
-    public void drawPath(ArrayList<Position> path, DE_TileImage sprite) {
+    private void drawPath(ArrayList<Position> path, DE_TileImage sprite)
+    {
         if (path == null || path.isEmpty()) return;
 
         JLabel[][] layer = layers.get(2);

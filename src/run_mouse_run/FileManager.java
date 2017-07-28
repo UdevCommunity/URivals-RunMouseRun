@@ -8,7 +8,6 @@ public class FileManager
 {
     public static File getResourceFile(String fileName) throws IOException
     {
-        File file = new File("res/" + fileName);
-        return file;
+        return new File("res/" + fileName);
     }
 }

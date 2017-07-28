@@ -1,12 +1,11 @@
 package run_mouse_run;
 
-import javafx.geometry.Pos;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-
-public class PathFinder {
+class PathFinder
+{
     private Map map = null;   // run_mouse_run.Map given by run_mouse_run.LevelGenerator
     private Node[][] grid = null;  // map on which we apply the search
 
@@ -14,12 +13,11 @@ public class PathFinder {
 
     private int mapWidth, mapHeight;
 
-    // Vecteur qui contiendra les coordonnées du plus court chemin
     private ArrayList<Position> shortestPath = new ArrayList<>();
 
     private LinkedList<Node> heap = new LinkedList<>();
 
-    public PathFinder(Map map)
+    PathFinder(Map map)
     {
         this.map = map;
 
@@ -36,7 +34,7 @@ public class PathFinder {
         }
     }
 
-    public ArrayList<Position> getShortestPath(Map map, Position initialPos, Position finalPos)
+    ArrayList<Position> getShortestPath(Map map, Position initialPos, Position finalPos)
     {
         try
         {
@@ -47,7 +45,7 @@ public class PathFinder {
 
             if (!getNode(initialPos).pass || !getNode(finalPos).pass) // if it's unreachable ( a wall )
             {
-                return new ArrayList<Position>();   // empty path
+                return new ArrayList<>();   // empty path
             }
             else
             {
@@ -59,18 +57,16 @@ public class PathFinder {
         {
             System.out.println("Error while setting up solver : ");
             e.printStackTrace();
-            return new ArrayList<Position>();   // empty path
+            return new ArrayList<>();   // empty path
         }
     }
 
-    public boolean isSetup(Map map, Position initialPos, Position finalPos)
+    private boolean isSetup(Map map, Position initialPos, Position finalPos)
     {
-        if(this.map == map
+        return this.map == map
                 && Position.comparePosition(initialPos, this.initialPos)
-                && Position.comparePosition(finalPos, this.finalPos))
-            return true;
+                && Position.comparePosition(finalPos, this.finalPos);
 
-        return false;
     }
 
     private void cleanSolver(int width, int height)
@@ -169,11 +165,9 @@ public class PathFinder {
 
             ArrayList<Node> possibleSuccess = identifySuccessors(current);  //get all possible successors of the current node
 
-            for(Node successors : possibleSuccess)
-            {
-                //for each one of them
-                heap.add(successors);//add to the heap for later use (a possible future cur)
-            }
+            //for each one of them
+            //add to the heap for later use (a possible future cur)
+            heap.addAll(possibleSuccess);
 
             if (heap.isEmpty())
             {
@@ -201,13 +195,13 @@ public class PathFinder {
      */
     private ArrayList<Node> identifySuccessors(Node node)
     {
-        ArrayList<Node> successors = new ArrayList<Node>();          //successors list to be returned
+        ArrayList<Node> successors = new ArrayList<>();          //successors list to be returned
 
         ArrayList<Position> neighbors = getNeighborsPrune(node);    //all neighbors after pruned
 
         for(Position neighbor : neighbors)
         { //for each of these neighbors
-            Position tmp = null;
+            Position tmp;
 
             tmp = jump(neighbor, node.pos); //get next jump point from that neighbor
 
@@ -240,7 +234,7 @@ public class PathFinder {
         int x = node.pos.getPosX();
         int y = node.pos.getPosY();
         int px, py, dx, dy;
-        ArrayList<Position> neighbors = new ArrayList<Position>();
+        ArrayList<Position> neighbors = new ArrayList<>();
 
         /*directed pruning: can ignore most neighbors, unless forced*/
         if (parent != null)
@@ -422,8 +416,8 @@ public class PathFinder {
      * @return run_mouse_run.Position of node which satisfies one of the conditions above, or null if no such node is found.
      */
     private Position jump(Position neighbor, Position parent) {
-        Position jx = null; //used to later check if full or null
-        Position jy = null; //used to later check if full or null
+        Position jx; //used to later check if full or null
+        Position jy; //used to later check if full or null
 
         int x = neighbor.getPosX(), y = neighbor.getPosY();
         int px = parent.getPosX(), py = parent.getPosY();
@@ -577,23 +571,24 @@ public class PathFinder {
         boolean pass;
         Node parent;
 
-        public Node(Position pos) {
+        Node(Position pos)
+        {
             this.pos = pos;
             parent = null;
             this.pass = true;
             g = h = f = 0;
         }
 
-        public void updateGHFP(float g, float h, Node parent) {
+        void updateGHFP(float g, float h, Node parent) {
             this.parent = parent;
             this.g = g;
             this.h = h;
             f = g + h;
         }
 
-        public boolean setPass(boolean pass) {
+        void setPass(boolean pass)
+        {
             this.pass = pass;
-            return pass;
         }
 
         public void clear()
