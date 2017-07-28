@@ -364,29 +364,31 @@ public class LevelGenerator
 
                 if(!seeBehindWalls)
                 {
-                    Position currentPos = position.copy();
+                    // Get the "visible" path between the position of the character and the position we try to see
                     Position destination = new Position(i, j);
+                    ArrayList<Position> visiblePseudoLinearPath = getVisiblePseudoLinearPath(position, destination);
 
-                    while (!Position.comparePosition(currentPos, destination))
+                    // Since the linear path is not perfectly linear we have two ways to reach to destination, so if
+                    // can't reach it from one way, we test the mirror path.
+                    if(!visiblePseudoLinearPath.isEmpty() && !Position.comparePosition(visiblePseudoLinearPath.get(visiblePseudoLinearPath.size() - 1), destination))
                     {
-                        int currentPosX = currentPos.getPosX();
-                        int currentPosY = currentPos.getPosY();
+                        // Get the path from the position we try to see to the character, if the last position of the path
+                        // is the position of the character it means that the target position is visible
+
+                        ArrayList<Position> pseudoLinearPathFromTarget = getVisiblePseudoLinearPath(destination, position);
+                        if (!pseudoLinearPathFromTarget.isEmpty() && Position.comparePosition(pseudoLinearPathFromTarget.get(pseudoLinearPathFromTarget.size() - 1), position))
+                            visiblePseudoLinearPath.addAll(pseudoLinearPathFromTarget);
+                    }
+
+
+                    for(Position visiblePosition: visiblePseudoLinearPath)
+                    {
+                        int currentPosX = visiblePosition.getPosX();
+                        int currentPosY = visiblePosition.getPosY();
 
                         if(viewedMap.getTile(currentPosX, currentPosY) == Tile.NOT_DISCOVERED)
                             viewedMap.setTile(currentPosX, currentPosY,
-                                (tilesToIgnore.contains(map.getTile(currentPosX, currentPosY)))? Tile.EMPTY: map.getTile(currentPosX, currentPosY));
-
-                        // Normalized direction vector
-                        int dx = (destination.getPosX() - currentPosX >= 0)? ((destination.getPosX() - currentPosX == 0)?0:1): -1;
-                        int dy = (destination.getPosY() - currentPosY >= 0)? ((destination.getPosY() - currentPosY == 0)?0:1): -1;
-
-
-                        if (!canCrossByDiagonal(currentPos, new Position(currentPosX + dx, currentPosY + dy))
-                                || map.getTile(currentPosX, currentPosY) == Tile.WALL)
-                            break;
-
-                        currentPos.setPosX(currentPosX + dx);
-                        currentPos.setPosY(currentPosY + dy);
+                                    (tilesToIgnore.contains(map.getTile(currentPosX, currentPosY)))? Tile.EMPTY: map.getTile(currentPosX, currentPosY));
                     }
                 }
                 else
@@ -394,6 +396,39 @@ public class LevelGenerator
             }
 
         return viewedMap;
+    }
+
+    private ArrayList<Position> getVisiblePseudoLinearPath(Position source, Position destination)
+    {
+        ArrayList<Position> pseudoLinearPath = new ArrayList<>();
+        Position currentPos = source.copy();
+
+        // Include source here, in order to include it even if it's a wall (when we want to get the path from the target,
+        // we want to include the first wall)
+        pseudoLinearPath.add(new Position(currentPos.getPosX(), currentPos.getPosY()));
+
+        while (!Position.comparePosition(currentPos, destination))
+        {
+            // Normalized direction vector
+            int dx = (destination.getPosX() - currentPos.getPosX() >= 0)? ((destination.getPosX() - currentPos.getPosX() == 0)?0:1): -1;
+            int dy = (destination.getPosY() - currentPos.getPosY() >= 0)? ((destination.getPosY() - currentPos.getPosY() == 0)?0:1): -1;
+
+            if (!canCrossByDiagonal(currentPos, new Position(currentPos.getPosX() + dx, currentPos.getPosY() + dy)))
+                break;
+
+
+            currentPos.setPosX(currentPos.getPosX() + dx);
+            currentPos.setPosY(currentPos.getPosY() + dy);
+
+            pseudoLinearPath.add(new Position(currentPos.getPosX(), currentPos.getPosY()));
+
+            // Do not join this condition with the previous one to include the first visible WALL when we came from
+            // a visible position
+            if (map.getTile(currentPos.getPosX(), currentPos.getPosY()) == Tile.WALL)
+                break;
+        }
+
+        return pseudoLinearPath;
     }
 
     public boolean canCrossByDiagonal(Position current, Position next)

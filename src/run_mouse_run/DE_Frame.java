@@ -908,7 +908,7 @@ public class DE_Frame extends JFrame {
         bottomEndGamePanel.setOpaque(false);
 
         JLabel lblResult = new JLabel(result);
-        lblResult.setFont(Theme.FONT_DEFAULT_BIG);
+        lblResult.setFont(Theme.FONT_DEFAULT_LARGE);
         lblResult.setForeground(Theme.FONT_DEFAULT_COLOR);
 
         UButton playAgainButton = new UButton("PlayAgain");
