@@ -122,7 +122,8 @@ public class DE_MapPanel extends JPanel {
     }
 
     public void update() {
-        clearLayer(layers.get(2));    // clear paths
+        clearLayer(layers.get(ANIMATION_LAYER));    // clear paths
+        clearLayer(layers.get(CHARACTER_LAYER));    // clear chars
         drawMap();
         drawObjects();
         drawCharacters();
