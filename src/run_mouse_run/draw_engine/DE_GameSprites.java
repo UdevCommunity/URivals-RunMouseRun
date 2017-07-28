@@ -45,7 +45,12 @@ public class DE_GameSprites
     private ArrayList<DE_TileImage> sprites, customSprites, spritesDead;
     private ArrayList<BufferedImage> spritesOriginal, customSpritesOriginal, spritesDeadOriginal;
 
-    public static final int EXPLOSION_FRAMES = 0;
+    private final String[] animationFileNames = {
+            "explosion.png",
+            "stun.png"
+    };
+
+    public static final int EXPLOSION_FRAMES = 0, STUN_FRAMES = 1;
 
     private ArrayList<ArrayList<DE_TileImage>> animationFrames;
     private ArrayList<ArrayList<BufferedImage>> animationFramesOriginal;
@@ -55,12 +60,13 @@ public class DE_GameSprites
         this.drawEngine = drawEngine;
         this.TILE_SIZE = TILE_SIZE;
 
+        /*Load original files*/
         spritesOriginal = loadSprites();
         customSpritesOriginal = loadCustomSprites();
         spritesDeadOriginal = loadCustomDeadSprites();
 
-        animationFramesOriginal = new ArrayList<>();
-        animationFramesOriginal.add(loadExplosionFrames());
+        animationFramesOriginal = loadAnimationFrames();
+
 
         animationFrames = new ArrayList<>();
         sprites = new ArrayList<>();
@@ -182,42 +188,68 @@ public class DE_GameSprites
         return customDeadSprites;
     }
 
-    private ArrayList<BufferedImage> loadExplosionFrames() {
-        /*Load sprites files */
+    private ArrayList<ArrayList<BufferedImage>> loadAnimationFrames()
+    {
+        ArrayList<ArrayList<BufferedImage>> animationFrames = new ArrayList<>();
+
+        animationFrames.add(loadAnimation(EXPLOSION_FRAMES, 2, 5, 1, true));
+        animationFrames.add(loadAnimation(STUN_FRAMES, 2, 3, 5, false));
+
+        return animationFrames;
+    }
+
+    /**
+     * Load animation frames from a spriteSheet into a list of separate frames
+     * @param frameIndex index of spritesheet's filename from animationFileNames
+     * @param rows number of rows in spritesheet
+     * @param cols number of cols in spritesheet
+     * @param repeat number of repetition for that animation ( loops ) // temp fix
+     * @param reverse if true, add a reverse animation at the end
+     * @return ArrayList of BufferedImage of the loaded frames
+     */
+    private ArrayList<BufferedImage> loadAnimation(int frameIndex, int rows, int cols, int repeat, boolean reverse)
+    {
         ArrayList<BufferedImage> frames = new ArrayList<>();
-        final int ROWS = 2;
-        final int COLS = 5;
+        final int ROWS = rows;
+        final int COLS = cols;
 
         try
         {
             // Load file
-            File spriteFile = FileManager.getResourceFile("/anim/explosion.png");
+            File spriteFile = FileManager.getResourceFile("/anim/" + animationFileNames[frameIndex]);
             // Read image
             BufferedImage frameSheet = ImageIO.read(spriteFile);
 
             final int w = frameSheet.getWidth() / COLS;
             final int h = frameSheet.getHeight() / ROWS;
 
-            for (int i = 0; i < ROWS; i++)
+            for(int k = 0; k < repeat; k++)
             {
-                for (int j = 0; j < COLS; j++)
+                for (int i = 0; i < ROWS; i++)
                 {
-                    BufferedImage frame = frameSheet
-                            .getSubimage(
-                                    j * w,
-                                    i * h,
-                                    w,
-                                    h
-                            );
-                    frames.add(frame);
+                    for (int j = 0; j < COLS; j++)
+                    {
+                        BufferedImage frame = frameSheet
+                                .getSubimage(
+                                        j * w,
+                                        i * h,
+                                        w,
+                                        h
+                                );
+                        frames.add(frame);
+                    }
+                }
+
+                if (reverse)
+                {
+                    /*if too lazy to change the spritesheet, read in reverse to make a full animation*/
+                    for (int i = frames.size() - 1; i >= 0; i--)
+                        frames.add(frames.get(i));
                 }
             }
-            for (int i = frames.size() - 1; i >= 0; i--)
-                frames.add(frames.get(i));
-
         } catch (IOException e)
         {
-            System.err.println("Error loading Sprite");
+            System.err.println("Error loading animation sprite" + animationFileNames[frameIndex]);
         }
 
         return frames;
@@ -298,7 +330,7 @@ public class DE_GameSprites
         int i = 0;
         for(ArrayList<BufferedImage> animation : animationFramesOriginal)
         {
-            animationFrames.add(new ArrayList<DE_TileImage>());
+            animationFrames.add(new ArrayList<>());
             for(BufferedImage frame : animation)
             {
                 // resize
