@@ -348,7 +348,7 @@ public class PathFinder {
             }
             Node tmp = current;
             current = current.parent;
-            tmp.parent = null;
+            tmp.parent = null; // to prevent looping when going back, just in case
         }
         trail.add(current.pos);
         //System.out.println("Path Trace Complete!");
@@ -403,6 +403,8 @@ public class PathFinder {
                 // note : at the end of the loop, end is already added ( tmp == end )
             }
         }
+        // fix : remove the first position from the path
+        connectedPath.remove(0);
         // finally, return the path
         return connectedPath;
     }
