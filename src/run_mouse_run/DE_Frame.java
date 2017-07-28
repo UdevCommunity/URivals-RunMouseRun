@@ -433,50 +433,61 @@ public class DE_Frame extends JFrame {
         // timeLimit
         gbc.gridx = 0;      gbc.gridy = 1;
         gbc.gridheight = 1; gbc.gridwidth = 2;
+        gbc.weightx = 50;
         lowerPanel.add(lblTimeLimit, gbc);
 
         gbc.gridx = 2;      gbc.gridy = 1;
         gbc.gridheight = 1; gbc.gridwidth = 1;
+        gbc.weightx = 25;
         lowerPanel.add(txtTimeLimit, gbc);
 
         gbc.gridx = 3;      gbc.gridy = 1;
         gbc.gridheight = 1; gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.weightx = 25;
         lowerPanel.add(btnSetTimeLimit, gbc);
 
         // gameSpeed
         gbc.gridx = 0;      gbc.gridy = 2;
         gbc.gridheight = 1; gbc.gridwidth = 2;
+        gbc.weightx = 50;
         lowerPanel.add(lblGameSpeed, gbc);
 
         gbc.gridx = 2;      gbc.gridy = 2;
         gbc.gridheight = 1; gbc.gridwidth = 1;
+        gbc.weightx = 25;
         lowerPanel.add(txtGameSpeed, gbc);
 
         gbc.gridx = 3;      gbc.gridy = 2;
         gbc.gridheight = 1; gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.weightx = 25;
         lowerPanel.add(btnSetGameSpeed, gbc);
 
         // MapLabels
         gbc.gridx = 0;      gbc.gridy = 3;
         gbc.gridheight = 1; gbc.gridwidth = 2;
+        gbc.weightx = 50;
         lowerPanel.add(lblMapWidth, gbc);
 
         gbc.gridx = 2;      gbc.gridy = 3;
         gbc.gridheight = 1; gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.weightx = 50;
         lowerPanel.add(lblMapHeight, gbc);
 
         // Map dimensions text
         gbc.gridx = 0;      gbc.gridy = 4;
         gbc.gridheight = 1; gbc.gridwidth = 2;
+        gbc.weightx = 50;
         lowerPanel.add(txtMapWidth, gbc);
 
         gbc.gridx = 2;      gbc.gridy = 4;
         gbc.gridheight = 1; gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.weightx = 50;
         lowerPanel.add(txtMapHeight, gbc);
 
         // New Level Button
         gbc.gridx = 0;      gbc.gridy = 5;
         gbc.gridheight = 1; gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.weightx = 100;
         lowerPanel.add(btnNewLevel, gbc);
 
         // setCheckBoxes Panel
@@ -489,13 +500,13 @@ public class DE_Frame extends JFrame {
             gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.gridx = 0;      gbc.gridy = i;
             gbc.gridheight = 1; gbc.gridwidth = 1;
-            gbc.weightx = 20;
+            gbc.weightx = 15;
             chckBoxesPanel.add(chkDrawPath.get(i), gbc);
 
             gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.gridx = 1;      gbc.gridy = i;
             gbc.gridheight = 1; gbc.gridwidth = 3;
-            gbc.weightx = 80;
+            gbc.weightx = 85;
             chckBoxesPanel.add(lblchckPath.get(i), gbc);
         }
 
@@ -951,5 +962,10 @@ public class DE_Frame extends JFrame {
     void explodeMine(int x, int y)
     {
         mapPanel.createAnimation(DE_GameSprites.EXPLOSION_FRAMES, x, y);
+    }
+
+    void showStun(int x, int y)
+    {
+        mapPanel.createAnimation(DE_GameSprites.STUN_FRAMES, x, y);
     }
 }

@@ -20,8 +20,10 @@ public class DE_MapPanel extends JPanel {
     private DrawEngine drawEngine;
 
     public int TILE_SIZE;
-    private final int BACKGROUND_LAYER = 0,
-            OBJECT_LAYER = 1, CHARACTER_LAYER = 2;
+    private final int BACKGROUND_LAYER = 0, // True programmers count from 0
+            OBJECT_LAYER = 1, CHARACTER_LAYER = 2, ANIMATION_LAYER = 3;
+
+    private static final int LAYERS_NUMBER = 4;
 
     private ArrayList<JLabel[][]> layers;
     private GridLayout gridLayout;
@@ -47,8 +49,10 @@ public class DE_MapPanel extends JPanel {
 
         // won't use loop for better control
         layers.add(initLayer(null));
-        layers.add(initLayer(layers.get(0)));
-        layers.add(initLayer(layers.get(1)));
+        for(int i = 0; i < LAYERS_NUMBER - 1; i++)
+        {
+            layers.add(initLayer(layers.get(i)));
+        }
 
         // draw all
         update();
@@ -133,7 +137,7 @@ public class DE_MapPanel extends JPanel {
 
     public void createAnimation(int animationIndex, int x, int y)
     {
-        JLabel[][] layer = layers.get(2);
+        JLabel[][] layer = layers.get(ANIMATION_LAYER);
         DE_Animation animation = new DE_Animation(
                 layer[y][x],
                 gameSprites.getAnimationFrames(animationIndex)

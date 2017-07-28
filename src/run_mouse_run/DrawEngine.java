@@ -116,6 +116,12 @@ public class DrawEngine {
 			frames.get(i).explodeMine(x, y);
 	}
 
+	public void showStun(int x, int y)
+	{
+		for(int i = 0; i < frames.size(); i++)
+			frames.get(i).showStun(x, y);
+	}
+
 	/**
 	 * Add a new frame, open at small size
 	 * apply changes depending on state

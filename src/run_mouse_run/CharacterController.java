@@ -149,6 +149,7 @@ public abstract class CharacterController
 
             if (GameManager.gameManager.getLevelGenerator().getMap().getTile(destinationPath.get(0).getPosX(), destinationPath.get(0).getPosY()) == Tile.WALL)
             {
+                GameManager.gameManager.getDrawEngine().showStun(getPosition().getPosX(), getPosition().getPosY());
                 try {Thread.sleep(STUN_EFFECT_DELAY);} catch (InterruptedException e) {e.printStackTrace();}
                 return;
             }
