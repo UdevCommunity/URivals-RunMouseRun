@@ -193,7 +193,7 @@ public class DE_GameSprites
         ArrayList<ArrayList<BufferedImage>> animationFrames = new ArrayList<>();
 
         animationFrames.add(loadAnimation(EXPLOSION_FRAMES, 2, 5, 1, true));
-        animationFrames.add(loadAnimation(STUN_FRAMES, 2, 3, 5, false));
+        animationFrames.add(loadAnimation(STUN_FRAMES, 1, 4, 5, false));
 
         return animationFrames;
     }
