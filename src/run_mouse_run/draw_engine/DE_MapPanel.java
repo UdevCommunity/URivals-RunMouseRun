@@ -81,6 +81,8 @@ public class DE_MapPanel extends JPanel {
     }
 
     public void adjustPanelSize() {
+        setSize(new Dimension(map.getWidth() * TILE_SIZE,
+                map.getHeight() * TILE_SIZE));
         setPreferredSize(new Dimension(map.getWidth() * TILE_SIZE,
                 map.getHeight() * TILE_SIZE));
     }

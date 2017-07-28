@@ -626,6 +626,7 @@ public class DE_Frame extends JFrame {
         mapPanel = new DE_MapPanel(drawEngine, map, TILE_SIZE);
         mapContainerPanel = new JScrollPane(mapPanel);
         mapContainerPanel.setWheelScrollingEnabled(false);
+        mapContainerPanel.getViewport().setLayout(null);
 
         setMouseListener();
 
