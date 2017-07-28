@@ -1,9 +1,6 @@
 package run_mouse_run.draw_engine;
 
 import run_mouse_run.*;
-import run_mouse_run.draw_engine.DE_Animation;
-import run_mouse_run.draw_engine.DE_GameSprites;
-import run_mouse_run.draw_engine.DE_TileImage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -136,12 +133,13 @@ public class DE_MapPanel extends JPanel
                 setTile(layer[i][j], null);
     }
 
-    public void createAnimation(int animationIndex, int x, int y)
+    public void createAnimation(int animationIndex, int x, int y, int duration)
     {
         JLabel[][] layer = layers.get(ANIMATION_LAYER);
         DE_Animation animation = new DE_Animation(
                 layer[y][x],
-                gameSprites.getAnimationFrames(animationIndex)
+                gameSprites.getAnimationFrames(animationIndex),
+                duration
         );
 
         animation.play();

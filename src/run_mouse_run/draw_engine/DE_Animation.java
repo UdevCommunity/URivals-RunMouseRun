@@ -9,11 +9,18 @@ class DE_Animation
     private JLabel tile;
     private ArrayList<DE_TileImage> frames;
     private int currentIndex;
+    private int duration = 0; // number of times the animation loops
 
-    DE_Animation(JLabel tile, ArrayList<DE_TileImage> frames)
+    DE_Animation(JLabel tile, ArrayList<DE_TileImage> frames, int duration)
     {
         this.tile = tile;
         setAnimation(frames);
+        this.duration = duration;
+    }
+
+    DE_Animation(JLabel tile, ArrayList<DE_TileImage> frames)
+    {
+        this(tile, frames, 1);
     }
 
     private void setAnimation(ArrayList<DE_TileImage> frames)
@@ -46,9 +53,21 @@ class DE_Animation
     }
     private void nextFrame()
     {
+        if(frames == null)
+            return;
+
+        // go to next frame
         currentIndex++;
-        if(frames == null || currentIndex >= frames.size())
-            frames = null;
+
+        // if ended
+        if(currentIndex >= frames.size())
+        {
+            duration--;
+            if(duration == 0)
+                frames = null;
+            else
+                currentIndex = 0; // restart animation
+        }
     }
 
     private void draw()

@@ -920,11 +920,11 @@ class DE_Frame extends JFrame {
      */
     void explodeMine(int x, int y)
     {
-        mapPanel.createAnimation(DE_GameSprites.EXPLOSION_FRAMES, x, y);
+        mapPanel.createAnimation(DE_GameSprites.EXPLOSION_FRAMES, x, y, 1);
     }
 
     void showStun(int x, int y)
     {
-        mapPanel.createAnimation(DE_GameSprites.STUN_FRAMES, x, y);
+        mapPanel.createAnimation(DE_GameSprites.STUN_FRAMES, x, y, 5);
     }
 }

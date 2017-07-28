@@ -55,6 +55,11 @@ public class DE_GameSprites
     private ArrayList<ArrayList<DE_TileImage>> animationFrames;
     private ArrayList<ArrayList<BufferedImage>> animationFramesOriginal;
 
+    /**
+     * load Game Sprites and animations, and resize them to TILE_SIZE
+     * @param drawEngine
+     * @param TILE_SIZE
+     */
     DE_GameSprites(DrawEngine drawEngine, int TILE_SIZE)
     {
         this.drawEngine = drawEngine;
@@ -76,6 +81,10 @@ public class DE_GameSprites
         resizeSprites(TILE_SIZE);
     }
 
+    /**
+     * Load all sprite files in spritesFileNames[] in original size
+     * @return (ArrayList) list of sprites in original size
+     */
     private ArrayList<BufferedImage> loadSprites() {
         /*Load sprites files */
         ArrayList<BufferedImage> sprites = new ArrayList<>();
@@ -103,7 +112,6 @@ public class DE_GameSprites
     /**
      * Load Custom Sprites, file name format : [CharName]_sprite.png
      * if file not found; load default from sprites
-     *
      * @return customSprites (ArrayList)
      */
     private ArrayList<BufferedImage> loadCustomSprites() {
@@ -146,7 +154,6 @@ public class DE_GameSprites
     /**
      * Load Custom Sprites, file name format : [CharName]_sprite.png
      * if file not found; load default from sprites
-     *
      * @return customSprites (ArrayList)
      */
     private ArrayList<BufferedImage> loadCustomDeadSprites() {
@@ -190,8 +197,8 @@ public class DE_GameSprites
     {
         ArrayList<ArrayList<BufferedImage>> animationFrames = new ArrayList<>();
 
-        animationFrames.add(loadAnimation(EXPLOSION_FRAMES, 2, 5, 1, true));
-        animationFrames.add(loadAnimation(STUN_FRAMES, 1, 4, 5, false));
+        animationFrames.add(loadAnimation(EXPLOSION_FRAMES, 2, 5, true));
+        animationFrames.add(loadAnimation(STUN_FRAMES, 1, 4,  false));
 
         return animationFrames;
     }
@@ -201,11 +208,10 @@ public class DE_GameSprites
      * @param frameIndex index of spritesheet's filename from animationFileNames
      * @param rows number of rows in spritesheet
      * @param cols number of cols in spritesheet
-     * @param repeat number of repetition for that animation ( loops ) // temp fix
      * @param reverse if true, add a reverse animation at the end
      * @return ArrayList of BufferedImage of the loaded frames
      */
-    private ArrayList<BufferedImage> loadAnimation(int frameIndex, int rows, int cols, int repeat, boolean reverse)
+    private ArrayList<BufferedImage> loadAnimation(int frameIndex, int rows, int cols, boolean reverse)
     {
         ArrayList<BufferedImage> frames = new ArrayList<>();
 
@@ -219,30 +225,28 @@ public class DE_GameSprites
             final int w = frameSheet.getWidth() / cols;
             final int h = frameSheet.getHeight() / rows;
 
-            for(int k = 0; k < repeat; k++)
+            for (int i = 0; i < rows; i++)
             {
-                for (int i = 0; i < rows; i++)
+                for (int j = 0; j < cols; j++)
                 {
-                    for (int j = 0; j < cols; j++)
-                    {
-                        BufferedImage frame = frameSheet
-                                .getSubimage(
-                                        j * w,
-                                        i * h,
-                                        w,
-                                        h
-                                );
-                        frames.add(frame);
-                    }
-                }
-
-                if (reverse)
-                {
-                    /*if too lazy to change the spritesheet, read in reverse to make a full animation*/
-                    for (int i = frames.size() - 1; i >= 0; i--)
-                        frames.add(frames.get(i));
+                    BufferedImage frame = frameSheet
+                            .getSubimage(
+                                    j * w,
+                                    i * h,
+                                    w,
+                                    h
+                            );
+                    frames.add(frame);
                 }
             }
+
+            if (reverse)
+            {
+                /*if too lazy to change the spritesheet, read in reverse to make a full animation*/
+                for (int i = frames.size() - 1; i >= 0; i--)
+                    frames.add(frames.get(i));
+            }
+
         } catch (IOException e)
         {
             System.err.println("Error loading animation sprite" + animationFileNames[frameIndex]);
@@ -253,12 +257,11 @@ public class DE_GameSprites
 
     /**
      * Resize image
-     *
      * @param originalImage (BufferedImage) image to resize
      * @param type          type of image, use ARGB for tranparancy
      * @param IMG_WIDTH     (int)
      * @param IMG_HEIGHT    (int)
-     * @return
+     * @return (BufferedImage) the resize image
      */
     static BufferedImage resizeImage(BufferedImage originalImage, int type, int IMG_WIDTH, int IMG_HEIGHT)
     {
@@ -276,6 +279,10 @@ public class DE_GameSprites
         return bimage;
     }
 
+    /**
+     * Resize all GameSprites' sprites to given size and update this' lists
+     * @param size (int)
+     */
     void resizeSprites(int size)
     {
         this.TILE_SIZE = size;
@@ -342,6 +349,10 @@ public class DE_GameSprites
         this.animationFrames = animationFrames;
     }
 
+    /**
+     * Check if game sprites were loaded
+     * @return true is game sprites are loaded
+     */
     public boolean isLoaded()
     {
         return (sprites != null && !sprites.isEmpty());
