@@ -23,11 +23,11 @@ public class LevelGenerator
     private Map map;
     private ArrayList<Position> validRespawnPositions;
 
-    private final int WALL_PROBABILITY_THRESHOLD = 35;
-    private final int POWERUP_VISION_PROBABILITY_THRESHOLD = WALL_PROBABILITY_THRESHOLD + 1;    // 1%
-    private final int POWERUP_SPEED_PROBABILITY_THRESHOLD = POWERUP_VISION_PROBABILITY_THRESHOLD + 1; // 1%
-    private final int INVISIBLE_ZONE_PROBABILITY_THRESHOLD = POWERUP_SPEED_PROBABILITY_THRESHOLD + 1; // 1%
-    private final int MINE_PROBABILITY_THRESHOLD = INVISIBLE_ZONE_PROBABILITY_THRESHOLD + 1;  // 1%
+    private final float WALL_PROBABILITY_THRESHOLD = 35;
+    private final float POWERUP_VISION_PROBABILITY_THRESHOLD = WALL_PROBABILITY_THRESHOLD + 0.75f;    // 1%
+    private final float POWERUP_SPEED_PROBABILITY_THRESHOLD = POWERUP_VISION_PROBABILITY_THRESHOLD + 0.75f; // 1%
+    private final float INVISIBLE_ZONE_PROBABILITY_THRESHOLD = POWERUP_SPEED_PROBABILITY_THRESHOLD + 0.5f; // 1%
+    private final float MINE_PROBABILITY_THRESHOLD = INVISIBLE_ZONE_PROBABILITY_THRESHOLD + 1;  // 1%
     private final int EMPTY_PATH_PROBABILITY_THRESHOLD = 100;
 
     // IMPORTANT : MAZE[POS_Y][POS_X]
@@ -210,7 +210,7 @@ public class LevelGenerator
         {
             for(int j = 0; j < MAP_WIDTH; j++)
             {
-                int randomNum = ThreadLocalRandom.current().nextInt(0, 100 + 1);
+                float randomNum = ThreadLocalRandom.current().nextFloat()*100;
 
                 if(randomNum < WALL_PROBABILITY_THRESHOLD)
                 {
