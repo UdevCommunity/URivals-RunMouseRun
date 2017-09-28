@@ -95,6 +95,9 @@ class PhysicsEngine
                     break;
 
                 case CAT:
+                    if(!mouse.isVisible())
+                        break;
+
                     for (Cat winningCat: GameManager.gameManager.getCats())
                     {
                         if(Position.comparePosition(mouse.getPosition(), winningCat.getPosition()))
