@@ -256,7 +256,7 @@ public abstract class CharacterController
 
     final void setVisibility(boolean isVisible)
     {
-        this.isAlive = isVisible;
+        this.isVisible = isVisible;
     }
 
     protected final long getMovePowerupTourLeft()
