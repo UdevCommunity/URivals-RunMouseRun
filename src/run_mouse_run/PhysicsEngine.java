@@ -68,6 +68,7 @@ class PhysicsEngine
                     break;
                 case INVISIBLE_ZONE:
                     cat.setVisibility(false);
+                    levelMap.setTile(cat.getPosition().getPosX(), cat.getPosition().getPosY(), Tile.CAT);
             }
 
             if(tileCatIsStandingOn == Tile.POWERUP_SPEED || tileCatIsStandingOn == Tile.POWERUP_VISION
