@@ -52,6 +52,7 @@ class PhysicsEngine
                     levelMap.setTile(cat.getPosition().getPosX(), cat.getPosition().getPosY(), Tile.EMPTY);
                     GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ cat.getName() + " died on a Mine");
                     cat.respawn();
+                    GameManager.gameManager.getDrawEngine().explodeMine(cat.getPosition().getPosX(), cat.getPosition().getPosY());
                     break;
                 case WALL:
                     GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ cat.getName() + " walked into a wall");
@@ -65,6 +66,8 @@ class PhysicsEngine
                     cat.applyMoveSpeedPowerup();
                     GameManager.gameManager.getLevelGenerator().spawnSpeedPowerup();
                     break;
+                case INVISIBLE_ZONE:
+                    cat.setVisibility(false);
             }
 
             if(tileCatIsStandingOn == Tile.POWERUP_SPEED || tileCatIsStandingOn == Tile.POWERUP_VISION
@@ -109,6 +112,7 @@ class PhysicsEngine
                     levelMap.setTile(mouse.getPosition().getPosX(), mouse.getPosition().getPosY(), Tile.EMPTY);
                     GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ mouse.getName() + " died on a Mine");
                     mouse.respawn();
+                    GameManager.gameManager.getDrawEngine().explodeMine(mouse.getPosition().getPosX(), mouse.getPosition().getPosY());
                     break;
                 case WALL:
                     GameManager.gameManager.getDrawEngine().printMessage("Respawn: "+ mouse.getName() + " walked into a wall");
@@ -122,6 +126,8 @@ class PhysicsEngine
                     mouse.applyMoveSpeedPowerup();
                     GameManager.gameManager.getLevelGenerator().spawnSpeedPowerup();
                     break;
+                case INVISIBLE_ZONE:
+                    mouse.setVisibility(false);
             }
 
             if(tileMouseIsStandingOn == Tile.POWERUP_SPEED || tileMouseIsStandingOn == Tile.POWERUP_VISION

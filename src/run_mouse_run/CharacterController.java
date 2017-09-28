@@ -26,6 +26,7 @@ public abstract class CharacterController
     private PathFinder pathFinder;
     private boolean seeBehindWalls = false;
     private boolean isAlive = true;
+    private boolean isVisible = true;
 
     private Timer timer;
 
@@ -128,7 +129,7 @@ public abstract class CharacterController
 
                 if(viewedTile == Tile.NOT_DISCOVERED)
                     viewedMap.setTile(i, j, map.getTile(i, j));
-                else
+                else if (map.getTile(i, j) != Tile.INVISIBLE_ZONE)
                     map.setTile(i, j, (viewedTile != Tile.CAT && viewedTile != Tile.MOUSE)? viewedTile: Tile.EMPTY);
             }
     }
@@ -141,9 +142,9 @@ public abstract class CharacterController
 
     private void move()
     {
-        if (!destinationPath.isEmpty() && ((Math.abs(destinationPath.get(0).getPosX() - position.getPosX()) > 1) ||
-                (Math.abs(destinationPath.get(0).getPosY() - position.getPosY()) > 1)))
-            GameManager.gameManager.stopGame(name + " tried to cheat in move !!");
+        //if (!destinationPath.isEmpty() && ((Math.abs(destinationPath.get(0).getPosX() - position.getPosX()) > 1) ||
+         //       (Math.abs(destinationPath.get(0).getPosY() - position.getPosY()) > 1)))
+          //  GameManager.gameManager.stopGame(name + " tried to cheat in move !!");
 
         for (int i = 0; i < moveSpeed; i++)
         {
@@ -161,9 +162,10 @@ public abstract class CharacterController
 
             Tile actualTile = GameManager.gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY());
             if(actualTile == Tile.CAT || actualTile == Tile.MOUSE)
-                GameManager.gameManager.getLevelGenerator().getMap().setTile(position.getPosX(), position.getPosY(), Tile.EMPTY);
+                GameManager.gameManager.getLevelGenerator().getMap().setTile(position.getPosX(), position.getPosY(), (isVisible)?Tile.EMPTY:Tile.INVISIBLE_ZONE);
 
             position = destinationPath.remove(0);
+            isVisible = true;
         }
 
         reducePowerupsTour();
@@ -245,6 +247,26 @@ public abstract class CharacterController
     public final boolean isAlive()
     {
         return isAlive;
+    }
+
+    public final boolean isVisible()
+    {
+        return isVisible;
+    }
+
+    final void setVisibility(boolean isVisible)
+    {
+        this.isAlive = isVisible;
+    }
+
+    protected final long getMovePowerupTourLeft()
+    {
+        return movePowerupTourLeft;
+    }
+
+    protected final long getVisionPowerupTourLeft()
+    {
+        return visionPowerupTourLeft;
     }
 }
 

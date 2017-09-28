@@ -1,7 +1,9 @@
 package run_mouse_run;
 
+import run_mouse_run.Cats.DumbTomTa3Bahaa;
 import run_mouse_run.Mouses.DumbJerry;
 import run_mouse_run.Cats.DumbTom;
+import run_mouse_run.Mouses.PatchoFar;
 
 import java.awt.*;
 import java.io.IOException;
@@ -29,12 +31,12 @@ class GameManager
         mouses = new ArrayList<>();
 
         // Instantiate mouses (do not use a loop, here we may instantiate mouses from different classes)
-        mouses.add(new DumbJerry("DumbJerry"));
-        mouses.add(new DumbJerry("Jerry2"));
+        mouses.add(new PatchoFar("Patcho"));
+        mouses.add(new PatchoFar("Pitchou"));
 
         // Instantiate cats (do not use a loop, here we may instantiate cats from different classes)
-        cats.add(new DumbTom("DumbTom"));
-        cats.add(new DumbTom("Tom2"));
+        cats.add(new DumbTomTa3Bahaa("DumbTom"));
+        cats.add(new DumbTomTa3Bahaa("Tom2"));
 
         level = new LevelGenerator();
         physicsEngine = new PhysicsEngine();
