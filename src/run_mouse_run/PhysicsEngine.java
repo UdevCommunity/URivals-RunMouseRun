@@ -90,6 +90,7 @@ class PhysicsEngine
             {
                 case CHEESE:
                     mouse.increaseTargetReachedCount();
+                    levelMap.setTile(mouse.getPosition().getPosX(), mouse.getPosition().getPosY(), Tile.MOUSE);
                     GameManager.gameManager.getDrawEngine().printMessage(mouse.getName() + " picked a cheese");
                     GameManager.gameManager.checkEndGameConditions("Mouses Win", mouse.getName());
                     break;
@@ -135,7 +136,7 @@ class PhysicsEngine
             }
 
             if(tileMouseIsStandingOn == Tile.POWERUP_SPEED || tileMouseIsStandingOn == Tile.POWERUP_VISION
-                    || tileMouseIsStandingOn == Tile.EMPTY || tileMouseIsStandingOn == Tile.CHEESE)
+                    || tileMouseIsStandingOn == Tile.EMPTY)
                 levelMap.setTile(mouse.getPosition().getPosX(), mouse.getPosition().getPosY(), Tile.MOUSE);
         }
     }
