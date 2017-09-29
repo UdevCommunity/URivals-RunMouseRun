@@ -34,10 +34,11 @@ class GameManager
         mouses.add(new PatchoFar("Patcho"));
         mouses.add(new PatchoFar("Pitchou"));
         mouses.add(new PatchoFar("Potchou"));
+        mouses.add(new PatchoFar("Potchou"));
 
         // Instantiate cats (do not use a loop, here we may instantiate cats from different classes)
-        //cats.add(new DumbTomTa3Bahaa("DumbTom"));
-        //cats.add(new DumbTomTa3Bahaa("Tom2"));
+        cats.add(new DumbTomTa3Bahaa("DumbTom"));
+        cats.add(new DumbTomTa3Bahaa("Tom2"));
 
         level = new LevelGenerator();
         physicsEngine = new PhysicsEngine();
