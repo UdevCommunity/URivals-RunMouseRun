@@ -10,7 +10,7 @@ public abstract class CharacterController
     private final int INITIAL_VIEW_DISTANCE = 5;
     private final int STUN_EFFECT_DELAY = 3000;
     private final int CONSEQUENT_MOVE_DELAY = CustomTimer.GAME_SPEED/2;
-    private final int UPDATE_FREQUENCY = CustomTimer.GAME_SPEED;
+    protected int UPDATE_FREQUENCY = CustomTimer.GAME_SPEED;
 
     private String name;
     private Position position;

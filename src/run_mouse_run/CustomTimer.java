@@ -9,7 +9,7 @@ class CustomTimer
 {
     static int GAME_SPEED = 700;
     private static int UPDATE_FREQUENCE = GAME_SPEED/8; // should be changed in setter too
-    private long TIME_LIMIT = 300000;
+    private long TIME_LIMIT = 450000;
 
     private Time currentTime = new Time(0);
     private Timer timer;

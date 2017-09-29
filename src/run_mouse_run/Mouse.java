@@ -8,6 +8,7 @@ public abstract class Mouse extends CharacterController
     public Mouse(String name)
     {
         super(name, new ArrayList<Tile>(){{add(Tile.MINE);}});
+        UPDATE_FREQUENCY *= 0.8;
     }
 
     final void respawn()

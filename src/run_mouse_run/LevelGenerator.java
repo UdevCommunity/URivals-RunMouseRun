@@ -34,8 +34,8 @@ class LevelGenerator
 
     LevelGenerator()
     {
-        MAP_WIDTH = (MAP_WIDTH_MIN + MAP_WIDTH_MAX) / 2;
-        MAP_HEIGHT = (MAP_HEIGHT_MIN + MAP_HEIGHT_MAX) / 2;
+        MAP_WIDTH = MAP_WIDTH_MIN + 10;
+        MAP_HEIGHT = MAP_HEIGHT_MIN + 10;
 
         // Generate map
         map = generateRandomMap(MAP_WIDTH, MAP_HEIGHT);
@@ -115,7 +115,7 @@ class LevelGenerator
             cat.setPosition(CATS_INITIAL_POS);
 
         /*Spawn cheese*/
-        for (int i = 0; i < GameManager.gameManager.getCats().size()+1; i++)
+        for (int i = 0; i < GameManager.gameManager.getMouses().size(); i++)
         {
             Position cheesePos;
             do{
