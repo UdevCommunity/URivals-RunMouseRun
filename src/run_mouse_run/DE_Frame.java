@@ -237,7 +237,7 @@ class DE_Frame extends JFrame {
             try{
                 int x = Integer.parseInt(txtGameSpeed.getText());
 
-                if(x > 0 && x < 300)
+                if(x >= 50 && x <= 1000)
                 {
                     CustomTimer.setGameSpeed(x);
                 }

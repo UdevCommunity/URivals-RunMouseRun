@@ -8,7 +8,7 @@ import java.util.TimerTask;
 class CustomTimer
 {
     static int GAME_SPEED = 700;
-    private static int UPDATE_FREQUENCY = GAME_SPEED/8; // should be changed in setter too
+    private static int UPDATE_FREQUENCY = GAME_SPEED * 10/100;
     private long TIME_LIMIT = 450000;
 
     private Time currentTime = new Time(0);
@@ -65,8 +65,14 @@ class CustomTimer
 
     static void setGameSpeed(int speed)
     {
-        GAME_SPEED = speed;
-        UPDATE_FREQUENCY = GAME_SPEED/8;
+        GAME_SPEED /= (speed/100.0);
+        UPDATE_FREQUENCY = GAME_SPEED * 10/100;
+
+        for (Mouse mouse: GameManager.gameManager.getMouses())
+            mouse.setUpdateFrequency(GAME_SPEED);
+
+        for (Cat cat: GameManager.gameManager.getCats())
+            cat.setUpdateFrequency(GAME_SPEED);
     }
     Time getCurrentTime()
     {
