@@ -330,7 +330,7 @@ class PathFinder
 
     private ArrayList<Position> tracePath(Node current) {
         trail.clear();
-        while (current.parent != null)
+        while (current.parent != null && !Position.comparePosition(current.pos, initialPos))
         {
             try
             {
