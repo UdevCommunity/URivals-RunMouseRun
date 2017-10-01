@@ -274,6 +274,11 @@ public abstract class CharacterController
         this.UPDATE_FREQUENCY = updateFrequency;
         this.CONSEQUENT_MOVE_DELAY = CustomTimer.GAME_SPEED/2;
     }
+
+    final public int getViewDistance()
+    {
+        return viewDistance;
+    }
 }
 
 
