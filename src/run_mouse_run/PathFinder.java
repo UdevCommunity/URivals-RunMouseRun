@@ -26,7 +26,7 @@ class PathFinder
 
         try
         {
-            setupSolver(map, initialPos, finalPos);
+            setupSolver(map, initialPos, finalPos, false);
         }
         catch (Exception e)
         {
@@ -36,12 +36,17 @@ class PathFinder
 
     ArrayList<Position> getShortestPath(Map map, Position initialPos, Position finalPos)
     {
+        return getShortestPath(map, initialPos, finalPos, false);
+    }
+
+    ArrayList<Position> getShortestPath(Map map, Position initialPos, Position finalPos, boolean considerInexploredAsWall )
+    {
         try
         {
-            if(isSetup(map, initialPos, finalPos)) // if same request sent
+            if(!considerInexploredAsWall && isSetup(map, initialPos, finalPos)) // if same request sent
                 return shortestPath;
 
-            setupSolver(map, initialPos, finalPos);
+            setupSolver(map, initialPos, finalPos, considerInexploredAsWall);
 
             if (!getNode(initialPos).pass || !getNode(finalPos).pass) // if it's unreachable ( a wall )
             {
@@ -49,9 +54,17 @@ class PathFinder
             }
             else
             {
+                /*Solve it with memory first */
                 solve();
-                clearGraph();
-                return shortestPath;
+                if(considerInexploredAsWall && shortestPath.isEmpty())
+                {
+                    return getShortestPath(map, initialPos, finalPos, false);
+                }
+                else
+                {
+                    clearGraph();
+                    return shortestPath;
+                }
             }
         }catch (Exception e)
         {
@@ -92,7 +105,7 @@ class PathFinder
         shortestPath.clear();
     }
 
-    private void setupSolver(Map map, Position initialPos, Position finalPos) throws Exception
+    private void setupSolver(Map map, Position initialPos, Position finalPos, boolean considerInexploredAsWall ) throws Exception
     {
         cleanSolver(map.getWidth(), map.getHeight());
 
@@ -104,7 +117,7 @@ class PathFinder
         this.finalPos = finalPos;
 
         /* generate Nodes from map*/
-        tileToNode();
+        tileToNode(considerInexploredAsWall );
 
     }
 
@@ -123,7 +136,7 @@ class PathFinder
      * Generates a grid of nodes from map
      *
      */
-    private void tileToNode()
+    private void tileToNode(boolean considerInexploredAsWall)
     {
         for (int i = 0; i < mapHeight; i++)
         {
@@ -132,7 +145,8 @@ class PathFinder
                 grid[i][j].setPosition(map.getPosition(j,i)); // j is x, i is y
                 grid[i][j].f = -1;          // init distance to null
 
-                if (map.getTile(j, i).isWalkable())
+                if (map.getTile(j, i).isWalkable()
+                        || (considerInexploredAsWall && map.getTile(j,i) == Tile.NOT_DISCOVERED))
                     grid[i][j].setPass(true);
                 else
                     grid[i][j].setPass(false);
