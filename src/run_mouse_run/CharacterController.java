@@ -9,7 +9,7 @@ public abstract class CharacterController
     private final int INITIAL_MOVE_SPEED = 1;
     private final int INITIAL_VIEW_DISTANCE = 5;
     private final int STUN_EFFECT_DELAY = 3000;
-    private final int CONSEQUENT_MOVE_DELAY = CustomTimer.GAME_SPEED/2;
+    private int CONSEQUENT_MOVE_DELAY = CustomTimer.GAME_SPEED/2;
     protected int UPDATE_FREQUENCY = CustomTimer.GAME_SPEED;
 
     private String name;
@@ -46,9 +46,17 @@ public abstract class CharacterController
             @Override
             public void run()
             {
-                discoverMap();
-                computeDecision();
-                move();
+                for (int i = 0; i < moveSpeed; i++)
+                {
+                    if (i > 0)
+                        try{Thread.sleep(CONSEQUENT_MOVE_DELAY);} catch (InterruptedException e) {e.printStackTrace();}
+
+                    discoverMap();
+                    computeDecision();
+                    move();
+                }
+
+                reducePowerupsTour();
             }
         };
     }
@@ -142,33 +150,25 @@ public abstract class CharacterController
 
     private void move()
     {
-        //if (!destinationPath.isEmpty() && ((Math.abs(destinationPath.get(0).getPosX() - position.getPosX()) > 1) ||
-         //       (Math.abs(destinationPath.get(0).getPosY() - position.getPosY()) > 1)))
-          //  GameManager.gameManager.stopGame(name + " tried to cheat in move !!");
+        if (!destinationPath.isEmpty() && ((Math.abs(destinationPath.get(0).getPosX() - position.getPosX()) > 1) ||
+                (Math.abs(destinationPath.get(0).getPosY() - position.getPosY()) > 1)))
+            GameManager.gameManager.stopGame(name + " tried to cheat in move !!");
 
-        for (int i = 0; i < moveSpeed; i++)
+        if (destinationPath.isEmpty() || !canCrossByDiagonal(position, destinationPath.get(0)))
+            return;
+
+        if (GameManager.gameManager.getLevelGenerator().getMap().getTile(destinationPath.get(0).getPosX(), destinationPath.get(0).getPosY()) == Tile.WALL)
         {
-            if (i > 0)
-                try {Thread.sleep(CONSEQUENT_MOVE_DELAY);} catch (InterruptedException e) {e.printStackTrace();}
-
-            if (destinationPath.isEmpty() || !canCrossByDiagonal(position, destinationPath.get(0)))
-                return;
-
-            if (GameManager.gameManager.getLevelGenerator().getMap().getTile(destinationPath.get(0).getPosX(), destinationPath.get(0).getPosY()) == Tile.WALL)
-            {
-                applyStunEffect();
-                return;
-            }
-
-            Tile actualTile = GameManager.gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY());
-            if(actualTile == Tile.CAT || actualTile == Tile.MOUSE)
-                GameManager.gameManager.getLevelGenerator().getMap().setTile(position.getPosX(), position.getPosY(), (isVisible)?Tile.EMPTY:Tile.INVISIBLE_ZONE);
-
-            position = destinationPath.remove(0);
-            isVisible = true;
+            applyStunEffect();
+            return;
         }
 
-        reducePowerupsTour();
+        Tile actualTile = GameManager.gameManager.getLevelGenerator().getMap().getTile(position.getPosX(), position.getPosY());
+        if(actualTile == Tile.CAT || actualTile == Tile.MOUSE)
+            GameManager.gameManager.getLevelGenerator().getMap().setTile(position.getPosX(), position.getPosY(), (isVisible)?Tile.EMPTY:Tile.INVISIBLE_ZONE);
+
+        position = destinationPath.remove(0);
+        isVisible = true;
     }
 
     protected void computeDecision()
@@ -267,6 +267,17 @@ public abstract class CharacterController
     protected final long getVisionPowerupTourLeft()
     {
         return visionPowerupTourLeft;
+    }
+
+    final void setUpdateFrequency(int updateFrequency)
+    {
+        this.UPDATE_FREQUENCY = updateFrequency;
+        this.CONSEQUENT_MOVE_DELAY = CustomTimer.GAME_SPEED/2;
+    }
+
+    final public int getViewDistance()
+    {
+        return viewDistance;
     }
 }
 
