@@ -134,7 +134,7 @@ public class DrawEngine
             newFrame.hideControlPanel();
             newFrame.setBounds(100,100, 500,500);
             newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            newFrame.setAlwaysOnTop(true);
+            newFrame.setAlwaysOnTop(false);
 
             // Set state to the same state of her
             if(newFrame.startGameButton.getText().equals("Resume Game")) // if game Paused

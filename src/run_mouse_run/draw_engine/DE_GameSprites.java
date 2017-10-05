@@ -122,7 +122,7 @@ public class DE_GameSprites
             try
             {
                 // Load file
-                File spriteFile = FileManager.getResourceFile(m.getName() + ".png");
+                File spriteFile = FileManager.getResourceFile(m.getName() + "_sprite.png");
                 // Read image
                 BufferedImage sprite = ImageIO.read(spriteFile);
                 //add to customSprites

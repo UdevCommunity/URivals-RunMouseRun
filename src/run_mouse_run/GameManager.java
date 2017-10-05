@@ -33,8 +33,8 @@ class GameManager
         // Instantiate mouses (do not use a loop, here we may instantiate mouses from different classes)
         mouses.add(new PatchoFar("Patcho"));
         mouses.add(new PatchoFar("Pitchou"));
-        mouses.add(new PatchoFar("Potchou"));
-        mouses.add(new PatchoFar("Putchi"));
+        //mouses.add(new PatchoFar("Potchou"));
+        //mouses.add(new PatchoFar("Putchi"));
 
         // Instantiate cats (do not use a loop, here we may instantiate cats from different classes)
         cats.add(new DumbTomTa3Bahaa("DumbTom"));

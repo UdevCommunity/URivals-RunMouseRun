@@ -9,8 +9,8 @@ public abstract class CharacterController
     private final int INITIAL_MOVE_SPEED = 1;
     private final int INITIAL_VIEW_DISTANCE = 5;
     private final int STUN_EFFECT_DELAY = 3000;
-    private int CONSEQUENT_MOVE_DELAY = CustomTimer.GAME_SPEED/2;
-    protected int UPDATE_FREQUENCY = CustomTimer.GAME_SPEED;
+    private int consequentMoveDelay = CustomTimer.GAME_SPEED/2;
+    protected int updateFrequency = CustomTimer.GAME_SPEED;
 
     private String name;
     private Position position;
@@ -49,7 +49,7 @@ public abstract class CharacterController
                 for (int i = 0; i < moveSpeed; i++)
                 {
                     if (i > 0)
-                        try{Thread.sleep(CONSEQUENT_MOVE_DELAY);} catch (InterruptedException e) {e.printStackTrace();}
+                        try{Thread.sleep(consequentMoveDelay);} catch (InterruptedException e) {e.printStackTrace();}
 
                     discoverMap();
                     computeDecision();
@@ -68,7 +68,7 @@ public abstract class CharacterController
 
         TimerTask task = createUpdateTask();
         timer = new Timer();
-        timer.scheduleAtFixedRate(task, 0, UPDATE_FREQUENCY);
+        timer.scheduleAtFixedRate(task, 0, updateFrequency);
     }
 
     final void stopTimer()
@@ -182,6 +182,12 @@ public abstract class CharacterController
         return destinationPath;
     }
 
+    final protected ArrayList<Position> computeDestinationPath(Map map, Position destination, boolean considerUnexploredAsWall)
+    {
+        setDestinationPath(pathFinder.getShortestPath(map, position, destination, considerUnexploredAsWall));
+        return destinationPath;
+    }
+
     final protected ArrayList<Position> computePath(Map map, Position source, Position destination)
     {
         return pathFinder.getShortestPath(map, source, destination);
@@ -271,8 +277,8 @@ public abstract class CharacterController
 
     final void setUpdateFrequency(int updateFrequency)
     {
-        this.UPDATE_FREQUENCY = updateFrequency;
-        this.CONSEQUENT_MOVE_DELAY = CustomTimer.GAME_SPEED/2;
+        this.updateFrequency = updateFrequency;
+        this.consequentMoveDelay = CustomTimer.GAME_SPEED/2;
     }
 
     final public int getViewDistance()
